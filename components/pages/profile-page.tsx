@@ -32,10 +32,10 @@ const iconMap: Record<string, LucideIcon> = {
 }
 
 type Props = {
-  showToast: (msg: string) => void
+  onOpenSub: (key: string) => void
 }
 
-export function ProfilePage({ showToast }: Props) {
+export function ProfilePage({ onOpenSub }: Props) {
   const { stats } = profile
 
   return (
@@ -56,7 +56,7 @@ export function ProfilePage({ showToast }: Props) {
             <h1 className="text-lg font-bold tracking-wide text-white">我的</h1>
             <button
               type="button"
-              onClick={() => showToast('设置')}
+              onClick={() => onOpenSub('settings')}
               aria-label="设置"
               className="flex h-8 w-8 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/10"
             >
@@ -82,7 +82,7 @@ export function ProfilePage({ showToast }: Props) {
             </div>
             <button
               type="button"
-              onClick={() => showToast('编辑资料')}
+              onClick={() => onOpenSub('edit')}
               className="shrink-0 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur transition-colors hover:bg-white/25"
             >
               编辑资料
@@ -95,16 +95,16 @@ export function ProfilePage({ showToast }: Props) {
         <div className="flex flex-col gap-3 px-3 py-3">
           {/* 数据统计卡 */}
           <div className="grid grid-cols-4 rounded-xl border border-border bg-card py-4 shadow-sm">
-            <StatCell label="发布" value={stats.posts} onClick={() => showToast('我的发布')} />
-            <StatCell label="收藏" value={stats.favorites} onClick={() => showToast('我的收藏')} />
-            <StatCell label="点赞" value={stats.likes} onClick={() => showToast('我的点赞')} />
-            <StatCell label="浏览" value={stats.views} onClick={() => showToast('浏览历史')} />
+            <StatCell label="发布" value={stats.posts} onClick={() => onOpenSub('posts')} />
+            <StatCell label="收藏" value={stats.favorites} onClick={() => onOpenSub('favorites')} />
+            <StatCell label="点赞" value={stats.likes} onClick={() => onOpenSub('likes')} />
+            <StatCell label="浏览" value={stats.views} onClick={() => onOpenSub('history')} />
           </div>
 
           {/* 会员权益横幅 */}
           <button
             type="button"
-            onClick={() => showToast('开通商户会员')}
+            onClick={() => onOpenSub('vip')}
             className="flex items-center gap-3 overflow-hidden rounded-xl border border-accent/25 bg-accent-soft px-4 py-3 text-left transition-colors hover:bg-accent/10"
           >
             <Crown className="h-6 w-6 shrink-0 text-accent" />
@@ -116,10 +116,10 @@ export function ProfilePage({ showToast }: Props) {
           </button>
 
           {/* 我的服务 */}
-          <MenuGroup title="我的服务" items={myServiceMenu} onItem={(m) => showToast(m.label)} />
+          <MenuGroup title="我的服务" items={myServiceMenu} onItem={(m) => onOpenSub(m.key)} />
 
           {/* 更多工具 */}
-          <MenuGroup title="更多工具" items={myToolMenu} onItem={(m) => showToast(m.label)} />
+          <MenuGroup title="更多工具" items={myToolMenu} onItem={(m) => onOpenSub(m.key)} />
 
           <p className="py-2 text-center text-[11px] text-muted-foreground">万户优铺 · 高校餐饮商业信息平台</p>
         </div>

@@ -16,13 +16,14 @@ import { FloatingButtons } from './floating-buttons'
 type Props = {
   showToast: (msg: string) => void
   onOpenPost: (id: number) => void
+  onOpenNotice: () => void
 }
 
 /**
  * 首页内容（客户已确认，视觉与交互保持不变）。
  * 从原 HomeApp 抽离，便于与其他 Tab 页面共用统一外壳。
  */
-export function HomeFeed({ showToast, onOpenPost }: Props) {
+export function HomeFeed({ showToast, onOpenPost, onOpenNotice }: Props) {
   const [list, setList] = useState<Post[]>(seedPosts)
   const [activeCat, setActiveCat] = useState('all')
   const [showTop, setShowTop] = useState(false)
@@ -85,7 +86,7 @@ export function HomeFeed({ showToast, onOpenPost }: Props) {
         <BannerCarousel onSelect={showToast} />
         <StatsBar totalUsers={stats.totalUsers} totalPosts={stats.totalPosts} totalViews={stats.totalViews} />
         <CategoryNav onNav={handleNav} />
-        <AnnouncementBar onOpen={() => showToast('查看平台公告')} />
+        <AnnouncementBar onOpen={onOpenNotice} />
 
         <div ref={listRef} className="scroll-mt-14">
           <CategoryTabs active={activeCat} onChange={setActiveCat} />
@@ -117,7 +118,6 @@ export function HomeFeed({ showToast, onOpenPost }: Props) {
 
       <FloatingButtons
         showBackToTop={showTop}
-        onFollow={() => showToast('扫码关注公众号')}
         onCustomerService={() => showToast('联系在线客服')}
         onCall={() => showToast('拨打客服电话')}
         onBackToTop={() => scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}

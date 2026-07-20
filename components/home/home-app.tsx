@@ -10,16 +10,21 @@ import { ProfilePage } from '@/components/pages/profile-page'
 import { PostDetail } from '@/components/pages/post-detail'
 import { IdleDetail } from '@/components/pages/idle-detail'
 import { NewsDetail } from '@/components/pages/news-detail'
+import { NoticePage } from '@/components/pages/notice-page'
+import { ProfileSubPage } from '@/components/pages/profile-sub'
 
-type Detail = { type: 'post' | 'idle' | 'news'; id: number }
+type Overlay =
+  | { kind: 'post' | 'idle' | 'news'; id: number }
+  | { kind: 'notice' }
+  | { kind: 'sub'; key: string }
 
 /**
- * 应用外壳：管理底部 Tab 切换、详情页覆盖层、全局 Toast，并渲染当前页面。
+ * 应用外壳：管理底部 Tab 切换、覆盖层栈（详情/公告/我的子页）、全局 Toast。
  * 各页面统一复用首页的设计系统（颜色、圆角、阴影、图标、交互）。
  */
 export function HomeApp() {
   const [activeTab, setActiveTab] = useState('home')
-  const [detail, setDetail] = useState<Detail | null>(null)
+  const [stack, setStack] = useState<Overlay[]>([])
   const [toast, setToast] = useState<{ msg: string; show: boolean }>({ msg: '', show: false })
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -29,36 +34,37 @@ export function HomeApp() {
     toastTimer.current = setTimeout(() => setToast((t) => ({ ...t, show: false })), 1800)
   }
 
-  const openDetail = (d: Detail) => setDetail(d)
-  const closeDetail = () => setDetail(null)
+  const push = (o: Overlay) => setStack((s) => [...s, o])
+  const pop = () => setStack((s) => s.slice(0, -1))
 
   const handleSwitch = (page: string) => {
-    // 中间「发布」按钮映射到 publish 页
+    setStack([]) // 切换主 Tab 时清空覆盖层
     setActiveTab(page === 'publish-pre' ? 'publish' : page)
   }
 
+  const top = stack[stack.length - 1]
+
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden bg-background">
-      {activeTab === 'home' && <HomeFeed showToast={showToast} onOpenPost={(id) => openDetail({ type: 'post', id })} />}
-      {activeTab === 'idle' && <IdlePage showToast={showToast} onOpenItem={(id) => openDetail({ type: 'idle', id })} />}
+      {activeTab === 'home' && <HomeFeed showToast={showToast} onOpenPost={(id) => push({ kind: 'post', id })} onOpenNotice={() => push({ kind: 'notice' })} />}
+      {activeTab === 'idle' && <IdlePage showToast={showToast} onOpenItem={(id) => push({ kind: 'idle', id })} />}
       {activeTab === 'publish' && <PublishPage showToast={showToast} onDone={() => setActiveTab('home')} />}
-      {activeTab === 'news' && <NewsPage showToast={showToast} onOpenArticle={(id) => openDetail({ type: 'news', id })} />}
-      {activeTab === 'me' && <ProfilePage showToast={showToast} />}
+      {activeTab === 'news' && <NewsPage showToast={showToast} onOpenArticle={(id) => push({ kind: 'news', id })} />}
+      {activeTab === 'me' && <ProfilePage onOpenSub={(key) => push({ kind: 'sub', key })} />}
 
       <BottomTabBar active={activeTab} onSwitch={handleSwitch} />
 
-      {/* 详情页覆盖层（滑入，返回后保留列表滚动位置） */}
-      {detail && (
+      {/* 覆盖层栈（滑入，返回后保留底层 Tab 滚动位置） */}
+      {top && (
         <div className="absolute inset-0 z-40 bg-background duration-300 animate-in slide-in-from-right">
-          {detail.type === 'post' && <PostDetail postId={detail.id} onBack={closeDetail} showToast={showToast} />}
-          {detail.type === 'idle' && <IdleDetail itemId={detail.id} onBack={closeDetail} showToast={showToast} />}
-          {detail.type === 'news' && (
-            <NewsDetail
-              articleId={detail.id}
-              onBack={closeDetail}
-              onOpenArticle={(id) => openDetail({ type: 'news', id })}
-              showToast={showToast}
-            />
+          {top.kind === 'post' && <PostDetail postId={top.id} onBack={pop} showToast={showToast} />}
+          {top.kind === 'idle' && <IdleDetail itemId={top.id} onBack={pop} showToast={showToast} />}
+          {top.kind === 'news' && (
+            <NewsDetail articleId={top.id} onBack={pop} onOpenArticle={(id) => push({ kind: 'news', id })} showToast={showToast} />
+          )}
+          {top.kind === 'notice' && <NoticePage onBack={pop} showToast={showToast} />}
+          {top.kind === 'sub' && (
+            <ProfileSubPage sub={top.key} onBack={pop} onOpenPost={(id) => push({ kind: 'post', id })} showToast={showToast} />
           )}
         </div>
       )}
