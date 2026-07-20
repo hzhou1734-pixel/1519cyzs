@@ -52,9 +52,11 @@ export function ProfilePage({ onOpenSub }: Props) {
                 'radial-gradient(circle at 88% 0%, rgba(230,126,34,0.6), transparent 42%), linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 40%)',
             }}
           />
-          <div className="relative flex items-center justify-between">
+          <div className="relative flex items-center justify-center">
             <h1 className="text-lg font-bold tracking-wide text-white">我的</h1>
-            <WechatCapsule variant="light" />
+            <div className="absolute right-0">
+              <WechatCapsule variant="light" />
+            </div>
           </div>
 
           <div className="relative mt-4 flex items-center gap-3">
