@@ -65,7 +65,7 @@ export function ProfilePage({ onOpenSub }: Props) {
           </div>
 
           <div className="relative mt-4 flex items-center gap-3">
-            <span className="h-16 w-16 shrink-0 overflow-hidden rounded-full ring-2 ring-white/30">
+            <span className="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-white/10">
               <img src={profile.avatar || '/placeholder.svg'} alt={`${profile.name}的头像`} className="h-full w-full object-cover" />
             </span>
             <div className="min-w-0 flex-1">
