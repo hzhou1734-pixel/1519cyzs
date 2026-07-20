@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { ChevronLeft, Search, X, TrendingUp, Clock, Trash2 } from 'lucide-react'
 import { StatusBar } from '@/components/home/status-bar'
+import { WechatCapsule } from '@/components/shared/wechat-capsule'
 import { InfoCard } from '@/components/home/info-card'
 import { posts as seedPosts, type Post } from '@/lib/home-data'
 
@@ -116,6 +117,7 @@ export function SearchPage({ onBack, onOpenPost, showToast }: Props) {
             >
               搜索
             </button>
+            <WechatCapsule variant="light" className="shrink-0" />
           </div>
         </div>
       </div>

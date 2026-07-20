@@ -18,6 +18,7 @@ import {
 import { profile, myToolMenu, type MenuItem } from '@/lib/app-data'
 import { formatNumber } from '@/lib/home-data'
 import { StatusBar } from '@/components/home/status-bar'
+import { WechatCapsule } from '@/components/shared/wechat-capsule'
 
 const iconMap: Record<string, LucideIcon> = {
   FileText,
@@ -54,14 +55,17 @@ export function ProfilePage({ onOpenSub }: Props) {
           />
           <div className="relative flex items-center justify-between">
             <h1 className="text-lg font-bold tracking-wide text-white">我的</h1>
-            <button
-              type="button"
-              onClick={() => onOpenSub('settings')}
-              aria-label="设置"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/10"
-            >
-              <Settings2 className="h-5 w-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onOpenSub('settings')}
+                aria-label="设置"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/10"
+              >
+                <Settings2 className="h-5 w-5" />
+              </button>
+              <WechatCapsule variant="light" />
+            </div>
           </div>
 
           <div className="relative mt-4 flex items-center gap-3">
