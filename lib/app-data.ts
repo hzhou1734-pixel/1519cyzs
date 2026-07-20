@@ -116,6 +116,65 @@ export const myToolMenu: MenuItem[] = [
 // 发布页可选分类（复用首页宫格导航语义）
 export const publishCats = navItems.map((n) => ({ cat: n.cat, label: n.label }))
 
+// 发布页预设标签（可多选，也支持自定义添加）
+export const publishTags: string[] = [
+  '急转',
+  '可小刀',
+  '带客源',
+  '证照齐全',
+  '免转让费',
+  '拎包入住',
+  '人流量大',
+  '临近学校',
+  '临街旺铺',
+  '设备全新',
+  '长期招租',
+  '诚心出售',
+]
+
+/* ------------------------- 省市区三级数据 ------------------------- */
+
+export type Region = {
+  name: string
+  children?: Region[]
+}
+
+// 精简版省/市/区三级数据（覆盖平台主要业务区域）
+export const regions: Region[] = [
+  {
+    name: '湖南省',
+    children: [
+      { name: '长沙市', children: [{ name: '岳麓区' }, { name: '天心区' }, { name: '芙蓉区' }, { name: '雨花区' }, { name: '开福区' }, { name: '望城区' }, { name: '高新区' }] },
+      { name: '湘潭市', children: [{ name: '雨湖区' }, { name: '岳塘区' }, { name: '湘潭县' }] },
+      { name: '株洲市', children: [{ name: '天元区' }, { name: '芦淞区' }, { name: '荷塘区' }] },
+      { name: '衡阳市', children: [{ name: '雁峰区' }, { name: '石鼓区' }, { name: '蒸湘区' }] },
+    ],
+  },
+  {
+    name: '湖北省',
+    children: [
+      { name: '武汉市', children: [{ name: '洪山区' }, { name: '武昌区' }, { name: '江汉区' }, { name: '江夏区' }, { name: '汉阳区' }] },
+      { name: '宜昌市', children: [{ name: '西陵区' }, { name: '伍家岗区' }, { name: '点军区' }] },
+      { name: '襄阳市', children: [{ name: '襄城区' }, { name: '樊城区' }, { name: '襄州区' }] },
+    ],
+  },
+  {
+    name: '广东省',
+    children: [
+      { name: '广州市', children: [{ name: '天河区' }, { name: '越秀区' }, { name: '海珠区' }, { name: '番禺区' }, { name: '白云区' }] },
+      { name: '深圳市', children: [{ name: '南山区' }, { name: '福田区' }, { name: '宝安区' }, { name: '龙岗区' }] },
+      { name: '东莞市', children: [{ name: '南城街道' }, { name: '东城街道' }, { name: '莞城街道' }] },
+    ],
+  },
+  {
+    name: '江西省',
+    children: [
+      { name: '南昌市', children: [{ name: '东湖区' }, { name: '西湖区' }, { name: '青山湖区' }, { name: '红谷滩区' }] },
+      { name: '赣州市', children: [{ name: '章贡区' }, { name: '南康区' }, { name: '赣县区' }] },
+    ],
+  },
+]
+
 /* ------------------------- 平台公告 ------------------------- */
 
 export type Notice = {
