@@ -21,7 +21,7 @@ export function IdlePage({ onOpenItem }: Props) {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
-      <PageHeader title="闲置社区" subtitle="餐饮设备二手流转 · 低价捡漏" />
+      <PageHeader title="闲置社区" />
 
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-20">
         <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">

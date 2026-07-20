@@ -66,7 +66,7 @@ export function PublishPage({ showToast, onDone }: Props) {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
-      <PageHeader title="发布信息" subtitle="真实信息共建诚信平台" onBack={onDone} />
+      <PageHeader title="发布信息" onBack={onDone} />
 
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-24">
         <div className="flex flex-col gap-3 px-3 py-3">

@@ -25,7 +25,7 @@ export function NewsPage({ showToast, onOpenArticle }: Props) {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
-      <PageHeader title="行业资讯" subtitle="政策解读 · 经营干货 · 成功案例" />
+      <PageHeader title="行业资讯" />
 
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-20">
         <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">
