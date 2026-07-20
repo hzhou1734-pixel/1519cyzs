@@ -743,13 +743,44 @@ function SheetFooter({ disabled, label, onClick }: { disabled: boolean; label: s
 
 /* ------------------------- 客服中心 ------------------------- */
 
+const FAQS: { q: string; a: string[] }[] = [
+  {
+    q: '如何发布档口招商信息？',
+    a: [
+      '在首页底部点击「发布」按钮进入发布页，选择「档口招商」分类。',
+      '依次填写标题、详细描述、所在地区、联系电话，并可上传门店实景图片、添加标签。',
+      '信息核对无误后点击「确认发布」，平台将在 1 个工作日内完成审核，通过后即对外展示。',
+    ],
+  },
+  {
+    q: '认证商户有哪些权益？',
+    a: [
+      '认证商户在信息列表中拥有专属「认证」标识，可显著提升用户信任度。',
+      '认证账号发布的信息将获得更高的曝光权重，优先展示在分类列表前列。',
+      '此外还可享受专属客服一对一对接、批量发布、数据统计等增值服务。',
+    ],
+  },
+  {
+    q: '信息置顶收费标准是多少？',
+    a: [
+      '信息置顶按天计费：普通置顶 10 元/天，分类首屏置顶 30 元/天。',
+      '认证商户享 8 折优惠，连续购买 7 天及以上另享 9 折。',
+      '费用从账户余额中扣除，可在「我的钱包」中充值后购买。',
+    ],
+  },
+  {
+    q: '如何举报虚假信息？',
+    a: [
+      '进入任意信息详情页，点击右上角菜单中的「举报」按钮。',
+      '选择举报类型（虚假信息 / 联系方式失效 / 涉嫌欺诈等）并补充说明。',
+      '平台将在 24 小时内核实处理，一经查实将对违规账号采取下架、封禁等措施。',
+    ],
+  },
+]
+
 function ServiceView({ showToast }: { showToast: (msg: string) => void }) {
-  const faqs = [
-    '如何发布档口招商信息？',
-    '认证商户有哪些权益？',
-    '信息置顶收费标准是多少？',
-    '如何举报虚假信息？',
-  ]
+  const [expanded, setExpanded] = useState<number | null>(null)
+
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
       <div className="grid grid-cols-2 gap-3">
@@ -760,18 +791,50 @@ function ServiceView({ showToast }: { showToast: (msg: string) => void }) {
       <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <h2 className="px-4 pb-1 pt-3 text-[12px] font-semibold text-muted-foreground">常见问题</h2>
         <div className="flex flex-col">
-          {faqs.map((q, i) => (
-            <button
-              type="button"
-              key={i}
-              onClick={() => showToast(q)}
-              className={`flex items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/60 ${i !== faqs.length - 1 ? 'border-b border-border' : ''}`}
-            >
-              <MessageSquare className="h-4 w-4 shrink-0 text-primary" />
-              <span className="flex-1 text-sm text-foreground">{q}</span>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            </button>
-          ))}
+          {FAQS.map((item, i) => {
+            const open = expanded === i
+            return (
+              <div key={i} className={i !== FAQS.length - 1 ? 'border-b border-border' : ''}>
+                <button
+                  type="button"
+                  onClick={() => setExpanded(open ? null : i)}
+                  aria-expanded={open}
+                  className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/60"
+                >
+                  <MessageSquare className="h-4 w-4 shrink-0 text-primary" />
+                  <span className="flex-1 text-sm font-medium text-foreground">{item.q}</span>
+                  <ChevronRight className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-90' : ''}`} />
+                </button>
+                {open && (
+                  <div className="px-4 pb-4 pl-11 duration-200 animate-in fade-in slide-in-from-top-1">
+                    <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-3">
+                      {item.a.map((p, j) => (
+                        <p key={j} className="text-[13px] leading-relaxed text-muted-foreground">
+                          {p}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => showToast('感谢你的反馈')}
+                        className="rounded-full border border-border px-3 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-muted"
+                      >
+                        问题已解决
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => showToast('接入在线客服')}
+                        className="rounded-full bg-primary-soft px-3 py-1.5 text-[12px] font-medium text-primary transition-colors hover:bg-primary/10"
+                      >
+                        联系客服
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
       </section>
     </div>
