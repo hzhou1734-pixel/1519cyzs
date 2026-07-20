@@ -23,7 +23,7 @@ export function NoticePage({ onBack, showToast }: Props) {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
-      <PageHeader title="平台公告" subtitle="真实信息 · 诚信平台" onBack={onBack} />
+      <PageHeader title="平台公告" onBack={onBack} />
 
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-20">
         <div className="flex flex-col gap-3 px-3 py-3">
