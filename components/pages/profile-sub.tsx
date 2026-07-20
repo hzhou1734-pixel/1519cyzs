@@ -26,6 +26,11 @@ import {
   Star,
   MapPin,
   Clock,
+  Wallet,
+  Smartphone,
+  CreditCard,
+  Building2,
+  Check,
   type LucideIcon,
 } from 'lucide-react'
 import { posts as seedPosts, type Post, formatNumber } from '@/lib/home-data'
@@ -441,12 +446,37 @@ function VerifyView({ showToast }: { showToast: (msg: string) => void }) {
 
 /* ------------------------- 我的钱包 ------------------------- */
 
+type WalletRecord = { id: number; title: string; date: string; amount: number; type: 'in' | 'out' }
+
+function todayStr() {
+  const d = new Date()
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+}
+
 function WalletView({ showToast }: { showToast: (msg: string) => void }) {
-  const records = [
-    { id: 1, title: '信息置顶服务', date: '2026-07-08', amount: -30, type: 'out' as const },
-    { id: 2, title: '账户充值', date: '2026-07-05', amount: 200, type: 'in' as const },
-    { id: 3, title: '会员开通', date: '2026-06-20', amount: -99, type: 'out' as const },
-  ]
+  const [balance, setBalance] = useState(71)
+  const [sheet, setSheet] = useState<'recharge' | 'withdraw' | null>(null)
+  const [records, setRecords] = useState<WalletRecord[]>([
+    { id: 1, title: '信息置顶服务', date: '2026-07-08', amount: -30, type: 'out' },
+    { id: 2, title: '账户充值', date: '2026-07-05', amount: 200, type: 'in' },
+    { id: 3, title: '会员开通', date: '2026-06-20', amount: -99, type: 'out' },
+  ])
+
+  const handleRecharge = (amount: number, method: string) => {
+    setBalance((b) => b + amount)
+    setRecords((prev) => [{ id: Date.now(), title: `账户充值（${method}）`, date: todayStr(), amount, type: 'in' }, ...prev])
+    setSheet(null)
+    showToast(`充值成功 +${amount} 元`)
+  }
+
+  const handleWithdraw = (amount: number, method: string) => {
+    setBalance((b) => b - amount)
+    setRecords((prev) => [{ id: Date.now(), title: `提现到${method}`, date: todayStr(), amount: -amount, type: 'out' }, ...prev])
+    setSheet(null)
+    showToast('提现申请已提交，预计1-3个工作日到账')
+  }
+
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-[#16304f] p-5 shadow-sm">
@@ -456,20 +486,20 @@ function WalletView({ showToast }: { showToast: (msg: string) => void }) {
           style={{ backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(230,126,34,0.7), transparent 45%)' }}
         />
         <p className="relative text-[12px] text-white/70">账户余额（元）</p>
-        <p className="relative mt-1 font-mono text-3xl font-bold text-white">71.00</p>
+        <p className="relative mt-1 font-mono text-3xl font-bold text-white">{balance.toFixed(2)}</p>
         <div className="relative mt-4 flex gap-2.5">
           <button
             type="button"
-            onClick={() => showToast('去充值')}
-            className="flex items-center gap-1 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-accent-foreground"
+            onClick={() => setSheet('recharge')}
+            className="flex items-center gap-1 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-accent-foreground transition-transform active:scale-95"
           >
             <Plus className="h-3.5 w-3.5" />
             充值
           </button>
           <button
             type="button"
-            onClick={() => showToast('提现申请已提交')}
-            className="rounded-full bg-white/15 px-4 py-1.5 text-xs font-medium text-white backdrop-blur"
+            onClick={() => setSheet('withdraw')}
+            className="rounded-full bg-white/15 px-4 py-1.5 text-xs font-medium text-white backdrop-blur transition-transform active:scale-95"
           >
             提现
           </button>
@@ -495,6 +525,218 @@ function WalletView({ showToast }: { showToast: (msg: string) => void }) {
           ))}
         </div>
       </section>
+
+      <RechargeSheet open={sheet === 'recharge'} onClose={() => setSheet(null)} onConfirm={handleRecharge} />
+      <WithdrawSheet open={sheet === 'withdraw'} balance={balance} onClose={() => setSheet(null)} onConfirm={handleWithdraw} />
+    </div>
+  )
+}
+
+/* ------------------------- 充值面板 ------------------------- */
+
+const RECHARGE_METHODS = [
+  { key: '微信支付', icon: Smartphone },
+  { key: '支付宝', icon: CreditCard },
+]
+
+function RechargeSheet({ open, onClose, onConfirm }: { open: boolean; onClose: () => void; onConfirm: (amount: number, method: string) => void }) {
+  const presets = [50, 100, 200, 500, 1000, 2000]
+  const [amount, setAmount] = useState<number | null>(100)
+  const [custom, setCustom] = useState('')
+  const [method, setMethod] = useState(RECHARGE_METHODS[0].key)
+
+  if (!open) return null
+
+  const finalAmount = custom ? Number(custom) : amount ?? 0
+  const valid = finalAmount > 0
+
+  return (
+    <SheetShell title="账户充值" onClose={onClose}>
+      <div className="px-4 py-4">
+        <p className="mb-2 text-[12px] font-medium text-muted-foreground">选择充值金额</p>
+        <div className="grid grid-cols-3 gap-2.5">
+          {presets.map((v) => {
+            const active = !custom && amount === v
+            return (
+              <button
+                type="button"
+                key={v}
+                onClick={() => {
+                  setAmount(v)
+                  setCustom('')
+                }}
+                className={`flex flex-col items-center rounded-xl border py-3 transition-colors ${
+                  active ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-foreground hover:border-primary/40'
+                }`}
+              >
+                <span className="font-mono text-lg font-bold">{v}</span>
+                <span className="text-[11px] text-muted-foreground">元</span>
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2.5">
+          <span className="text-sm text-muted-foreground">￥</span>
+          <input
+            value={custom}
+            onChange={(e) => setCustom(e.target.value.replace(/[^\d]/g, ''))}
+            inputMode="numeric"
+            placeholder="其他金额"
+            className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+          />
+        </div>
+
+        <p className="mb-2 mt-4 text-[12px] font-medium text-muted-foreground">支付方式</p>
+        <div className="flex flex-col gap-2">
+          {RECHARGE_METHODS.map((m) => {
+            const Icon = m.icon
+            const active = method === m.key
+            return (
+              <button
+                type="button"
+                key={m.key}
+                onClick={() => setMethod(m.key)}
+                className={`flex items-center gap-3 rounded-xl border px-3.5 py-3 transition-colors ${
+                  active ? 'border-primary bg-primary/5' : 'border-border bg-card'
+                }`}
+              >
+                <Icon className="h-5 w-5 text-primary" />
+                <span className="flex-1 text-left text-sm font-medium text-foreground">{m.key}</span>
+                <span className={`flex h-5 w-5 items-center justify-center rounded-full border ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border'}`}>
+                  {active && <Check className="h-3 w-3" />}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <SheetFooter disabled={!valid} label={`确认充值 ￥${finalAmount || 0}`} onClick={() => onConfirm(finalAmount, method)} />
+    </SheetShell>
+  )
+}
+
+/* ------------------------- 提现面板 ------------------------- */
+
+const WITHDRAW_METHODS = [
+  { key: '微信零钱', icon: Smartphone },
+  { key: '银行卡', icon: Building2 },
+]
+
+function WithdrawSheet({
+  open,
+  balance,
+  onClose,
+  onConfirm,
+}: {
+  open: boolean
+  balance: number
+  onClose: () => void
+  onConfirm: (amount: number, method: string) => void
+}) {
+  const [value, setValue] = useState('')
+  const [method, setMethod] = useState(WITHDRAW_METHODS[0].key)
+
+  if (!open) return null
+
+  const amount = Number(value || 0)
+  const tooMuch = amount > balance
+  const valid = amount > 0 && !tooMuch
+
+  return (
+    <SheetShell title="余额提现" onClose={onClose}>
+      <div className="px-4 py-4">
+        <div className="rounded-xl border border-border bg-card px-4 py-4">
+          <p className="text-[12px] text-muted-foreground">提现金额</p>
+          <div className="mt-1 flex items-center gap-2 border-b border-border pb-2">
+            <span className="text-2xl font-bold text-foreground">￥</span>
+            <input
+              value={value}
+              onChange={(e) => setValue(e.target.value.replace(/[^\d.]/g, ''))}
+              inputMode="decimal"
+              placeholder="0.00"
+              className="min-w-0 flex-1 bg-transparent font-mono text-2xl font-bold text-foreground outline-none placeholder:text-muted-foreground/50"
+            />
+          </div>
+          <div className="mt-2 flex items-center justify-between text-[12px]">
+            <span className={tooMuch ? 'text-destructive' : 'text-muted-foreground'}>
+              {tooMuch ? '超出可提现余额' : `可提现余额 ￥${balance.toFixed(2)}`}
+            </span>
+            <button type="button" onClick={() => setValue(String(balance))} className="font-medium text-primary">
+              全部提现
+            </button>
+          </div>
+        </div>
+
+        <p className="mb-2 mt-4 text-[12px] font-medium text-muted-foreground">到账方式</p>
+        <div className="flex flex-col gap-2">
+          {WITHDRAW_METHODS.map((m) => {
+            const Icon = m.icon
+            const active = method === m.key
+            return (
+              <button
+                type="button"
+                key={m.key}
+                onClick={() => setMethod(m.key)}
+                className={`flex items-center gap-3 rounded-xl border px-3.5 py-3 transition-colors ${
+                  active ? 'border-primary bg-primary/5' : 'border-border bg-card'
+                }`}
+              >
+                <Icon className="h-5 w-5 text-primary" />
+                <span className="flex-1 text-left text-sm font-medium text-foreground">{m.key}</span>
+                <span className={`flex h-5 w-5 items-center justify-center rounded-full border ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border'}`}>
+                  {active && <Check className="h-3 w-3" />}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <SheetFooter disabled={!valid} label="确认提现" onClick={() => onConfirm(amount, method)} />
+    </SheetShell>
+  )
+}
+
+/* ------------------------- 底部弹层外壳 ------------------------- */
+
+function SheetShell({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+  return (
+    <div className="absolute inset-0 z-50 flex flex-col justify-end">
+      <button type="button" aria-label="关闭" onClick={onClose} className="absolute inset-0 bg-foreground/40" />
+      <div className="relative z-10 flex max-h-[85%] flex-col rounded-t-2xl bg-background duration-200 animate-in slide-in-from-bottom">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <Wallet className="h-4 w-4 text-primary" />
+            {title}
+          </span>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="关闭"
+            className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="no-scrollbar flex-1 overflow-y-auto">{children}</div>
+      </div>
+    </div>
+  )
+}
+
+function SheetFooter({ disabled, label, onClick }: { disabled: boolean; label: string; onClick: () => void }) {
+  return (
+    <div className="border-t border-border bg-background px-4 py-3">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={onClick}
+        className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        {label}
+      </button>
     </div>
   )
 }
