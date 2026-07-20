@@ -18,6 +18,7 @@ type Overlay =
   | { kind: 'post' | 'idle' | 'news'; id: number }
   | { kind: 'notice' }
   | { kind: 'search' }
+  | { kind: 'publish' }
   | { kind: 'sub'; key: string }
 
 /**
@@ -40,8 +41,13 @@ export function HomeApp() {
   const pop = () => setStack((s) => s.slice(0, -1))
 
   const handleSwitch = (page: string) => {
+    // 发布以覆盖层形式打开（层级高于底部导航，避免提交栏被遮挡）
+    if (page === 'publish-pre') {
+      push({ kind: 'publish' })
+      return
+    }
     setStack([]) // 切换主 Tab 时清空覆盖层
-    setActiveTab(page === 'publish-pre' ? 'publish' : page)
+    setActiveTab(page)
   }
 
   const top = stack[stack.length - 1]
@@ -57,7 +63,6 @@ export function HomeApp() {
         />
       )}
       {activeTab === 'idle' && <IdlePage showToast={showToast} onOpenItem={(id) => push({ kind: 'idle', id })} />}
-      {activeTab === 'publish' && <PublishPage showToast={showToast} onDone={() => setActiveTab('home')} />}
       {activeTab === 'news' && <NewsPage showToast={showToast} onOpenArticle={(id) => push({ kind: 'news', id })} />}
       {activeTab === 'me' && <ProfilePage onOpenSub={(key) => push({ kind: 'sub', key })} />}
 
@@ -75,6 +80,7 @@ export function HomeApp() {
           {top.kind === 'search' && (
             <SearchPage onBack={pop} onOpenPost={(id) => push({ kind: 'post', id })} showToast={showToast} />
           )}
+          {top.kind === 'publish' && <PublishPage showToast={showToast} onDone={pop} />}
           {top.kind === 'sub' && (
             <ProfileSubPage sub={top.key} onBack={pop} onOpenPost={(id) => push({ kind: 'post', id })} showToast={showToast} />
           )}
