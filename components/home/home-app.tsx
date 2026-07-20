@@ -76,7 +76,7 @@ export function HomeApp() {
           onOpenSearch={() => push({ kind: 'search' })}
         />
       )}
-      {activeTab === 'idle' && <IdlePage showToast={showToast} onOpenItem={(id) => push({ kind: 'idle', id })} />}
+      {activeTab === 'idle' && <IdlePage onOpenItem={(id) => push({ kind: 'idle', id })} />}
       {activeTab === 'news' && <NewsPage showToast={showToast} onOpenArticle={(id) => push({ kind: 'news', id })} />}
       {activeTab === 'me' && <ProfilePage onOpenSub={(key) => push({ kind: 'sub', key })} />}
 

@@ -12,7 +12,6 @@ import {
   MessageSquare,
   Settings,
   Crown,
-  Settings2,
   type LucideIcon,
 } from 'lucide-react'
 import { profile, myToolMenu, type MenuItem } from '@/lib/app-data'
@@ -55,17 +54,7 @@ export function ProfilePage({ onOpenSub }: Props) {
           />
           <div className="relative flex items-center justify-between">
             <h1 className="text-lg font-bold tracking-wide text-white">我的</h1>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => onOpenSub('settings')}
-                aria-label="设置"
-                className="flex h-8 w-8 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/10"
-              >
-                <Settings2 className="h-5 w-5" />
-              </button>
-              <WechatCapsule variant="light" />
-            </div>
+            <WechatCapsule variant="light" />
           </div>
 
           <div className="relative mt-4 flex items-center gap-3">

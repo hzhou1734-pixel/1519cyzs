@@ -1,18 +1,17 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { MapPin, Flame, Plus } from 'lucide-react'
+import { MapPin, Flame } from 'lucide-react'
 import { idleCats, idleItems, type IdleItem } from '@/lib/app-data'
 import { PageHeader } from '@/components/shared/page-header'
 import { FilterChips } from '@/components/shared/filter-chips'
 import { EmptyState } from '@/components/shared/empty-state'
 
 type Props = {
-  showToast: (msg: string) => void
   onOpenItem: (id: number) => void
 }
 
-export function IdlePage({ showToast, onOpenItem }: Props) {
+export function IdlePage({ onOpenItem }: Props) {
   const [activeCat, setActiveCat] = useState('all')
 
   const filtered = useMemo(
@@ -22,20 +21,7 @@ export function IdlePage({ showToast, onOpenItem }: Props) {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
-      <PageHeader
-        title="闲置社区"
-        subtitle="餐饮设备二手流转 · 低价捡漏"
-        right={
-          <button
-            type="button"
-            onClick={() => showToast('发布闲置物品')}
-            className="flex items-center gap-1 rounded-full bg-accent px-3 py-1.5 text-xs font-bold text-accent-foreground shadow-sm transition-transform hover:scale-105 active:scale-95"
-          >
-            <Plus className="h-3.5 w-3.5" strokeWidth={2.6} />
-            发布
-          </button>
-        }
-      />
+      <PageHeader title="闲置社区" subtitle="餐饮设备二手流转 · 低价捡漏" />
 
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-20">
         <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">
