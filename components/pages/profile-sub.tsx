@@ -933,6 +933,10 @@ function FeedbackView({ showToast, onBack }: { showToast: (msg: string) => void;
 function SettingsView({ showToast }: { showToast: (msg: string) => void }) {
   const [push, setPush] = useState(true)
   const [privacy, setPrivacy] = useState(false)
+  const [view, setView] = useState<'root' | 'password' | 'about'>('root')
+
+  if (view === 'password') return <ChangePasswordView showToast={showToast} onBack={() => setView('root')} />
+  if (view === 'about') return <AboutView onBack={() => setView('root')} />
 
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
@@ -942,9 +946,9 @@ function SettingsView({ showToast }: { showToast: (msg: string) => void }) {
       </section>
 
       <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <LinkRow icon={Lock} label="修改密码" onClick={() => showToast('修改密码')} />
+        <LinkRow icon={Lock} label="修改密码" onClick={() => setView('password')} />
         <LinkRow icon={Trash2} label="清除缓存" value="12.4 MB" onClick={() => showToast('缓存已清除')} />
-        <LinkRow icon={BadgeCheck} label="关于万户优铺" value="v2.0.6" onClick={() => showToast('关于万户优铺 v2.0.6')} last />
+        <LinkRow icon={BadgeCheck} label="关于万户优铺" value="v2.0.6" onClick={() => setView('about')} last />
       </section>
 
       <button
@@ -955,6 +959,138 @@ function SettingsView({ showToast }: { showToast: (msg: string) => void }) {
         <LogOut className="h-4 w-4" />
         退出登录
       </button>
+    </div>
+  )
+}
+
+/* ------------------------- 修改密码 ------------------------- */
+
+function ChangePasswordView({ showToast, onBack }: { showToast: (msg: string) => void; onBack: () => void }) {
+  const [oldPwd, setOldPwd] = useState('')
+  const [newPwd, setNewPwd] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [show, setShow] = useState(false)
+
+  const pwdValid = newPwd.length >= 6 && newPwd.length <= 20
+  const match = confirm.length > 0 && confirm === newPwd
+  const canSubmit = oldPwd.length > 0 && pwdValid && match
+
+  const submit = () => {
+    if (!canSubmit) return
+    showToast('密码修改成功，请重新登录')
+    onBack()
+  }
+
+  return (
+    <div className="flex flex-col">
+      <SubTitleBar title="修改密码" onBack={onBack} />
+      <div className="flex flex-col gap-4 px-4 py-4">
+        <PwdField label="当前密码" value={oldPwd} onChange={setOldPwd} show={show} placeholder="请输入当前密码" />
+        <div>
+          <PwdField label="新密码" value={newPwd} onChange={setNewPwd} show={show} placeholder="6-20 位字符" />
+          {newPwd.length > 0 && !pwdValid && <p className="mt-1.5 text-[12px] text-destructive">新密码需为 6-20 位</p>}
+        </div>
+        <div>
+          <PwdField label="确认新密码" value={confirm} onChange={setConfirm} show={show} placeholder="请再次输入新密码" />
+          {confirm.length > 0 && !match && <p className="mt-1.5 text-[12px] text-destructive">两次输入的密码不一致</p>}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setShow((v) => !v)}
+          className="self-start text-[12px] font-medium text-primary"
+        >
+          {show ? '隐藏密码' : '显示密码'}
+        </button>
+
+        <button
+          type="button"
+          disabled={!canSubmit}
+          onClick={submit}
+          className="mt-1 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          确认修改
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function PwdField({
+  label,
+  value,
+  onChange,
+  show,
+  placeholder,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  show: boolean
+  placeholder: string
+}) {
+  return (
+    <div>
+      <p className="mb-2 text-sm font-semibold text-foreground">{label}</p>
+      <input
+        type={show ? 'text' : 'password'}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        maxLength={20}
+        className="w-full rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+      />
+    </div>
+  )
+}
+
+/* ------------------------- 关于万户优铺 ------------------------- */
+
+function AboutView({ onBack }: { onBack: () => void }) {
+  const links = ['用户服务协议', '隐私政策', '平台经营资质', '联系我们']
+  return (
+    <div className="flex flex-col">
+      <SubTitleBar title="关于万户优铺" onBack={onBack} />
+      <div className="flex flex-col items-center px-4 py-6">
+        <span className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary shadow-sm">
+          <span className="text-3xl font-bold text-primary-foreground">万</span>
+        </span>
+        <h2 className="mt-3 text-lg font-bold text-foreground">万户优铺</h2>
+        <p className="mt-1 text-[12px] text-muted-foreground">版本 v2.0.6</p>
+        <p className="mt-4 max-w-[18rem] text-center text-[13px] leading-relaxed text-muted-foreground">
+          万户优铺是专注于高校食堂、企业园区、医院餐厅等场景的餐饮商业信息服务平台，为档口招商、店铺转租、人才招聘、品牌加盟等提供精准对接，致力于打造真实、诚信的商业信息环境。
+        </p>
+      </div>
+
+      <section className="mx-3 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        {links.map((l, i) => (
+          <LinkRow key={l} icon={ShieldCheck} label={l} onClick={() => {}} last={i === links.length - 1} />
+        ))}
+      </section>
+
+      <p className="mt-6 px-4 text-center text-[11px] leading-relaxed text-muted-foreground">
+        © 2026 万户优铺 版权所有
+        <br />
+        湘ICP备2026000000号
+      </p>
+    </div>
+  )
+}
+
+/* ------------------------- 子页内标题栏 ------------------------- */
+
+function SubTitleBar({ title, onBack }: { title: string; onBack: () => void }) {
+  return (
+    <div className="flex items-center gap-2 border-b border-border bg-card px-3 py-3">
+      <button
+        type="button"
+        onClick={onBack}
+        aria-label="返回"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+      >
+        <ChevronRight className="h-5 w-5 rotate-180" />
+      </button>
+      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
     </div>
   )
 }
