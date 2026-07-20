@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react'
 import {
   BadgeCheck,
-  Wallet,
   Headphones,
   Phone,
   MessageSquare,
@@ -18,13 +17,21 @@ import {
   Plus,
   ArrowDownLeft,
   ArrowUpRight,
+  Search,
+  X,
+  Pencil,
+  ArrowUpToLine,
+  ArrowDownToLine,
+  Heart,
+  Star,
+  MapPin,
+  Clock,
   type LucideIcon,
 } from 'lucide-react'
-import { posts as seedPosts, type Post } from '@/lib/home-data'
+import { posts as seedPosts, type Post, formatNumber } from '@/lib/home-data'
 import { profile } from '@/lib/app-data'
 import { PageHeader } from '@/components/shared/page-header'
 import { EmptyState } from '@/components/shared/empty-state'
-import { InfoCard } from '@/components/home/info-card'
 
 type Props = {
   sub: string
@@ -49,13 +56,15 @@ const TITLES: Record<string, { title: string; subtitle?: string }> = {
 
 export function ProfileSubPage({ sub, onBack, onOpenPost, showToast }: Props) {
   const head = TITLES[sub] ?? { title: '详情' }
-  const isList = ['posts', 'favorites', 'likes', 'history'].includes(sub)
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
       <PageHeader title={head.title} subtitle={head.subtitle} onBack={onBack} />
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-24">
-        {isList && <PostList sub={sub} onOpenPost={onOpenPost} showToast={showToast} />}
+        {sub === 'posts' && <MyPostsView onOpenPost={onOpenPost} showToast={showToast} />}
+        {sub === 'favorites' && <MyFavoritesView onOpenPost={onOpenPost} showToast={showToast} />}
+        {sub === 'likes' && <MyLikesView onOpenPost={onOpenPost} showToast={showToast} />}
+        {sub === 'history' && <MyHistoryView onOpenPost={onOpenPost} showToast={showToast} />}
         {sub === 'verify' && <VerifyView showToast={showToast} />}
         {sub === 'wallet' && <WalletView showToast={showToast} />}
         {sub === 'service' && <ServiceView showToast={showToast} />}
@@ -68,46 +77,333 @@ export function ProfileSubPage({ sub, onBack, onOpenPost, showToast }: Props) {
   )
 }
 
-/* ------------------------- 列表类子页 ------------------------- */
+/* ------------------------- 子页内搜索框 ------------------------- */
 
-function PostList({ sub, onOpenPost, showToast }: { sub: string; onOpenPost: (id: number) => void; showToast: (msg: string) => void }) {
-  // 依据入口给出不同数据子集，模拟“我的发布/收藏/点赞/浏览”
-  const initial = useMemo<Post[]>(() => {
-    if (sub === 'posts') return seedPosts.filter((p) => p.username.includes('湖南大学') || p.id % 7 === 1).slice(0, 4)
-    if (sub === 'favorites') return seedPosts.filter((p) => p.userFaved)
-    if (sub === 'likes') return seedPosts.filter((p) => p.userLiked)
-    return seedPosts.slice(0, 6) // history
-  }, [sub])
+function SubSearch({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
+  return (
+    <div className="sticky top-0 z-10 bg-background px-3 py-2.5">
+      <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 shadow-sm">
+        <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+        <input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+        />
+        {value && (
+          <button type="button" onClick={() => onChange('')} aria-label="清空" className="shrink-0 text-muted-foreground hover:text-foreground">
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
 
-  const [list, setList] = useState<Post[]>(initial)
+/* ------------------------- 通用缩略图 ------------------------- */
 
-  const toggleLike = (id: number) =>
-    setList((prev) => prev.map((p) => (p.id === id ? { ...p, userLiked: !p.userLiked, likes: p.likes + (p.userLiked ? -1 : 1) } : p)))
-  const toggleFav = (id: number) =>
-    setList((prev) => prev.map((p) => (p.id === id ? { ...p, userFaved: !p.userFaved, favorites: p.favorites + (p.userFaved ? -1 : 1) } : p)))
-
-  if (list.length === 0) {
-    const emptyText: Record<string, string> = {
-      favorites: '还没有收藏任何信息，去首页看看吧',
-      likes: '还没有点赞任何信息',
-      history: '暂无浏览记录',
-      posts: '你还没有发布信息',
-    }
-    return <EmptyState desc={emptyText[sub]} />
+function Thumb({ post }: { post: Post }) {
+  if (post.images.length > 0) {
+    return (
+      <span className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+        <img src={post.images[0] || '/placeholder.svg'} alt={post.title} loading="lazy" className="h-full w-full object-cover" />
+      </span>
+    )
   }
+  return (
+    <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-[11px] font-medium text-primary">
+      {post.catLabel}
+    </span>
+  )
+}
+
+/* ------------------------- 我的发布 ------------------------- */
+
+type MyPost = Post & { status: 'on' | 'off' }
+
+function MyPostsView({ onOpenPost, showToast }: { onOpenPost: (id: number) => void; showToast: (msg: string) => void }) {
+  const [query, setQuery] = useState('')
+  const [list, setList] = useState<MyPost[]>(() =>
+    seedPosts.slice(0, 5).map((p, i) => ({ ...p, status: i === 1 ? 'off' : 'on' })),
+  )
+
+  const filtered = useMemo(
+    () => list.filter((p) => p.title.includes(query) || p.desc.includes(query)),
+    [list, query],
+  )
+
+  const toggleShelf = (id: number) =>
+    setList((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p
+        const next = p.status === 'on' ? 'off' : 'on'
+        showToast(next === 'on' ? '信息已上架' : '信息已下架')
+        return { ...p, status: next }
+      }),
+    )
+  const remove = (id: number) => {
+    setList((prev) => prev.filter((p) => p.id !== id))
+    showToast('已删除该信息')
+  }
+
+  return (
+    <>
+      <SubSearch value={query} onChange={setQuery} placeholder="搜索我发布的信息" />
+      {filtered.length === 0 ? (
+        <EmptyState desc={query ? '没有匹配的信息' : '你还没有发布信息'} />
+      ) : (
+        <div className="flex flex-col gap-3 px-3 pb-3 pt-1">
+          {filtered.map((post) => (
+            <div key={post.id} className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
+              <div onClick={() => onOpenPost(post.id)} className="flex cursor-pointer gap-3">
+                <Thumb post={post} />
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <div className="mb-1 flex items-start gap-2">
+                    <h3 className="line-clamp-2 flex-1 text-sm font-semibold leading-snug text-foreground">{post.title}</h3>
+                    <span
+                      className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-bold ${
+                        post.status === 'on' ? 'bg-primary-soft text-primary' : 'bg-muted text-muted-foreground'
+                      }`}
+                    >
+                      {post.status === 'on' ? '上架中' : '已下架'}
+                    </span>
+                  </div>
+                  <p className="mb-1 text-[11px] text-muted-foreground">
+                    {post.catLabel} · {post.publishDate}
+                  </p>
+                  <div className="mt-auto flex items-center gap-3 text-[11px] text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Eye className="h-3.5 w-3.5" />
+                      {formatNumber(post.views)}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Heart className="h-3.5 w-3.5" />
+                      {formatNumber(post.likes)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 flex items-center gap-2 border-t border-border pt-3">
+                <ActionBtn icon={Pencil} label="编辑" onClick={() => showToast('编辑信息')} />
+                <ActionBtn
+                  icon={post.status === 'on' ? ArrowDownToLine : ArrowUpToLine}
+                  label={post.status === 'on' ? '下架' : '上架'}
+                  onClick={() => toggleShelf(post.id)}
+                />
+                <ActionBtn icon={Trash2} label="删除" danger onClick={() => remove(post.id)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  )
+}
+
+function ActionBtn({ icon: Icon, label, onClick, danger }: { icon: LucideIcon; label: string; onClick: () => void; danger?: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex flex-1 items-center justify-center gap-1 rounded-lg py-1.5 text-xs font-medium transition-colors ${
+        danger ? 'text-destructive hover:bg-destructive/5' : 'text-muted-foreground hover:bg-muted'
+      }`}
+    >
+      <Icon className="h-3.5 w-3.5" />
+      {label}
+    </button>
+  )
+}
+
+/* ------------------------- 我的收藏 ------------------------- */
+
+function MyFavoritesView({ onOpenPost, showToast }: { onOpenPost: (id: number) => void; showToast: (msg: string) => void }) {
+  const [query, setQuery] = useState('')
+  const [list, setList] = useState<Post[]>(() => {
+    const faved = seedPosts.filter((p) => p.userFaved)
+    return faved.length > 0 ? faved : seedPosts.slice(2, 6)
+  })
+
+  const filtered = useMemo(
+    () => list.filter((p) => p.title.includes(query) || p.desc.includes(query)),
+    [list, query],
+  )
+
+  const unfav = (id: number) => {
+    setList((prev) => prev.filter((p) => p.id !== id))
+    showToast('已取消收藏')
+  }
+
+  return (
+    <>
+      <SubSearch value={query} onChange={setQuery} placeholder="搜索我收藏的信息" />
+      {filtered.length === 0 ? (
+        <EmptyState desc={query ? '没有匹配的信息' : '还没有收藏任何信息，去首页看看吧'} />
+      ) : (
+        <div className="flex flex-col gap-3 px-3 pb-3 pt-1">
+          {filtered.map((post) => (
+            <CompactCard
+              key={post.id}
+              post={post}
+              onOpen={() => onOpenPost(post.id)}
+              actionIcon={Star}
+              actionLabel="取消收藏"
+              onAction={() => unfav(post.id)}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  )
+}
+
+/* ------------------------- 我的点赞 ------------------------- */
+
+function MyLikesView({ onOpenPost, showToast }: { onOpenPost: (id: number) => void; showToast: (msg: string) => void }) {
+  const [list, setList] = useState<Post[]>(() => {
+    const liked = seedPosts.filter((p) => p.userLiked)
+    return liked.length > 0 ? liked : seedPosts.slice(0, 4)
+  })
+
+  // 取消点赞后即从「我的点赞」列表移除
+  const unlike = (id: number) => {
+    setList((prev) => prev.filter((p) => p.id !== id))
+    showToast('已取消点赞')
+  }
+
+  if (list.length === 0) return <EmptyState desc="还没有点赞任何信息" />
 
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
       {list.map((post) => (
-        <InfoCard
+        <CompactCard
           key={post.id}
           post={post}
-          onOpenDetail={onOpenPost}
-          onToggleLike={toggleLike}
-          onToggleFav={toggleFav}
-          onShare={(id) => showToast(`转发帖子 #${id}`)}
+          onOpen={() => onOpenPost(post.id)}
+          actionIcon={Heart}
+          actionLabel="取消点赞"
+          onAction={() => unlike(post.id)}
         />
       ))}
+    </div>
+  )
+}
+
+function CompactCard({
+  post,
+  onOpen,
+  actionIcon: ActionIcon,
+  actionLabel,
+  onAction,
+}: {
+  post: Post
+  onOpen: () => void
+  actionIcon: LucideIcon
+  actionLabel: string
+  onAction: () => void
+}) {
+  return (
+    <div className="flex gap-3 rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:shadow-md">
+      <div onClick={onOpen} className="flex min-w-0 flex-1 cursor-pointer gap-3">
+        <Thumb post={post} />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground">{post.title}</h3>
+          <div className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
+            <MapPin className="h-3 w-3 shrink-0" />
+            <span className="truncate">{post.location}</span>
+          </div>
+          <div className="mt-auto flex items-center gap-3 pt-1 text-[11px] text-muted-foreground">
+            <span className="rounded bg-muted px-1.5 py-0.5">{post.catLabel}</span>
+            <span className="flex items-center gap-1">
+              <Eye className="h-3.5 w-3.5" />
+              {formatNumber(post.views)}
+            </span>
+          </div>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onAction}
+        className="flex shrink-0 flex-col items-center justify-center gap-1 rounded-lg px-2 text-[11px] font-medium text-accent transition-colors hover:bg-accent-soft"
+      >
+        <ActionIcon className="h-4 w-4" fill="currentColor" />
+        {actionLabel}
+      </button>
+    </div>
+  )
+}
+
+/* ------------------------- 浏览历史（时间轴） ------------------------- */
+
+function MyHistoryView({ onOpenPost, showToast }: { onOpenPost: (id: number) => void; showToast: (msg: string) => void }) {
+  // 为演示分配浏览时间分组
+  const initial = useMemo(() => {
+    const src = seedPosts.slice(0, 7)
+    const buckets = ['今天', '今天', '今天', '昨天', '昨天', '更早', '更早']
+    const times = ['14:32', '11:05', '09:18', '20:47', '15:22', '07-16 18:30', '07-14 10:12']
+    return src.map((p, i) => ({ ...p, group: buckets[i], viewedAt: times[i] }))
+  }, [])
+
+  const [list, setList] = useState(initial)
+
+  const groups = useMemo(() => {
+    const order = ['今天', '昨天', '更早']
+    return order
+      .map((g) => ({ group: g, items: list.filter((it) => it.group === g) }))
+      .filter((g) => g.items.length > 0)
+  }, [list])
+
+  if (list.length === 0) return <EmptyState desc="暂无浏览记录" />
+
+  return (
+    <div className="px-3 py-3">
+      <div className="mb-3 flex justify-end">
+        <button
+          type="button"
+          onClick={() => {
+            setList([])
+            showToast('已清空浏览历史')
+          }}
+          className="flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:text-destructive"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+          清空
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-5">
+        {groups.map((g) => (
+          <div key={g.group}>
+            <div className="mb-2 flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-primary" />
+              <h2 className="text-[13px] font-bold text-foreground">{g.group}</h2>
+            </div>
+            <div className="relative pl-4">
+              {/* 时间轴竖线 */}
+              <span aria-hidden className="absolute bottom-1 left-[3px] top-1 w-px bg-border" />
+              <div className="flex flex-col gap-3">
+                {g.items.map((post) => (
+                  <div key={post.id} className="relative">
+                    {/* 时间轴节点 */}
+                    <span aria-hidden className="absolute -left-4 top-3 h-1.5 w-1.5 -translate-x-[2px] rounded-full bg-primary ring-2 ring-background" />
+                    <div
+                      onClick={() => onOpenPost(post.id)}
+                      className="flex cursor-pointer gap-3 rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:shadow-md"
+                    >
+                      <Thumb post={post} />
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground">{post.title}</h3>
+                        <p className="mt-1 text-[11px] text-muted-foreground">{post.catLabel}</p>
+                        <p className="mt-auto pt-1 text-[11px] text-muted-foreground">浏览于 {post.viewedAt}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
