@@ -43,6 +43,7 @@ type Props = {
   onBack: () => void
   onOpenPost: (id: number) => void
   showToast: (msg: string) => void
+  onLogout: () => void
 }
 
 const TITLES: Record<string, { title: string; subtitle?: string }> = {
@@ -59,7 +60,7 @@ const TITLES: Record<string, { title: string; subtitle?: string }> = {
   vip: { title: '商户会员' },
 }
 
-export function ProfileSubPage({ sub, onBack, onOpenPost, showToast }: Props) {
+export function ProfileSubPage({ sub, onBack, onOpenPost, showToast, onLogout }: Props) {
   const head = TITLES[sub] ?? { title: '详情' }
 
   return (
@@ -74,7 +75,7 @@ export function ProfileSubPage({ sub, onBack, onOpenPost, showToast }: Props) {
         {sub === 'wallet' && <WalletView showToast={showToast} />}
         {sub === 'service' && <ServiceView showToast={showToast} />}
         {sub === 'feedback' && <FeedbackView showToast={showToast} onBack={onBack} />}
-        {sub === 'settings' && <SettingsView showToast={showToast} />}
+        {sub === 'settings' && <SettingsView showToast={showToast} onLogout={onLogout} />}
         {sub === 'edit' && <EditProfileView showToast={showToast} onBack={onBack} />}
         {sub === 'vip' && <VipView showToast={showToast} />}
       </div>
@@ -930,7 +931,7 @@ function FeedbackView({ showToast, onBack }: { showToast: (msg: string) => void;
 
 /* ------------------------- 设置 ------------------------- */
 
-function SettingsView({ showToast }: { showToast: (msg: string) => void }) {
+function SettingsView({ showToast, onLogout }: { showToast: (msg: string) => void; onLogout: () => void }) {
   const [push, setPush] = useState(true)
   const [privacy, setPrivacy] = useState(false)
   const [view, setView] = useState<'root' | 'password' | 'about'>('root')
@@ -953,7 +954,7 @@ function SettingsView({ showToast }: { showToast: (msg: string) => void }) {
 
       <button
         type="button"
-        onClick={() => showToast('已退出登录')}
+        onClick={onLogout}
         className="mt-1 flex items-center justify-center gap-1.5 rounded-xl border border-destructive/30 bg-card py-3 text-sm font-bold text-destructive shadow-sm transition-colors hover:bg-destructive/5"
       >
         <LogOut className="h-4 w-4" />

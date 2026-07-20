@@ -13,6 +13,7 @@ import { NewsDetail } from '@/components/pages/news-detail'
 import { NoticePage } from '@/components/pages/notice-page'
 import { ProfileSubPage } from '@/components/pages/profile-sub'
 import { SearchPage } from '@/components/pages/search-page'
+import { LoginPage } from '@/components/pages/login-page'
 
 type Overlay =
   | { kind: 'post' | 'idle' | 'news'; id: number }
@@ -30,6 +31,8 @@ export function HomeApp() {
   const [stack, setStack] = useState<Overlay[]>([])
   const [toast, setToast] = useState<{ msg: string; show: boolean }>({ msg: '', show: false })
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [loginOpen, setLoginOpen] = useState(false)
 
   const showToast = (msg: string) => {
     setToast({ msg, show: true })
@@ -40,10 +43,21 @@ export function HomeApp() {
   const push = (o: Overlay) => setStack((s) => [...s, o])
   const pop = () => setStack((s) => s.slice(0, -1))
 
+  const requestLogin = () => setLoginOpen(true)
+
   const handleSwitch = (page: string) => {
     // 发布以覆盖层形式打开（层级高于底部导航，避免提交栏被遮挡）
     if (page === 'publish-pre') {
+      if (!loggedIn) {
+        requestLogin()
+        return
+      }
       push({ kind: 'publish' })
+      return
+    }
+    // 「我的」需登录后才能进入
+    if (page === 'me' && !loggedIn) {
+      requestLogin()
       return
     }
     setStack([]) // 切换主 Tab 时清空覆盖层
@@ -82,9 +96,35 @@ export function HomeApp() {
           )}
           {top.kind === 'publish' && <PublishPage showToast={showToast} onDone={pop} />}
           {top.kind === 'sub' && (
-            <ProfileSubPage sub={top.key} onBack={pop} onOpenPost={(id) => push({ kind: 'post', id })} showToast={showToast} />
+            <ProfileSubPage
+              sub={top.key}
+              onBack={pop}
+              onOpenPost={(id) => push({ kind: 'post', id })}
+              showToast={showToast}
+              onLogout={() => {
+                setLoggedIn(false)
+                setStack([])
+                setActiveTab('home')
+                showToast('已退出登录')
+              }}
+            />
           )}
         </div>
+      )}
+
+      {/* 登录页（最高层级，覆盖底部导航与其它覆盖层） */}
+      {loginOpen && (
+        <LoginPage
+          showToast={showToast}
+          onClose={() => setLoginOpen(false)}
+          onSuccess={(phone) => {
+            setLoggedIn(true)
+            setLoginOpen(false)
+            setStack([])
+            setActiveTab('me')
+            showToast(`欢迎回来，${phone.slice(0, 3)}****${phone.slice(7)}`)
+          }}
+        />
       )}
 
       {/* 全局 Toast */}
