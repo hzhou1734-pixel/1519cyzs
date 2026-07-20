@@ -17,13 +17,14 @@ type Props = {
   showToast: (msg: string) => void
   onOpenPost: (id: number) => void
   onOpenNotice: () => void
+  onOpenSearch: () => void
 }
 
 /**
  * 首页内容（客户已确认，视觉与交互保持不变）。
  * 从原 HomeApp 抽离，便于与其他 Tab 页面共用统一外壳。
  */
-export function HomeFeed({ showToast, onOpenPost, onOpenNotice }: Props) {
+export function HomeFeed({ showToast, onOpenPost, onOpenNotice, onOpenSearch }: Props) {
   const [list, setList] = useState<Post[]>(seedPosts)
   const [activeCat, setActiveCat] = useState('all')
   const [showTop, setShowTop] = useState(false)
@@ -78,7 +79,7 @@ export function HomeFeed({ showToast, onOpenPost, onOpenNotice }: Props) {
           <SearchBar
             cityName="长沙"
             onOpenCity={() => showToast('打开城市选择')}
-            onOpenSearch={() => showToast('打开搜索页')}
+            onOpenSearch={onOpenSearch}
             onFollow={() => showToast('扫码关注公众号')}
           />
         </div>

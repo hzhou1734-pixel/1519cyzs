@@ -12,10 +12,12 @@ import { IdleDetail } from '@/components/pages/idle-detail'
 import { NewsDetail } from '@/components/pages/news-detail'
 import { NoticePage } from '@/components/pages/notice-page'
 import { ProfileSubPage } from '@/components/pages/profile-sub'
+import { SearchPage } from '@/components/pages/search-page'
 
 type Overlay =
   | { kind: 'post' | 'idle' | 'news'; id: number }
   | { kind: 'notice' }
+  | { kind: 'search' }
   | { kind: 'sub'; key: string }
 
 /**
@@ -46,7 +48,14 @@ export function HomeApp() {
 
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden bg-background">
-      {activeTab === 'home' && <HomeFeed showToast={showToast} onOpenPost={(id) => push({ kind: 'post', id })} onOpenNotice={() => push({ kind: 'notice' })} />}
+      {activeTab === 'home' && (
+        <HomeFeed
+          showToast={showToast}
+          onOpenPost={(id) => push({ kind: 'post', id })}
+          onOpenNotice={() => push({ kind: 'notice' })}
+          onOpenSearch={() => push({ kind: 'search' })}
+        />
+      )}
       {activeTab === 'idle' && <IdlePage showToast={showToast} onOpenItem={(id) => push({ kind: 'idle', id })} />}
       {activeTab === 'publish' && <PublishPage showToast={showToast} onDone={() => setActiveTab('home')} />}
       {activeTab === 'news' && <NewsPage showToast={showToast} onOpenArticle={(id) => push({ kind: 'news', id })} />}
@@ -63,6 +72,9 @@ export function HomeApp() {
             <NewsDetail articleId={top.id} onBack={pop} onOpenArticle={(id) => push({ kind: 'news', id })} showToast={showToast} />
           )}
           {top.kind === 'notice' && <NoticePage onBack={pop} showToast={showToast} />}
+          {top.kind === 'search' && (
+            <SearchPage onBack={pop} onOpenPost={(id) => push({ kind: 'post', id })} showToast={showToast} />
+          )}
           {top.kind === 'sub' && (
             <ProfileSubPage sub={top.key} onBack={pop} onOpenPost={(id) => push({ kind: 'post', id })} showToast={showToast} />
           )}
