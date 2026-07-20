@@ -78,7 +78,7 @@ export function SearchPage({ onBack, onOpenPost, showToast }: Props) {
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <div className="flex flex-1 items-center gap-2 rounded-full bg-card py-2 pl-3 pr-2 shadow-md">
+            <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-card py-2 pl-3 pr-2 shadow-md">
               <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
               <input
                 ref={inputRef}
