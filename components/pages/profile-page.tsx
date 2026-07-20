@@ -15,7 +15,7 @@ import {
   Settings2,
   type LucideIcon,
 } from 'lucide-react'
-import { profile, myServiceMenu, myToolMenu, type MenuItem } from '@/lib/app-data'
+import { profile, myToolMenu, type MenuItem } from '@/lib/app-data'
 import { formatNumber } from '@/lib/home-data'
 import { StatusBar } from '@/components/home/status-bar'
 
@@ -114,9 +114,6 @@ export function ProfilePage({ onOpenSub }: Props) {
             </div>
             <span className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-xs font-bold text-accent-foreground">立即开通</span>
           </button>
-
-          {/* 我的服务 */}
-          <MenuGroup title="我的服务" items={myServiceMenu} onItem={(m) => onOpenSub(m.key)} />
 
           {/* 更多工具 */}
           <MenuGroup title="更多工具" items={myToolMenu} onItem={(m) => onOpenSub(m.key)} />
