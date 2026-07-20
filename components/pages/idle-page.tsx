@@ -9,9 +9,10 @@ import { EmptyState } from '@/components/shared/empty-state'
 
 type Props = {
   showToast: (msg: string) => void
+  onOpenItem: (id: number) => void
 }
 
-export function IdlePage({ showToast }: Props) {
+export function IdlePage({ showToast, onOpenItem }: Props) {
   const [activeCat, setActiveCat] = useState('all')
 
   const filtered = useMemo(
@@ -46,7 +47,7 @@ export function IdlePage({ showToast }: Props) {
         ) : (
           <div className="grid grid-cols-2 gap-3 px-3 py-1.5">
             {filtered.map((item) => (
-              <IdleCard key={item.id} item={item} onOpen={() => showToast(`查看闲置：${item.title}`)} />
+              <IdleCard key={item.id} item={item} onOpen={() => onOpenItem(item.id)} />
             ))}
           </div>
         )}

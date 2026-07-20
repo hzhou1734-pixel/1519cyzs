@@ -10,9 +10,10 @@ import { EmptyState } from '@/components/shared/empty-state'
 
 type Props = {
   showToast: (msg: string) => void
+  onOpenArticle: (id: number) => void
 }
 
-export function NewsPage({ showToast }: Props) {
+export function NewsPage({ showToast, onOpenArticle }: Props) {
   const [activeCat, setActiveCat] = useState('rec')
 
   const filtered = useMemo(
@@ -35,9 +36,9 @@ export function NewsPage({ showToast }: Props) {
           <EmptyState title="暂无资讯" desc="该分类下还没有文章" />
         ) : (
           <div className="flex flex-col gap-3 px-3 py-1.5">
-            {hero && <HeroCard article={hero} onOpen={() => showToast(`阅读：${hero.title}`)} />}
+            {hero && <HeroCard article={hero} onOpen={() => onOpenArticle(hero.id)} />}
             {rest.map((a) => (
-              <ArticleRow key={a.id} article={a} onOpen={() => showToast(`阅读：${a.title}`)} />
+              <ArticleRow key={a.id} article={a} onOpen={() => onOpenArticle(a.id)} />
             ))}
           </div>
         )}

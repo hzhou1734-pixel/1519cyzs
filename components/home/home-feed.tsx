@@ -15,13 +15,14 @@ import { FloatingButtons } from './floating-buttons'
 
 type Props = {
   showToast: (msg: string) => void
+  onOpenPost: (id: number) => void
 }
 
 /**
  * 首页内容（客户已确认，视觉与交互保持不变）。
  * 从原 HomeApp 抽离，便于与其他 Tab 页面共用统一外壳。
  */
-export function HomeFeed({ showToast }: Props) {
+export function HomeFeed({ showToast, onOpenPost }: Props) {
   const [list, setList] = useState<Post[]>(seedPosts)
   const [activeCat, setActiveCat] = useState('all')
   const [showTop, setShowTop] = useState(false)
@@ -99,7 +100,7 @@ export function HomeFeed({ showToast }: Props) {
                 <div key={post.id} className="flex flex-col gap-3">
                   <InfoCard
                     post={post}
-                    onOpenDetail={(id) => showToast(`查看详情 #${id}`)}
+                    onOpenDetail={onOpenPost}
                     onToggleLike={toggleLike}
                     onToggleFav={toggleFav}
                     onShare={(id) => showToast(`转发帖子 #${id}`)}
