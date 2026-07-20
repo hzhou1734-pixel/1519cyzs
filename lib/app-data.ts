@@ -1,0 +1,117 @@
+// 万户优铺 - 其余页面数据（沿用首页业务语义与图片资源，不改动首页数据）
+
+import { navItems } from '@/lib/home-data'
+
+/* ------------------------- 闲置社区 ------------------------- */
+
+export type IdleItem = {
+  id: number
+  title: string
+  price: number
+  original?: number
+  cond: string // 成色
+  image: string
+  location: string
+  seller: string
+  publishDate: string
+  wants: number // 想要人数
+  cat: string
+}
+
+export const idleCats: { cat: string; label: string }[] = [
+  { cat: 'all', label: '全部' },
+  { cat: 'equip', label: '厨房设备' },
+  { cat: 'table', label: '桌椅家具' },
+  { cat: 'fridge', label: '冷藏冷冻' },
+  { cat: 'tableware', label: '餐具器皿' },
+  { cat: 'other', label: '其他闲置' },
+]
+
+const IMG = {
+  equip: '/images/photo-equip.png',
+  shop: '/images/photo-shop.png',
+  canteen: '/images/photo-canteen.png',
+  drink: '/images/photo-drink.png',
+  sauce: '/images/photo-sauce.png',
+  training: '/images/photo-training.png',
+}
+
+export const idleItems: IdleItem[] = [
+  { id: 1, title: '九成新商用四门冰柜 制冷强劲', price: 1800, original: 4200, cond: '9成新', image: IMG.equip, location: '长沙 · 岳麓区', seller: '老张餐饮', publishDate: '2026-07-09', wants: 23, cat: 'fridge' },
+  { id: 2, title: '大型不锈钢操作台 4张打包出', price: 600, original: 1600, cond: '8成新', image: IMG.shop, location: '长沙 · 天心区', seller: '小陈奶茶', publishDate: '2026-07-09', wants: 15, cat: 'equip' },
+  { id: 3, title: '闲置餐桌椅一批 快餐店同款', price: 1200, original: 3000, cond: '7成新', image: IMG.canteen, location: '湘潭 · 雨湖区', seller: '味多多快餐', publishDate: '2026-07-08', wants: 31, cat: 'table' },
+  { id: 4, title: '商用双缸炸炉 几乎全新', price: 900, original: 2100, cond: '9成新', image: IMG.equip, location: '长沙 · 芙蓉区', seller: '炸鸡王', publishDate: '2026-07-08', wants: 18, cat: 'equip' },
+  { id: 5, title: '奶茶设备整套转让 封口机制冰机', price: 3500, original: 8000, cond: '8成新', image: IMG.drink, location: '长沙 · 岳麓区', seller: '茶小满', publishDate: '2026-07-07', wants: 42, cat: 'equip' },
+  { id: 6, title: '全套骨瓷餐具 未开封', price: 320, original: 700, cond: '全新', image: IMG.sauce, location: '长沙 · 望城区', seller: '湘味源', publishDate: '2026-07-07', wants: 9, cat: 'tableware' },
+  { id: 7, title: '商用冷藏工作台 保鲜效果好', price: 1500, original: 3600, cond: '8成新', image: IMG.equip, location: '长沙 · 高新区', seller: '园区食堂', publishDate: '2026-07-06', wants: 12, cat: 'fridge' },
+  { id: 8, title: '烘焙店闲置烤箱 三层六盘', price: 2200, original: 5000, cond: '9成新', image: IMG.training, location: '长沙 · 天心区', seller: '麦香烘焙', publishDate: '2026-07-06', wants: 27, cat: 'equip' },
+]
+
+/* ------------------------- 资讯 ------------------------- */
+
+export type NewsArticle = {
+  id: number
+  title: string
+  summary: string
+  cover?: string
+  source: string
+  publishDate: string
+  views: number
+  cat: string
+  hot?: boolean
+}
+
+export const newsCats: { cat: string; label: string }[] = [
+  { cat: 'rec', label: '推荐' },
+  { cat: 'policy', label: '政策解读' },
+  { cat: 'operate', label: '经营干货' },
+  { cat: 'case', label: '成功案例' },
+  { cat: 'trend', label: '行业趋势' },
+]
+
+export const newsArticles: NewsArticle[] = [
+  { id: 1, cat: 'policy', hot: true, title: '2026年高校食堂档口招商新规解读', summary: '教育部联合市场监管总局发布高校餐饮准入新规，明确档口经营者资质要求、食品安全责任及退出机制，对招商模式影响深远。', cover: '/images/photo-canteen.png', source: '万户优铺研究院', publishDate: '2026-07-09', views: 5230 },
+  { id: 2, cat: 'operate', title: '档口选址避坑指南：这5个位置千万别碰', summary: '结合上百个真实案例，总结食堂档口选址的常见误区，从人流动线、竞争密度到租金结构，手把手教你选到黄金档口。', cover: '/images/photo-shop.png', source: '餐饮老炮说', publishDate: '2026-07-08', views: 3890 },
+  { id: 3, cat: 'case', hot: true, title: '从1个档口到30家门店，他做对了什么', summary: '「味湘来」创始人自述创业历程，揭秘标准化运营体系如何支撑品牌快速扩张，以及高校团餐赛道的增长逻辑。', cover: '/images/photo-drink.png', source: '创业故事汇', publishDate: '2026-07-08', views: 6710 },
+  { id: 4, cat: 'trend', title: '2026餐饮供应链趋势：预制菜与酱料标准化', summary: '随着人力成本上升，标准化酱料与半成品正成为中小餐饮降本增效的关键，供应链上游迎来新一轮洗牌。', cover: '/images/photo-sauce.png', source: '中国餐饮报', publishDate: '2026-07-07', views: 2450 },
+  { id: 5, cat: 'operate', title: '一份让顾客回头的菜单该怎么设计', summary: '菜单不只是价目表，更是经营策略。从爆款结构、定价心理到视觉呈现，拆解高转化菜单的设计方法论。', source: '经营参谋', publishDate: '2026-07-07', views: 1980 },
+  { id: 6, cat: 'policy', title: '食品经营许可证办理全流程（2026版）', summary: '手把手梳理食品经营许可证办理所需材料、办理时限与常见驳回原因，创业开店必备实用指南。', source: '政务服务通', publishDate: '2026-07-06', views: 3120 },
+  { id: 7, cat: 'case', title: '大学城麻辣烫店年入20万的经营账本', summary: '一位大学城麻辣烫店主公开真实经营数据，从成本结构到引流打法，还原一家小店的盈利全貌。', cover: '/images/photo-training.png', source: '小店观察', publishDate: '2026-07-06', views: 4560 },
+]
+
+/* ------------------------- 我的 ------------------------- */
+
+export const profile = {
+  name: '陈师傅餐饮',
+  desc: '湖南大学食堂档口经营者',
+  avatar: '/images/avatar1.png',
+  verified: true,
+  vipLevel: '认证商户',
+  stats: {
+    posts: 12,
+    favorites: 34,
+    likes: 89,
+    views: 5680,
+  },
+}
+
+export type MenuItem = { key: string; label: string; icon: string; badge?: number }
+
+// 我的发布/收藏/点赞等业务入口（沿用底部导航与卡片交互语义）
+export const myServiceMenu: MenuItem[] = [
+  { key: 'posts', label: '我的发布', icon: 'FileText' },
+  { key: 'favorites', label: '我的收藏', icon: 'Star' },
+  { key: 'likes', label: '我的点赞', icon: 'Heart' },
+  { key: 'history', label: '浏览历史', icon: 'History' },
+]
+
+export const myToolMenu: MenuItem[] = [
+  { key: 'verify', label: '实名认证', icon: 'BadgeCheck' },
+  { key: 'wallet', label: '我的钱包', icon: 'Wallet' },
+  { key: 'service', label: '客服中心', icon: 'Headphones' },
+  { key: 'feedback', label: '意见反馈', icon: 'MessageSquare' },
+  { key: 'settings', label: '设置', icon: 'Settings' },
+]
+
+// 发布页可选分类（复用首页宫格导航语义）
+export const publishCats = navItems.map((n) => ({ cat: n.cat, label: n.label }))
