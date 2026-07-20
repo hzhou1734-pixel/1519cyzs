@@ -1,6 +1,7 @@
 'use client'
 
 import { MapPin, ChevronDown, Search } from 'lucide-react'
+import { WechatCapsule } from '@/components/shared/wechat-capsule'
 
 type Props = {
   cityName: string
@@ -25,6 +26,10 @@ export function SearchBar({ cityName, onOpenCity, onOpenSearch, onFollow }: Prop
       {/* 标题栏 */}
       <div className="relative mb-3 flex items-center justify-center">
         <h1 className="text-lg font-bold tracking-wide text-white">万户优铺</h1>
+        {/* 微信小程序右上角胶囊按钮 */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          <WechatCapsule variant="light" />
+        </div>
       </div>
 
       {/* 搜索行 */}
