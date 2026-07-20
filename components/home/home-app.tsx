@@ -101,6 +101,7 @@ export function HomeApp() {
               onBack={pop}
               onOpenPost={(id) => push({ kind: 'post', id })}
               showToast={showToast}
+              onOpenSub={(key) => push({ kind: 'sub', key })}
               onLogout={() => {
                 setLoggedIn(false)
                 setStack([])

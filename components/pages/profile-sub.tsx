@@ -44,6 +44,7 @@ type Props = {
   onOpenPost: (id: number) => void
   showToast: (msg: string) => void
   onLogout: () => void
+  onOpenSub: (key: string) => void
 }
 
 const TITLES: Record<string, { title: string; subtitle?: string }> = {
@@ -58,9 +59,11 @@ const TITLES: Record<string, { title: string; subtitle?: string }> = {
   settings: { title: '设置' },
   edit: { title: '编辑资料' },
   vip: { title: '商户会员' },
+  password: { title: '修改密码' },
+  about: { title: '关于万户优铺' },
 }
 
-export function ProfileSubPage({ sub, onBack, onOpenPost, showToast, onLogout }: Props) {
+export function ProfileSubPage({ sub, onBack, onOpenPost, showToast, onLogout, onOpenSub }: Props) {
   const head = TITLES[sub] ?? { title: '详情' }
 
   return (
@@ -75,9 +78,11 @@ export function ProfileSubPage({ sub, onBack, onOpenPost, showToast, onLogout }:
         {sub === 'wallet' && <WalletView showToast={showToast} />}
         {sub === 'service' && <ServiceView showToast={showToast} />}
         {sub === 'feedback' && <FeedbackView showToast={showToast} onBack={onBack} />}
-        {sub === 'settings' && <SettingsView showToast={showToast} onLogout={onLogout} />}
+        {sub === 'settings' && <SettingsView showToast={showToast} onLogout={onLogout} onOpenSub={onOpenSub} />}
         {sub === 'edit' && <EditProfileView showToast={showToast} onBack={onBack} />}
         {sub === 'vip' && <VipView showToast={showToast} />}
+        {sub === 'password' && <ChangePasswordView showToast={showToast} onBack={onBack} />}
+        {sub === 'about' && <AboutView />}
       </div>
     </div>
   )
@@ -931,13 +936,9 @@ function FeedbackView({ showToast, onBack }: { showToast: (msg: string) => void;
 
 /* ------------------------- 设置 ------------------------- */
 
-function SettingsView({ showToast, onLogout }: { showToast: (msg: string) => void; onLogout: () => void }) {
+function SettingsView({ showToast, onLogout, onOpenSub }: { showToast: (msg: string) => void; onLogout: () => void; onOpenSub: (key: string) => void }) {
   const [push, setPush] = useState(true)
   const [privacy, setPrivacy] = useState(false)
-  const [view, setView] = useState<'root' | 'password' | 'about'>('root')
-
-  if (view === 'password') return <ChangePasswordView showToast={showToast} onBack={() => setView('root')} />
-  if (view === 'about') return <AboutView onBack={() => setView('root')} />
 
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
@@ -947,9 +948,9 @@ function SettingsView({ showToast, onLogout }: { showToast: (msg: string) => voi
       </section>
 
       <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <LinkRow icon={Lock} label="修改密码" onClick={() => setView('password')} />
+        <LinkRow icon={Lock} label="修改密码" onClick={() => onOpenSub('password')} />
         <LinkRow icon={Trash2} label="清除缓存" value="12.4 MB" onClick={() => showToast('缓存已清除')} />
-        <LinkRow icon={BadgeCheck} label="关于万户优铺" value="v2.0.6" onClick={() => setView('about')} last />
+        <LinkRow icon={BadgeCheck} label="关于万户优铺" value="v2.0.6" onClick={() => onOpenSub('about')} last />
       </section>
 
       <button
@@ -984,7 +985,6 @@ function ChangePasswordView({ showToast, onBack }: { showToast: (msg: string) =>
 
   return (
     <div className="flex flex-col">
-      <SubTitleBar title="修改密码" onBack={onBack} />
       <div className="flex flex-col gap-4 px-4 py-4">
         <PwdField label="当前密码" value={oldPwd} onChange={setOldPwd} show={show} placeholder="请输入当前密码" />
         <div>
@@ -1047,11 +1047,10 @@ function PwdField({
 
 /* ------------------------- 关于万户优铺 ------------------------- */
 
-function AboutView({ onBack }: { onBack: () => void }) {
+function AboutView() {
   const links = ['用户服务协议', '隐私政策', '平台经营资质', '联系我们']
   return (
     <div className="flex flex-col">
-      <SubTitleBar title="关于万户优铺" onBack={onBack} />
       <div className="flex flex-col items-center px-4 py-6">
         <span className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary shadow-sm">
           <span className="text-3xl font-bold text-primary-foreground">万</span>
@@ -1074,24 +1073,6 @@ function AboutView({ onBack }: { onBack: () => void }) {
         <br />
         湘ICP备2026000000号
       </p>
-    </div>
-  )
-}
-
-/* ------------------------- 子页内标题栏 ------------------------- */
-
-function SubTitleBar({ title, onBack }: { title: string; onBack: () => void }) {
-  return (
-    <div className="flex items-center gap-2 border-b border-border bg-card px-3 py-3">
-      <button
-        type="button"
-        onClick={onBack}
-        aria-label="返回"
-        className="flex h-8 w-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
-      >
-        <ChevronRight className="h-5 w-5 rotate-180" />
-      </button>
-      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
     </div>
   )
 }
