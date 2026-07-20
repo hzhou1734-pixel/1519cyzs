@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import { StatusBar } from '@/components/home/status-bar'
+import { WechatCapsule } from '@/components/shared/wechat-capsule'
 
 type Props = {
   title: string
@@ -42,7 +43,7 @@ export function PageHeader({ title, subtitle, onBack, right }: Props) {
             <h1 className="text-lg font-bold tracking-wide text-white">{title}</h1>
             {subtitle && <p className="mt-0.5 text-[11px] text-white/70">{subtitle}</p>}
           </div>
-          {right && <div className="absolute right-0 flex items-center">{right}</div>}
+          <div className="absolute right-0 flex items-center">{right ?? <WechatCapsule variant="light" />}</div>
         </div>
       </div>
     </div>
