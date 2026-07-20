@@ -5,6 +5,7 @@ import { MapPin, Flame } from 'lucide-react'
 import { idleCats, idleItems, type IdleItem } from '@/lib/app-data'
 import { PageHeader } from '@/components/shared/page-header'
 import { FilterChips } from '@/components/shared/filter-chips'
+import { SearchInput } from '@/components/shared/search-input'
 import { EmptyState } from '@/components/shared/empty-state'
 
 type Props = {
@@ -13,11 +14,14 @@ type Props = {
 
 export function IdlePage({ onOpenItem }: Props) {
   const [activeCat, setActiveCat] = useState('all')
+  const [query, setQuery] = useState('')
 
-  const filtered = useMemo(
-    () => (activeCat === 'all' ? idleItems : idleItems.filter((i) => i.cat === activeCat)),
-    [activeCat],
-  )
+  const filtered = useMemo(() => {
+    const byCat = activeCat === 'all' ? idleItems : idleItems.filter((i) => i.cat === activeCat)
+    const q = query.trim().toLowerCase()
+    if (!q) return byCat
+    return byCat.filter((i) => i.title.toLowerCase().includes(q) || i.location.toLowerCase().includes(q))
+  }, [activeCat, query])
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
@@ -25,11 +29,12 @@ export function IdlePage({ onOpenItem }: Props) {
 
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-20">
         <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">
+          <SearchInput value={query} onChange={setQuery} placeholder="搜索闲置物品、地点" />
           <FilterChips chips={idleCats} active={activeCat} onChange={setActiveCat} />
         </div>
 
         {filtered.length === 0 ? (
-          <EmptyState title="暂无闲置物品" desc="该分类下还没有物品，换个分类看看吧" />
+          <EmptyState title={query ? '未找到相关物品' : '暂无闲置物品'} desc={query ? '换个关键词试试吧' : '该分类下还没有物品，换个分类看看吧'} />
         ) : (
           <div className="grid grid-cols-2 gap-3 px-3 py-1.5">
             {filtered.map((item) => (

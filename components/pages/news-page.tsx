@@ -6,6 +6,7 @@ import { newsCats, newsArticles, type NewsArticle } from '@/lib/app-data'
 import { formatNumber } from '@/lib/home-data'
 import { PageHeader } from '@/components/shared/page-header'
 import { FilterChips } from '@/components/shared/filter-chips'
+import { SearchInput } from '@/components/shared/search-input'
 import { EmptyState } from '@/components/shared/empty-state'
 
 type Props = {
@@ -15,11 +16,19 @@ type Props = {
 
 export function NewsPage({ showToast, onOpenArticle }: Props) {
   const [activeCat, setActiveCat] = useState('rec')
+  const [query, setQuery] = useState('')
 
-  const filtered = useMemo(
-    () => (activeCat === 'rec' ? newsArticles : newsArticles.filter((a) => a.cat === activeCat)),
-    [activeCat],
-  )
+  const filtered = useMemo(() => {
+    const byCat = activeCat === 'rec' ? newsArticles : newsArticles.filter((a) => a.cat === activeCat)
+    const q = query.trim().toLowerCase()
+    if (!q) return byCat
+    return byCat.filter(
+      (a) =>
+        a.title.toLowerCase().includes(q) ||
+        a.summary.toLowerCase().includes(q) ||
+        a.source.toLowerCase().includes(q),
+    )
+  }, [activeCat, query])
 
   const [hero, ...rest] = filtered
 
@@ -29,11 +38,12 @@ export function NewsPage({ showToast, onOpenArticle }: Props) {
 
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-20">
         <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">
+          <SearchInput value={query} onChange={setQuery} placeholder="搜索资讯标题、来源" />
           <FilterChips chips={newsCats} active={activeCat} onChange={setActiveCat} />
         </div>
 
         {filtered.length === 0 ? (
-          <EmptyState title="暂无资讯" desc="该分类下还没有文章" />
+          <EmptyState title={query ? '未找到相关资讯' : '暂无资讯'} desc={query ? '换个关键词试试吧' : '该分类下还没有文章'} />
         ) : (
           <div className="flex flex-col gap-3 px-3 py-1.5">
             {hero && <HeroCard article={hero} onOpen={() => onOpenArticle(hero.id)} />}
