@@ -72,7 +72,6 @@ export function ProfilePage({ onOpenSub }: Props) {
                   </span>
                 )}
               </div>
-              <p className="mt-1 truncate text-[12px] text-white/70">{profile.desc}</p>
             </div>
             <button
               type="button"
