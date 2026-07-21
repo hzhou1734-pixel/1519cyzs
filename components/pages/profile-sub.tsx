@@ -1233,16 +1233,8 @@ function FeedbackView({ showToast, onBack }: { showToast: (msg: string) => void;
 /* ------------------------- 设置 ------------------------- */
 
 function SettingsView({ showToast, onLogout, onOpenSub }: { showToast: (msg: string) => void; onLogout: () => void; onOpenSub: (key: string) => void }) {
-  const [push, setPush] = useState(true)
-  const [privacy, setPrivacy] = useState(false)
-
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
-      <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <ToggleRow icon={Bell} label="推送��知" on={push} onToggle={() => setPush((v) => !v)} />
-        <ToggleRow icon={Eye} label="隐藏浏览足迹" on={privacy} onToggle={() => setPrivacy((v) => !v)} last />
-      </section>
-
       <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <LinkRow icon={Lock} label="修改密码" onClick={() => onOpenSub('password')} />
         <LinkRow icon={Trash2} label="清除缓存" value="12.4 MB" onClick={() => showToast('缓存已清除')} />
