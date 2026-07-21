@@ -25,6 +25,12 @@ const TAG_COLORS = [
   'bg-amber-50 text-amber-700',
 ]
 
+const POST_COMMENTS: { id: number; name: string; avatar: string; text: string; date: string; likes: number }[] = [
+  { id: 1, name: '小吃摊主老王', avatar: '/images/avatar2.png', text: '位置不错，请问租金可以谈吗？转让费包含哪些设备？', date: '2天前', likes: 12 },
+  { id: 2, name: '创业小张', avatar: '/images/avatar3.png', text: '已私信，方便的话想约个时间去实地看看。', date: '1天前', likes: 5 },
+  { id: 3, name: '餐饮老李', avatar: '/images/avatar4.png', text: '这个档口人流量怎么样？周边有没有同类竞争？', date: '5小时前', likes: 3 },
+]
+
 type Props = {
   postId: number
   onBack: () => void
@@ -55,7 +61,7 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false }: Props) 
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
       <PageHeader title="信息详情" onBack={onBack} />
 
-      <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-24">
+      <div className={`no-scrollbar flex-1 overflow-y-auto overflow-x-hidden ${isOwn ? 'pb-6' : 'pb-24'}`}>
         {/* 发布者 */}
         <div className="flex items-center gap-2.5 border-b border-border bg-card px-4 py-3.5">
           <span className="h-11 w-11 shrink-0 overflow-hidden rounded-full ring-1 ring-border">
@@ -148,33 +154,67 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false }: Props) 
           <Stat icon={Share2} label="转发" value={post.shares} />
         </div>
 
+        {/* 用户评论 */}
+        <section className="mt-2 bg-card px-4 py-4">
+          <h2 className="mb-3 flex items-center gap-1.5 text-sm font-bold text-foreground">
+            用户评论
+            <span className="text-[12px] font-normal text-muted-foreground">({POST_COMMENTS.length})</span>
+          </h2>
+          <ul className="flex flex-col">
+            {POST_COMMENTS.map((c, i) => (
+              <li key={c.id} className={`flex gap-2.5 py-3 ${i !== POST_COMMENTS.length - 1 ? 'border-b border-border' : ''}`}>
+                <span className="h-8 w-8 shrink-0 overflow-hidden rounded-full ring-1 ring-border">
+                  <img src={c.avatar || '/placeholder.svg'} alt={`${c.name}的头像`} className="h-full w-full object-cover" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="truncate text-[13px] font-semibold text-foreground">{c.name}</span>
+                    <span className="shrink-0 text-[11px] text-muted-foreground">{c.date}</span>
+                  </div>
+                  <p className="mt-0.5 text-[13px] leading-relaxed text-foreground/90">{c.text}</p>
+                  <button
+                    type="button"
+                    onClick={() => showToast('已点赞评论')}
+                    className="mt-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground transition-colors hover:text-destructive"
+                  >
+                    <Heart className="h-3 w-3" />
+                    {c.likes}
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         {/* 安全提示 */}
         <div className="mx-4 mt-3 rounded-lg border border-border bg-muted/50 px-3 py-2.5 text-[11px] leading-relaxed text-muted-foreground">
           温馨提示：交易请核实对方资质，切勿在未见面、未核验的情况下支付定金，谨防诈骗。
         </div>
       </div>
 
-      {/* 底部操作栏 */}
-      <div className="flex items-center gap-2 border-t border-border bg-card px-3 py-2.5">
-        <ActionIcon icon={Heart} label={String(formatNumber(post.likes))} active={post.userLiked} activeColor="text-destructive" onClick={toggleLike} />
-        <ActionIcon icon={Star} label={String(formatNumber(post.favorites))} active={post.userFaved} activeColor="text-accent" onClick={toggleFav} />
-        <button
-          type="button"
-          onClick={() => showToast('发起在线咨询')}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-primary py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft"
-        >
-          <MessageCircle className="h-4 w-4" />
-          在线咨询
-        </button>
-        <button
-          type="button"
-          onClick={() => showToast(`拨打电话 ${post.phone}`)}
-          className="flex flex-[1.2] items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-95"
-        >
-          <Phone className="h-4 w-4" />
-          {post.phone}
-        </button>
-      </div>
+      {/* 底部操作栏（自己发布的信息不显示联系入口） */}
+      {!isOwn && (
+        <div className="flex items-center gap-2 border-t border-border bg-card px-3 py-2.5">
+          <ActionIcon icon={Heart} label={String(formatNumber(post.likes))} active={post.userLiked} activeColor="text-destructive" onClick={toggleLike} />
+          <ActionIcon icon={Star} label={String(formatNumber(post.favorites))} active={post.userFaved} activeColor="text-accent" onClick={toggleFav} />
+          <button
+            type="button"
+            onClick={() => showToast('发起在线咨询')}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-primary py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft"
+          >
+            <MessageCircle className="h-4 w-4" />
+            在线咨询
+          </button>
+          <button
+            type="button"
+            onClick={() => showToast(`拨打电话 ${post.phone}`)}
+            className="flex flex-[1.2] items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-95"
+          >
+            <Phone className="h-4 w-4" />
+            {post.phone}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
