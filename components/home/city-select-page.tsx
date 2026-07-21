@@ -11,20 +11,17 @@ type Props = {
   onClose: () => void
 }
 
-const HOT_CITIES = ['长沙市', '武汉市', '广州市', '深圳市', '南昌市', '株洲市']
+const HOT_CITIES = ['长沙市', '株洲市', '湘潭市', '衡阳市', '岳阳市', '常德市']
 
 export function CitySelectPage({ currentCity, onSelect, onClose }: Props) {
   const [keyword, setKeyword] = useState('')
 
-  // 按省份分组的城市列表
-  const grouped = useMemo(
-    () =>
-      regions.map((p) => ({
-        province: p.name,
-        cities: (p.children ?? []).map((c) => c.name),
-      })),
-    [],
-  )
+  // 仅展示湖南省内城市
+  const grouped = useMemo(() => {
+    const hunan = regions.find((p) => p.name === '湖南省')
+    if (!hunan) return []
+    return [{ province: hunan.name, cities: (hunan.children ?? []).map((c) => c.name) }]
+  }, [])
 
   const filtered = useMemo(() => {
     const kw = keyword.trim()

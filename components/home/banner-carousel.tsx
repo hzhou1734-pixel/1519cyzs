@@ -15,10 +15,8 @@ export function BannerCarousel() {
     <div className="px-3 pb-1.5 pt-3">
       <div className="relative aspect-[5/2] overflow-hidden rounded-xl shadow-md shadow-primary/10">
         {banners.map((b, i) => (
-          <button
-            type="button"
+          <div
             key={b.id}
-            onClick={() => onSelect(b.toast)}
             aria-label={b.title}
             className={`absolute inset-0 h-full w-full text-left transition-opacity duration-700 ${
               i === idx ? 'z-10 opacity-100' : 'z-0 opacity-0'
@@ -33,7 +31,7 @@ export function BannerCarousel() {
               <h3 className="text-balance text-lg font-bold leading-tight text-white drop-shadow">{b.title}</h3>
               <p className="text-xs font-medium text-white/85">{b.subtitle}</p>
             </div>
-          </button>
+          </div>
         ))}
 
         <div className="absolute bottom-2.5 left-1/2 z-20 flex -translate-x-1/2 gap-1.5">
