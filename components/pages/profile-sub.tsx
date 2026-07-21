@@ -750,7 +750,7 @@ function OrdersView({ showToast }: { showToast: (msg: string) => void }) {
             return (
               <div key={o.id} className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
                 <div className="flex items-center justify-between border-b border-border pb-2.5">
-                  <span className="text-[11px] text-muted-foreground">订单号 {o.id}</span>
+                  <span className="text-[11px] text-muted-foreground">订单��� {o.id}</span>
                   <span className={`text-[12px] font-semibold ${st.className}`}>{st.label}</span>
                 </div>
                 <div className="flex items-start gap-3 py-2.5">
@@ -818,7 +818,7 @@ function WalletView({ showToast }: { showToast: (msg: string) => void }) {
   const [records, setRecords] = useState<WalletRecord[]>([
     { id: 1, title: '信息置顶服务', date: '2026-07-08', amount: -30, type: 'out' },
     { id: 2, title: '账户充值', date: '2026-07-05', amount: 200, type: 'in' },
-    { id: 3, title: '会员开通', date: '2026-06-20', amount: -99, type: 'out' },
+    { id: 3, title: '解锁手机号码', date: '2026-06-20', amount: -5, type: 'out' },
   ])
 
   const handleRecharge = (amount: number, method: string) => {
@@ -869,14 +869,14 @@ function WalletView({ showToast }: { showToast: (msg: string) => void }) {
         <div className="flex flex-col">
           {records.map((r, i) => (
             <div key={r.id} className={`flex items-center gap-3 px-4 py-3 ${i !== records.length - 1 ? 'border-b border-border' : ''}`}>
-              <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${r.type === 'in' ? 'bg-primary-soft text-primary' : 'bg-accent-soft text-accent'}`}>
+              <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${r.type === 'in' ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'}`}>
                 {r.type === 'in' ? <ArrowDownLeft className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-foreground">{r.title}</p>
                 <p className="text-[11px] text-muted-foreground">{r.date}</p>
               </div>
-              <span className={`font-mono text-sm font-bold ${r.type === 'in' ? 'text-primary' : 'text-foreground'}`}>
+              <span className={`font-mono text-sm font-bold ${r.type === 'in' ? 'text-destructive' : 'text-success'}`}>
                 {r.amount > 0 ? `+${r.amount}` : r.amount}
               </span>
             </div>
