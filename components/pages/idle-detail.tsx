@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MapPin, Flame, ShieldCheck, Phone, MessageCircle, Heart, Store } from 'lucide-react'
+import { MapPin, Flame, ShieldCheck, Phone, Lock, Store } from 'lucide-react'
 import { idleItems, type IdleItem } from '@/lib/app-data'
 import { PageHeader } from '@/components/shared/page-header'
 import { EmptyState } from '@/components/shared/empty-state'
@@ -12,6 +12,11 @@ type Props = {
   showToast: (msg: string) => void
 }
 
+// 解锁卖家手机号的费用（元）
+const UNLOCK_FEE = 2
+// 卖家手机号（解锁后展示）
+const SELLER_PHONE = '138 8888 6666'
+
 // 依据成色给出一段合理的补充描述（原型数据无长描述，按语义生成）
 function buildDesc(item: IdleItem) {
   return `${item.title}，成色${item.cond}，功能完好可正常使用。因店铺调整/升级设备闲置转让，诚心出售，价格可小刀。支持当面验货，${item.location}自提为主，大件可协助联系物流。有意者请电话或在线联系，非诚勿扰。`
@@ -19,7 +24,7 @@ function buildDesc(item: IdleItem) {
 
 export function IdleDetail({ itemId, onBack, showToast }: Props) {
   const item = idleItems.find((i) => i.id === itemId)
-  const [wanted, setWanted] = useState(false)
+  const [unlocked, setUnlocked] = useState(false)
 
   if (!item) {
     return (
@@ -86,13 +91,6 @@ export function IdleDetail({ itemId, onBack, showToast }: Props) {
             </div>
             <span className="text-[11px] text-muted-foreground">{item.publishDate} 发布</span>
           </div>
-          <button
-            type="button"
-            onClick={() => showToast(`进入 ${item.seller} 的店铺`)}
-            className="shrink-0 rounded-full border border-primary px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-          >
-            进店
-          </button>
         </div>
 
         {/* 描述 */}
@@ -107,36 +105,29 @@ export function IdleDetail({ itemId, onBack, showToast }: Props) {
       </div>
 
       {/* 底部操作栏 */}
-      <div className="flex items-center gap-2 border-t border-border bg-card px-3 py-2.5">
-        <button
-          type="button"
-          onClick={() => {
-            setWanted((w) => !w)
-            showToast(wanted ? '已取消想要' : '已加入想要清单')
-          }}
-          className={`flex w-14 shrink-0 flex-col items-center gap-0.5 text-[10px] transition-colors ${
-            wanted ? 'text-accent' : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          <Heart className="h-5 w-5" fill={wanted ? 'currentColor' : 'none'} />
-          想要
-        </button>
-        <button
-          type="button"
-          onClick={() => showToast('发起在线咨询')}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-primary py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft"
-        >
-          <MessageCircle className="h-4 w-4" />
-          咨询卖家
-        </button>
-        <button
-          type="button"
-          onClick={() => showToast('拨打电话联系卖家')}
-          className="flex flex-[1.2] items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-95"
-        >
-          <Phone className="h-4 w-4" />
-          电话联系
-        </button>
+      <div className="flex items-center border-t border-border bg-card px-3 py-2.5">
+        {unlocked ? (
+          <button
+            type="button"
+            onClick={() => showToast(`拨打电话 ${SELLER_PHONE}`)}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.01] active:scale-[0.99]"
+          >
+            <Phone className="h-4 w-4" />
+            {SELLER_PHONE}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setUnlocked(true)
+              showToast('支付成功，已解锁卖家手机号')
+            }}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.01] active:scale-[0.99]"
+          >
+            <Lock className="h-4 w-4" />
+            {`付费 ${UNLOCK_FEE} 元解锁手机号`}
+          </button>
+        )}
       </div>
     </div>
   )
