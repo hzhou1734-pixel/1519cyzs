@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Wallet, Layers, Check } from 'lucide-react'
+import { Wallet, Layers, Check, Coins } from 'lucide-react'
 import { PageHeader } from '@/components/shared/page-header'
+import { profile } from '@/lib/app-data'
 
 type Props = {
   amount: number
@@ -27,9 +28,20 @@ const METHODS: { key: string; label: string; desc: string; icon: React.Component
   { key: 'combo', label: '组合支付', desc: '余额 + 微信组合支付', icon: Layers, color: 'text-primary' },
 ]
 
+const POINTS_PER_YUAN = 100 // 100 积分抵扣 1 元
+
 export function PaymentPage({ amount, label, onBack, onSuccess, showToast }: Props) {
   const [method, setMethod] = useState('balance')
-  const amountText = `¥${amount.toFixed(2)}`
+  const [usePoints, setUsePoints] = useState(false)
+
+  const balance = profile.stats.balance
+  const points = profile.stats.points
+  // 积分最多可抵扣金额（不超过订单金额）
+  const pointsDeductible = Math.min(points / POINTS_PER_YUAN, amount)
+  const deduction = usePoints ? pointsDeductible : 0
+  const payable = Math.max(amount - deduction, 0)
+
+  const amountText = `¥${payable.toFixed(2)}`
 
   const pay = () => {
     showToast('支付成功，已置顶发布')
@@ -48,6 +60,32 @@ export function PaymentPage({ amount, label, onBack, onSuccess, showToast }: Pro
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 py-4">
+        {/* 积分抵扣 */}
+        <button
+          type="button"
+          onClick={() => setUsePoints((v) => !v)}
+          aria-pressed={usePoints}
+          className="mb-4 flex w-full items-center gap-3 rounded-xl border border-border bg-card px-3.5 py-3.5 text-left"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-accent">
+            <Coins className="h-5 w-5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold text-foreground">积分抵扣</span>
+            <span className="block text-[12px] text-muted-foreground">
+              当前剩余 <span className="font-semibold text-foreground">{points}</span> 积分，可抵扣{' '}
+              <span className="font-semibold text-accent">¥{pointsDeductible.toFixed(2)}</span>
+            </span>
+          </span>
+          <span
+            className={`relative h-6 w-10 shrink-0 rounded-full transition-colors ${usePoints ? 'bg-primary' : 'bg-muted-foreground/30'}`}
+          >
+            <span
+              className={`absolute top-0.5 h-5 w-5 rounded-full bg-background shadow transition-all ${usePoints ? 'left-[1.125rem]' : 'left-0.5'}`}
+            />
+          </span>
+        </button>
+
         <p className="mb-2 px-1 text-[13px] font-medium text-muted-foreground">选择支付方式</p>
         <div className="flex flex-col gap-2.5">
           {METHODS.map((m) => {
@@ -67,7 +105,15 @@ export function PaymentPage({ amount, label, onBack, onSuccess, showToast }: Pro
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-bold text-foreground">{m.label}</span>
-                  <span className="block text-[12px] text-muted-foreground">{m.desc}</span>
+                  <span className="block text-[12px] text-muted-foreground">
+                    {m.key === 'balance' ? (
+                      <>
+                        当前余额 <span className="font-semibold text-foreground">¥{balance.toFixed(2)}</span>
+                      </>
+                    ) : (
+                      m.desc
+                    )}
+                  </span>
                 </span>
                 <span
                   className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-colors ${
