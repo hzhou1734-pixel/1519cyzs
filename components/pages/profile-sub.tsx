@@ -457,7 +457,7 @@ function PointsView() {
                 <p className="truncate text-sm font-medium text-foreground">{r.title}</p>
                 <p className="text-[11px] text-muted-foreground">{r.date}</p>
               </div>
-              <span className={`font-mono text-sm font-bold ${r.amount > 0 ? 'text-primary' : 'text-foreground'}`}>
+              <span className={`font-mono text-sm font-bold ${r.amount > 0 ? 'text-destructive' : 'text-primary'}`}>
                 {r.amount > 0 ? `+${r.amount}` : r.amount}
               </span>
             </div>
@@ -575,7 +575,7 @@ function NotifyView({ showToast }: { showToast: (msg: string) => void }) {
   const readAll = () => {
     if (!hasUnread) return
     setNotices((prev) => prev.map((n) => ({ ...n, unread: false })))
-    showToast('已全部标为已读')
+    showToast('已全部标为已���')
   }
 
   return (
