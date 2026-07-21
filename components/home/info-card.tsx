@@ -40,7 +40,7 @@ export function InfoCard({ post, onOpenDetail, onToggleLike, onToggleFav, onShar
           <div className="flex items-center gap-1.5">
             <span className="truncate text-sm font-semibold text-foreground">{post.username}</span>
             {post.verified && (
-              <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium text-primary">
+              <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-gold-soft px-1.5 py-0.5 text-[10px] font-medium text-gold">
                 <BadgeCheck className="h-3 w-3" />
                 平台认证
               </span>
