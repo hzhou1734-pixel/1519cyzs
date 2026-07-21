@@ -12,6 +12,8 @@ import { CategoryTabs } from './category-tabs'
 import { InfoCard } from './info-card'
 import { AdCard } from './ad-card'
 import { FloatingButtons } from './floating-buttons'
+import { CitySelectPage } from './city-select-page'
+import { QrDialog, CallDialog } from './home-modals'
 
 type Props = {
   showToast: (msg: string) => void
@@ -28,6 +30,11 @@ export function HomeFeed({ showToast, onOpenPost, onOpenNotice, onOpenSearch }: 
   const [list, setList] = useState<Post[]>(seedPosts)
   const [activeCat, setActiveCat] = useState('all')
   const [showTop, setShowTop] = useState(false)
+  const [city, setCity] = useState('长沙市')
+  const [cityOpen, setCityOpen] = useState(false)
+  const [followOpen, setFollowOpen] = useState(false)
+  const [serviceOpen, setServiceOpen] = useState(false)
+  const [callOpen, setCallOpen] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -77,10 +84,10 @@ export function HomeFeed({ showToast, onOpenPost, onOpenNotice, onOpenSearch }: 
         <div className="sticky top-0 z-30">
           <StatusBar />
           <SearchBar
-            cityName="长沙"
-            onOpenCity={() => showToast('打开城市选择')}
+            cityName={city}
+            onOpenCity={() => setCityOpen(true)}
             onOpenSearch={onOpenSearch}
-            onFollow={() => showToast('扫码关注公众号')}
+            onFollow={() => setFollowOpen(true)}
           />
         </div>
 
@@ -119,10 +126,40 @@ export function HomeFeed({ showToast, onOpenPost, onOpenNotice, onOpenSearch }: 
 
       <FloatingButtons
         showBackToTop={showTop}
-        onCustomerService={() => showToast('联系在线客服')}
-        onCall={() => showToast('拨打客服电话')}
+        onCustomerService={() => setServiceOpen(true)}
+        onCall={() => setCallOpen(true)}
         onBackToTop={() => scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
       />
+
+      {/* 城市选择页 */}
+      {cityOpen && <CitySelectPage currentCity={city} onSelect={setCity} onClose={() => setCityOpen(false)} />}
+
+      {/* 关注公众号弹窗 */}
+      <QrDialog
+        open={followOpen}
+        onClose={() => setFollowOpen(false)}
+        title="关注公众号"
+        subtitle="扫码关注「万户优铺」公众号，获取最新商铺资讯"
+        image="/images/official-account-qr.png"
+        imageAlt="万户优铺公众号二维码"
+        tip="微信扫一扫 · 关注公众号"
+        tone="primary"
+      />
+
+      {/* 在线客服（微信）弹窗 */}
+      <QrDialog
+        open={serviceOpen}
+        onClose={() => setServiceOpen(false)}
+        title="微信客服"
+        subtitle="扫码添加客服微信，1 对 1 为你解答"
+        image="/images/service-wechat-qr.png"
+        imageAlt="客服微信二维码"
+        tip="微信扫一扫 · 添加在线客服"
+        tone="wechat"
+      />
+
+      {/* 电话客服弹窗 */}
+      <CallDialog open={callOpen} onClose={() => setCallOpen(false)} phone="400-888-6666" />
     </div>
   )
 }
