@@ -12,6 +12,7 @@ import {
   Phone,
   MessageCircle,
   Clock,
+  Lock,
 } from 'lucide-react'
 import { posts, formatNumber, type Post } from '@/lib/home-data'
 import { PageHeader } from '@/components/shared/page-header'
@@ -37,9 +38,13 @@ type Props = {
   showToast: (msg: string) => void
   /** 是否为当前用户自己发布的信息（自己的信息不显示关注按钮） */
   isOwn?: boolean
+  /** 手机号是否已付费解锁 */
+  phoneUnlocked?: boolean
+  /** 触发付费解锁手机号 */
+  onUnlockPhone?: () => void
 }
 
-export function PostDetail({ postId, onBack, showToast, isOwn = false }: Props) {
+export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlocked = false, onUnlockPhone }: Props) {
   const source = posts.find((p) => p.id === postId)
   const [post, setPost] = useState<Post | undefined>(source)
 
@@ -205,14 +210,25 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false }: Props) 
             <MessageCircle className="h-4 w-4" />
             在线咨询
           </button>
-          <button
-            type="button"
-            onClick={() => showToast(`拨打电话 ${post.phone}`)}
-            className="flex flex-[1.2] items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-95"
-          >
-            <Phone className="h-4 w-4" />
-            {post.phone}
-          </button>
+          {phoneUnlocked ? (
+            <button
+              type="button"
+              onClick={() => showToast(`拨打电话 ${post.phone}`)}
+              className="flex flex-[1.2] items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-95"
+            >
+              <Phone className="h-4 w-4" />
+              {post.phone}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onUnlockPhone?.()}
+              className="flex flex-[1.2] items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-95"
+            >
+              <Lock className="h-4 w-4" />
+              解锁手机号
+            </button>
+          )}
         </div>
       )}
     </div>
