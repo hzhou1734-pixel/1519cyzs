@@ -556,13 +556,13 @@ function InviteView({ showToast }: { showToast: (msg: string) => void }) {
 function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () => void; showToast: (msg: string) => void }) {
   return (
     <div
-      className="absolute inset-0 z-50 flex flex-col overflow-y-auto bg-black/60 px-6 py-5 backdrop-blur-sm"
+      className="absolute inset-0 z-50 flex flex-col justify-center overflow-y-auto bg-black/60 px-6 py-5 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-label="邀请海报"
       onClick={onClose}
     >
-      <div className="flex shrink-0 justify-end">
+      <div className="mb-2 flex shrink-0 justify-end">
         <button
           type="button"
           onClick={onClose}
@@ -573,10 +573,10 @@ function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () 
         </button>
       </div>
 
-      <div className="mt-16 w-full" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full shrink-0" onClick={(e) => e.stopPropagation()}>
         {/* 海报卡片 */}
         <div className="overflow-hidden rounded-2xl bg-card shadow-xl">
-          <div className="relative bg-gradient-to-br from-primary to-[#16304f] px-5 pb-10 pt-12 text-center">
+          <div className="relative bg-gradient-to-br from-primary to-[#16304f] px-5 pb-16 pt-20 text-center">
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 opacity-20"
@@ -587,15 +587,15 @@ function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () 
             </span>
             <p className="relative mt-3 text-base font-bold text-white">{profile.name}</p>
             <p className="relative mt-1 text-[12px] text-white/70">邀请你加入万户优铺</p>
-            <p className="relative mt-6 text-xl font-bold leading-snug text-white text-balance">
+            <p className="relative mt-8 text-xl font-bold leading-snug text-white text-balance">
               高校餐饮商业信息平台
             </p>
             <p className="relative mt-2 text-[12px] text-white/80">注册即得 50 积分，档口转让 · 招商一站搞定</p>
           </div>
 
-          <div className="flex items-center gap-3 px-5 py-6">
-            <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg border border-border bg-muted text-primary">
-              <QrCode className="h-14 w-14" />
+          <div className="flex items-center gap-3 px-5 py-9">
+            <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg border border-border bg-muted text-primary">
+              <QrCode className="h-16 w-16" />
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[12px] text-muted-foreground">扫码或输入邀请码注册</p>
@@ -606,7 +606,7 @@ function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () 
         </div>
       </div>
 
-      <div className="mt-auto grid w-full shrink-0 grid-cols-2 gap-3 pt-5" onClick={(e) => e.stopPropagation()}>
+      <div className="mt-4 grid w-full shrink-0 grid-cols-2 gap-3" onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
           onClick={() => showToast('海报已保存到相册')}
