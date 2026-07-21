@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Phone, ShieldCheck, X, Check, ChevronLeft, User } from 'lucide-react'
+import { Phone, ShieldCheck, X, Check, ChevronLeft } from 'lucide-react'
 import { StatusBar } from '@/components/home/status-bar'
 
 type Props = {
@@ -24,14 +24,6 @@ export function LoginPage({ onClose, onSuccess, showToast }: Props) {
           setAgreed={setAgreed}
           onClose={onClose}
           showToast={showToast}
-          onWechat={() => {
-            if (!agreed) {
-              showToast('请先阅读并勾选下方协议')
-              return
-            }
-            // 网页原型：模拟微信授权返回的手机号
-            onSuccess('13800138000')
-          }}
           onPhone={() => {
             if (!agreed) {
               showToast('请先阅读并勾选下方协议')
@@ -47,20 +39,18 @@ export function LoginPage({ onClose, onSuccess, showToast }: Props) {
   )
 }
 
-/* ------------------------- 微信授权登录 ------------------------- */
+/* ------------------------- 登录入口 ------------------------- */
 
 function AuthorizeView({
   agreed,
   setAgreed,
   onClose,
-  onWechat,
   onPhone,
   showToast,
 }: {
   agreed: boolean
   setAgreed: (v: boolean) => void
   onClose: () => void
-  onWechat: () => void
   onPhone: () => void
   showToast: (msg: string) => void
 }) {
@@ -91,26 +81,18 @@ function AuthorizeView({
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
           <p className="text-sm font-semibold text-foreground">「万户优铺」申请获取以下信息</p>
           <div className="mt-3 flex flex-col gap-3">
-            <AuthItem icon={User} title="你的公开信息" desc="头像、昵称" />
-            <AuthItem icon={Phone} title="你的手机号" desc="用于账号注册与登录" />
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-foreground">你的手机号</p>
+              <p className="text-[12px] text-muted-foreground">用于账号注册与登录</p>
+            </div>
           </div>
         </div>
 
-        {/* 主按钮：微信授权登录 */}
-        <button
-          type="button"
-          onClick={onWechat}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#07C160] py-3 text-sm font-bold text-white shadow-sm transition-all hover:brightness-105 active:scale-[0.99]"
-        >
-          <WechatGlyph className="h-5 w-5" />
-          微信授权登录
-        </button>
-
-        {/* 手机号快捷登录 */}
+        {/* 主按钮：手机号快捷登录 */}
         <button
           type="button"
           onClick={onPhone}
-          className="mt-3 w-full rounded-xl border border-border bg-card py-3 text-sm font-bold text-foreground transition-colors hover:bg-muted"
+          className="mt-6 w-full rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:brightness-110 active:scale-[0.99]"
         >
           手机号快捷登录
         </button>
@@ -147,30 +129,6 @@ function AuthorizeView({
         </div>
       </div>
     </>
-  )
-}
-
-function AuthItem({ icon: Icon, title, desc }: { icon: typeof User; title: string; desc: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
-        <Icon className="h-5 w-5" />
-      </span>
-      <div className="min-w-0">
-        <p className="text-sm font-medium text-foreground">{title}</p>
-        <p className="text-[12px] text-muted-foreground">{desc}</p>
-      </div>
-    </div>
-  )
-}
-
-/* 微信图标（简化字形，纯装饰） */
-function WechatGlyph({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
-      <path d="M9.5 4C5.36 4 2 6.86 2 10.38c0 1.98 1.06 3.75 2.72 4.94L4 18l2.5-1.32c.9.26 1.85.4 2.85.4h.35a5.6 5.6 0 0 1-.2-1.48c0-3.2 3.06-5.8 6.83-5.8.24 0 .47.01.7.03C16.2 6.3 13.13 4 9.5 4Zm-2.6 4.3a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9Zm5.2 0a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9Z" />
-      <path d="M22 15.7c0-2.7-2.6-4.9-5.8-4.9s-5.8 2.2-5.8 4.9 2.6 4.9 5.8 4.9c.72 0 1.4-.1 2.05-.3L20.5 21l-.5-1.7c1.2-.9 2-2.16 2-3.6Zm-7.7-1a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Zm3.9 0a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Z" />
-    </svg>
   )
 }
 
