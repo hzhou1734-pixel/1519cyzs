@@ -88,15 +88,6 @@ export function ProfilePage({ onOpenSub }: Props) {
                   </span>
                 )}
               </button>
-              {/* 设置 */}
-              <button
-                type="button"
-                onClick={() => onOpenSub('settings')}
-                aria-label="设置"
-                className="flex h-9 w-9 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/15"
-              >
-                <Settings className="h-5 w-5" />
-              </button>
             </div>
           </div>
         </div>
