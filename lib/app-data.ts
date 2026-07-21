@@ -93,6 +93,7 @@ export const profile = {
     favorites: 34,
     likes: 89,
     views: 5680,
+    balance: 71,
   },
 }
 
@@ -107,11 +108,9 @@ export const myServiceMenu: MenuItem[] = [
 ]
 
 export const myToolMenu: MenuItem[] = [
-  { key: 'points', label: '我的积分', icon: 'Coins' },
   { key: 'invite', label: '邀请好友', icon: 'UserPlus' },
-  { key: 'notify', label: '消息通知', icon: 'Megaphone', badge: 3 },
   { key: 'orders', label: '订单中心', icon: 'Receipt' },
-  { key: 'wallet', label: '我的钱包', icon: 'Wallet' },
+  { key: 'history', label: '浏览记录', icon: 'History' },
   { key: 'service', label: '客服中心', icon: 'Headphones' },
   { key: 'feedback', label: '意见反馈', icon: 'MessageSquare' },
   { key: 'settings', label: '设置', icon: 'Settings' },
