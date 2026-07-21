@@ -485,7 +485,6 @@ function InviteView({ showToast }: { showToast: (msg: string) => void }) {
     <div className="flex flex-col gap-3 px-3 py-3">
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-accent to-[#c85a12] p-5 text-center shadow-sm">
         <p className="relative text-sm font-bold text-white">邀请好友，双方各得 50 积分</p>
-        <p className="relative mt-1 text-[12px] text-white/80">好友首次下单，你再得 10 元现金奖励</p>
         <div className="relative mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur">
           <span className="text-[12px] text-white/80">邀请码</span>
           <span className="font-mono text-base font-bold tracking-widest text-white">{code}</span>
