@@ -130,7 +130,7 @@ export const publishSubCats: Record<string, string[]> = {
   shop: ['沿街旺铺', '商业街铺', '综合体铺', '社区商铺'],
   brand: ['餐饮加盟', '饮品加盟', '小吃加盟', '中餐加盟'],
   training: ['面食培训', '饮品培训', '小吃培训', '烧烤培训'],
-  sauce: ['底料供应', '酱���代工', '原料批发', '设备供应'],
+  sauce: ['底料供应', '酱料代工', '原料批发', '设备供应'],
 }
 
 // 发布页预设标签（可多选，也支持自定义添加）
@@ -170,7 +170,7 @@ export const regions: Region[] = [
     name: '湖南省',
     children: [
       { name: '长沙市', children: [{ name: '岳麓区' }, { name: '天心区' }, { name: '芙蓉区' }, { name: '雨花区' }, { name: '开福区' }, { name: '望城区' }, { name: '高新区' }] },
-      { name: '湘潭市', children: [{ name: '雨湖区' }, { name: '岳��区' }, { name: '湘潭县' }] },
+      { name: '湘潭市', children: [{ name: '雨湖区' }, { name: '岳塘区' }, { name: '湘潭县' }] },
       { name: '株洲市', children: [{ name: '天元区' }, { name: '芦淞区' }, { name: '荷塘区' }] },
       { name: '衡阳市', children: [{ name: '雁峰区' }, { name: '石鼓区' }, { name: '蒸湘区' }] },
     ],

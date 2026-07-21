@@ -227,7 +227,7 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
             {POST_COMMENTS.map((c, i) => (
               <li key={c.id} className={`flex gap-2.5 py-3 ${i !== POST_COMMENTS.length - 1 ? 'border-b border-border' : ''}`}>
                 <span className="h-8 w-8 shrink-0 overflow-hidden rounded-full ring-1 ring-border">
-                  <img src={c.avatar || '/placeholder.svg'} alt={`${c.name}的��像`} className="h-full w-full object-cover" />
+                  <img src={c.avatar || '/placeholder.svg'} alt={`${c.name}的头像`} className="h-full w-full object-cover" />
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">

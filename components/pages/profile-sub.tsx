@@ -294,7 +294,7 @@ function MyLikesView({ onOpenPost, showToast }: { onOpenPost: (id: number) => vo
     return liked.length > 0 ? liked : seedPosts.slice(0, 4)
   })
 
-  // 取消点赞后���从「我的点赞」列表移除
+  // 取消点赞后会从「我的点赞」列表移除
   const unlike = (id: number) => {
     setList((prev) => prev.filter((p) => p.id !== id))
     showToast('已取消点赞')
@@ -368,7 +368,7 @@ function MyHistoryView({ onOpenPost, showToast }: { onOpenPost: (id: number) => 
   // 为演示分配浏览时间分组
   const initial = useMemo(() => {
     const src = seedPosts.slice(0, 7)
-    const buckets = ['今天', '今天', '今天', '昨天', '昨天', '���早', '更早']
+    const buckets = ['今天', '今天', '今天', '昨天', '昨天', '更早', '更早']
     const times = ['14:32', '11:05', '09:18', '20:47', '15:22', '07-16 18:30', '07-14 10:12']
     return src.map((p, i) => ({ ...p, group: buckets[i], viewedAt: times[i] }))
   }, [])
@@ -641,7 +641,7 @@ function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () 
 type Notice = { id: number; type: 'system' | 'interact' | 'order'; title: string; body: string; time: string; unread?: boolean }
 
 const NOTICES: Notice[] = [
-  { id: 1, type: 'system', title: '发布审核通过', body: '你发布的「大学���旺铺档口转让」已通过审核，现已对外展示。', time: '10分钟前', unread: true },
+  { id: 1, type: 'system', title: '发布审核通过', body: '你发布的「大学城旺铺档口转让」已通过审核，现已对外展示。', time: '10分钟前', unread: true },
   { id: 2, type: 'interact', title: '收到新的咨询', body: '有用户对你发布的档口招商信息发起了电话咨询。', time: '2小时前', unread: true },
   { id: 3, type: 'order', title: '订单支付成功', body: '信息置顶服务（7天）已开通，将优先展示在分类首屏。', time: '昨天', unread: true },
   { id: 4, type: 'system', title: '平台公告', body: '暑期档口招商季开启，认证商户置顶服务限时 8 折。', time: '2天前' },
@@ -661,7 +661,7 @@ function NotifyView({ showToast }: { showToast: (msg: string) => void }) {
   const readAll = () => {
     if (!hasUnread) return
     setNotices((prev) => prev.map((n) => ({ ...n, unread: false })))
-    showToast('已全部标为已���')
+    showToast('已全部标为已读')
   }
 
   return (
@@ -724,7 +724,7 @@ type Order = {
 
 const ORDERS: Order[] = [
   { id: 'WH20260720001', title: '信息置顶服务（7天）', desc: '大学城旺铺档口转让', amount: 63, date: '2026-07-20 10:24', status: 'unpaid', pointsUsed: 200, pointsAmount: 20, balancePaid: 10, wechatPaid: 33 },
-  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户�����属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid', pointsUsed: 100, pointsAmount: 10, balancePaid: 39, wechatPaid: 50 },
+  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户专属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid', pointsUsed: 100, pointsAmount: 10, balancePaid: 39, wechatPaid: 50 },
   { id: 'WH20260705003', title: '信息置顶服务（3天）', desc: '二手四门冰柜转让', amount: 30, date: '2026-07-05 09:12', status: 'paid', pointsUsed: 300, pointsAmount: 30, balancePaid: 0, wechatPaid: 0 },
   { id: 'WH20260620004', title: '刷新推广服务', desc: '奶茶店转让信息', amount: 10, date: '2026-06-20 20:41', status: 'closed', pointsUsed: 0, pointsAmount: 0, balancePaid: 10, wechatPaid: 0 },
 ]
@@ -1387,7 +1387,7 @@ function EditProfileView({ showToast, onBack }: { showToast: (msg: string) => vo
           <img src={profile.avatar || '/placeholder.svg'} alt="头像" className="h-full w-full object-cover" />
         </span>
         <button type="button" onClick={() => showToast('更换头像')} className="text-xs font-medium text-primary">
-          更换头像
+                更换头像
         </button>
       </div>
 
