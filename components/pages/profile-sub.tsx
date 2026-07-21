@@ -29,7 +29,6 @@ import {
   Wallet,
   Smartphone,
   Check,
-  Coins,
   Share2,
   UserPlus,
   Receipt,
@@ -79,7 +78,7 @@ export function ProfileSubPage({ sub, onBack, onOpenPost, showToast, onLogout, o
         {sub === 'favorites' && <MyFavoritesView onOpenPost={onOpenPost} showToast={showToast} />}
         {sub === 'likes' && <MyLikesView onOpenPost={onOpenPost} showToast={showToast} />}
         {sub === 'history' && <MyHistoryView onOpenPost={onOpenPost} showToast={showToast} />}
-        {sub === 'points' && <PointsView showToast={showToast} />}
+        {sub === 'points' && <PointsView />}
         {sub === 'invite' && <InviteView showToast={showToast} />}
         {sub === 'notify' && <NotifyView showToast={showToast} />}
         {sub === 'orders' && <OrdersView showToast={showToast} />}
@@ -429,33 +428,13 @@ function MyHistoryView({ onOpenPost, showToast }: { onOpenPost: (id: number) => 
 
 /* ------------------------- 我的积分 ------------------------- */
 
-const POINT_TASKS: { key: string; label: string; desc: string; reward: number; done?: boolean }[] = [
-  { key: 'sign', label: '每日签到', desc: '连续签到额外奖励', reward: 5 },
-  { key: 'publish', label: '发布信息', desc: '每日首次发布', reward: 20 },
-  { key: 'share', label: '分享给好友', desc: '每日可完成 3 次', reward: 10 },
-  { key: 'profile', label: '完善资料', desc: '一次性任务', reward: 30, done: true },
-]
-
 const POINT_LOGS: { id: number; title: string; date: string; amount: number }[] = [
-  { id: 1, title: '每日签到', date: '2026-07-20', amount: 5 },
-  { id: 2, title: '发布档口招商信息', date: '2026-07-19', amount: 20 },
   { id: 3, title: '积分兑换 · 置顶券', date: '2026-07-18', amount: -100 },
   { id: 4, title: '邀请好友注册', date: '2026-07-16', amount: 50 },
 ]
 
-function PointsView({ showToast }: { showToast: (msg: string) => void }) {
-  const [points, setPoints] = useState(1280)
-  const [signed, setSigned] = useState(false)
-
-  const doTask = (key: string, reward: number, done?: boolean) => {
-    if (done) return
-    if (key === 'sign') {
-      if (signed) return
-      setSigned(true)
-    }
-    setPoints((p) => p + reward)
-    showToast(`任务完成，积分 +${reward}`)
-  }
+function PointsView() {
+  const points = 1280
 
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
@@ -467,46 +446,7 @@ function PointsView({ showToast }: { showToast: (msg: string) => void }) {
         />
         <p className="relative text-[12px] text-white/70">当前积分</p>
         <p className="relative mt-1 font-mono text-3xl font-bold text-white">{points}</p>
-        <button
-          type="button"
-          onClick={() => showToast('进入积分商城')}
-          className="relative mt-4 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-accent-foreground transition-transform active:scale-95"
-        >
-          积分兑换
-        </button>
       </div>
-
-      <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <h2 className="px-4 pb-1 pt-3 text-[12px] font-semibold text-muted-foreground">积分任务</h2>
-        <div className="flex flex-col">
-          {POINT_TASKS.map((t, i) => {
-            const finished = t.done || (t.key === 'sign' && signed)
-            return (
-              <div key={t.key} className={`flex items-center gap-3 px-4 py-3.5 ${i !== POINT_TASKS.length - 1 ? 'border-b border-border' : ''}`}>
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-soft text-accent">
-                  <Coins className="h-4 w-4" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-foreground">{t.label}</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {t.desc} · +{t.reward}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  disabled={finished}
-                  onClick={() => doTask(t.key, t.reward, t.done)}
-                  className={`shrink-0 rounded-full px-3 py-1.5 text-[12px] font-bold transition-colors ${
-                    finished ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground hover:brightness-110'
-                  }`}
-                >
-                  {finished ? '已完成' : t.key === 'sign' ? '签到' : '去完成'}
-                </button>
-              </div>
-            )
-          })}
-        </div>
-      </section>
 
       <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <h2 className="px-4 pb-1 pt-3 text-[12px] font-semibold text-muted-foreground">积分明细</h2>
@@ -1006,7 +946,7 @@ const FAQS: { q: string; a: string[] }[] = [
     q: '如何发布档口招商信息？',
     a: [
       '在首页底部点击「发布」按钮进入发布页，选择「档口招商」分类。',
-      '依次填写标题、详细描述、所在地区、联系电话，并可上传门���实景图片、添加标签。',
+      '依次填写标题、详细���述、所在地区、联系电话，并可上传门���实景图片、添加标签。',
       '信息核对无误后点击「确认发布」，平台将在 1 个工作日内完成审核，通过后即对外展示。',
     ],
   },
