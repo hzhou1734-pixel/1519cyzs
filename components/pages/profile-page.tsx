@@ -11,7 +11,6 @@ import {
   Headphones,
   MessageSquare,
   Settings,
-  Crown,
   type LucideIcon,
 } from 'lucide-react'
 import { profile, myToolMenu, type MenuItem } from '@/lib/app-data'
@@ -95,20 +94,6 @@ export function ProfilePage({ onOpenSub }: Props) {
             <StatCell label="点赞" value={stats.likes} onClick={() => onOpenSub('likes')} />
             <StatCell label="浏览" value={stats.views} onClick={() => onOpenSub('history')} />
           </div>
-
-          {/* 会员权益横幅 */}
-          <button
-            type="button"
-            onClick={() => onOpenSub('vip')}
-            className="flex items-center gap-3 overflow-hidden rounded-xl border border-accent/25 bg-accent-soft px-4 py-3 text-left transition-colors hover:bg-accent/10"
-          >
-            <Crown className="h-6 w-6 shrink-0 text-accent" />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold text-foreground">开通商户会员</p>
-              <p className="text-[11px] text-muted-foreground">置顶展示 · 认证标识 · 专属客服</p>
-            </div>
-            <span className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-xs font-bold text-accent-foreground">立即开通</span>
-          </button>
 
           {/* 更多工具 */}
           <MenuGroup title="更多工具" items={myToolMenu} onItem={(m) => onOpenSub(m.key)} />
