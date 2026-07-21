@@ -24,6 +24,8 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-soft: var(--accent-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-border: var(--border);
