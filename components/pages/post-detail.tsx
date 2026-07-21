@@ -127,11 +127,14 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
           </div>
 
           {post.details && post.details.length > 0 && (
-            <dl className="mb-3 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border">
+            <dl className="mb-3 flex flex-col">
               {post.details.map((d, i) => (
-                <div key={i} className="flex flex-col gap-0.5 bg-card px-3 py-2.5">
-                  <dt className="text-[11px] text-muted-foreground">{d.label}</dt>
-                  <dd className="text-[13px] font-semibold text-foreground">{d.value}</dd>
+                <div
+                  key={i}
+                  className={`flex items-center justify-between gap-4 py-2.5 ${i !== post.details!.length - 1 ? 'border-b border-border' : ''}`}
+                >
+                  <dt className="shrink-0 text-[13px] text-muted-foreground">{d.label}</dt>
+                  <dd className="text-right text-[13px] font-semibold text-foreground">{d.value}</dd>
                 </div>
               ))}
             </dl>
@@ -180,7 +183,7 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
             {POST_COMMENTS.map((c, i) => (
               <li key={c.id} className={`flex gap-2.5 py-3 ${i !== POST_COMMENTS.length - 1 ? 'border-b border-border' : ''}`}>
                 <span className="h-8 w-8 shrink-0 overflow-hidden rounded-full ring-1 ring-border">
-                  <img src={c.avatar || '/placeholder.svg'} alt={`${c.name}的头像`} className="h-full w-full object-cover" />
+                  <img src={c.avatar || '/placeholder.svg'} alt={`${c.name}的��像`} className="h-full w-full object-cover" />
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
