@@ -16,6 +16,14 @@ type Props = {
 const MAX_IMAGES = 9
 const PHONE_RE = /^1[3-9]\d{9}$/
 
+// 置顶推广方案（按周期付费）
+const TOP_PLANS: { key: string; title: string; price: string; note: string }[] = [
+  { key: 'none', title: '不置顶', price: '¥0', note: '免费发布' },
+  { key: '7', title: '7天置顶', price: '¥9.9', note: '¥1.4/天' },
+  { key: '15', title: '15天置顶', price: '¥18.8', note: '¥1.25/天' },
+  { key: '30', title: '30天置顶', price: '¥29.9', note: '¥1.0/天' },
+]
+
 export function PublishPage({ showToast, onDone }: Props) {
   const [cat, setCat] = useState('')
   const [subCat, setSubCat] = useState('')
@@ -34,6 +42,7 @@ export function PublishPage({ showToast, onDone }: Props) {
   const [countdown, setCountdown] = useState(0)
   const [images, setImages] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
+  const [topPlan, setTopPlan] = useState('none')
   const [regionOpen, setRegionOpen] = useState(false)
   const [tagOpen, setTagOpen] = useState(false)
   const [mapOpen, setMapOpen] = useState(false)
@@ -361,6 +370,30 @@ export function PublishPage({ showToast, onDone }: Props) {
             </button>
           </section>
 
+          {/* 置顶推广 */}
+          <div>
+            <h2 className="mb-2 px-1 text-sm font-bold text-foreground">置顶推广（按周期付费）</h2>
+            <div className="grid grid-cols-2 gap-2.5">
+              {TOP_PLANS.map((p) => {
+                const active = topPlan === p.key
+                return (
+                  <button
+                    key={p.key}
+                    type="button"
+                    onClick={() => setTopPlan(p.key)}
+                    className={`flex flex-col items-center gap-0.5 rounded-xl border py-3 transition-colors ${
+                      active ? 'border-accent bg-accent-soft' : 'border-border bg-card'
+                    }`}
+                  >
+                    <span className={`text-sm font-bold ${active ? 'text-accent' : 'text-foreground'}`}>{p.title}</span>
+                    <span className={`text-base font-bold ${p.key === 'none' ? 'text-foreground' : 'text-destructive'}`}>{p.price}</span>
+                    <span className="text-[11px] text-muted-foreground">{p.note}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
           <p className="px-1 text-[11px] leading-relaxed text-muted-foreground">
             发布即表示同意《万户优铺信息发布规范》，请勿发布虚假、违规信息，平台将进行人工审核。
           </p>
@@ -369,6 +402,9 @@ export function PublishPage({ showToast, onDone }: Props) {
 
       {/* 底部提交栏 */}
       <div className="absolute bottom-0 left-0 z-30 w-full border-t border-border bg-card px-3 pb-6 pt-3">
+        <p className="mb-2 text-center text-[12px] text-muted-foreground">
+          每日免费发布 1 条，今日剩余：<span className="font-semibold text-primary">1</span> 条
+        </p>
         <button
           type="button"
           onClick={handleSubmit}
