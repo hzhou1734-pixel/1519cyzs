@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ImagePlus, MapPin, Phone, Tag as TagIcon, Check, X, ChevronRight, Navigation } from 'lucide-react'
 import { publishCats, publishSubCats } from '@/lib/app-data'
 import { PageHeader } from '@/components/shared/page-header'
@@ -29,6 +29,9 @@ export function PublishPage({ showToast, onDone }: Props) {
   const [address, setAddress] = useState('')
   const [phone, setPhone] = useState('')
   const [phoneTouched, setPhoneTouched] = useState(false)
+  const [code, setCode] = useState('')
+  const [codeSent, setCodeSent] = useState(false)
+  const [countdown, setCountdown] = useState(0)
   const [images, setImages] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [regionOpen, setRegionOpen] = useState(false)
@@ -39,8 +42,28 @@ export function PublishPage({ showToast, onDone }: Props) {
   const subCats = cat ? publishSubCats[cat] ?? [] : []
   const phoneValid = PHONE_RE.test(phone)
   const phoneError = phoneTouched && phone.length > 0 && !phoneValid
+  const codeValid = /^\d{6}$/.test(code)
   const canSubmit =
-    cat && subCat && title.trim() && desc.trim() && region.trim() && address.trim() && phoneValid
+    cat && subCat && title.trim() && desc.trim() && region.trim() && address.trim() && phoneValid && codeSent && codeValid
+
+  // 验证码倒计时
+  useEffect(() => {
+    if (countdown <= 0) return
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [countdown])
+
+  const sendCode = () => {
+    if (!phoneValid) {
+      setPhoneTouched(true)
+      showToast('请先输入正确的手机号码')
+      return
+    }
+    if (countdown > 0) return
+    setCodeSent(true)
+    setCountdown(60)
+    showToast('验证码已发送')
+  }
 
   const selectCat = (c: string) => {
     setCat(c)
@@ -284,6 +307,33 @@ export function PublishPage({ showToast, onDone }: Props) {
                 />
               </div>
               {phoneError && <p className="pb-1 text-right text-[11px] text-destructive">请输入正确的手机号码</p>}
+            </div>
+
+            <div className="mx-4 border-t border-border" />
+
+            {/* 验证码校验 */}
+            <div className="px-3 py-2">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 shrink-0 text-accent" />
+                <span className="flex shrink-0 items-center gap-0.5 text-sm text-foreground">
+                  <span className="text-destructive">*</span>验证码
+                </span>
+                <input
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="请输入6位验证码"
+                  inputMode="numeric"
+                  className="min-w-0 flex-1 bg-transparent py-1.5 text-right text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                />
+                <button
+                  type="button"
+                  onClick={sendCode}
+                  disabled={countdown > 0 || !phoneValid}
+                  className="shrink-0 rounded-full border border-accent px-3 py-1.5 text-[12px] font-semibold text-accent transition-colors disabled:cursor-not-allowed disabled:border-border disabled:text-muted-foreground"
+                >
+                  {countdown > 0 ? `${countdown}s 后重发` : codeSent ? '重新获取' : '获取验证码'}
+                </button>
+              </div>
             </div>
 
             <div className="mx-4 border-t border-border" />
