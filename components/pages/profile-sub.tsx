@@ -31,6 +31,10 @@ import {
   CreditCard,
   Building2,
   Check,
+  Coins,
+  Share2,
+  UserPlus,
+  Receipt,
   type LucideIcon,
 } from 'lucide-react'
 import { posts as seedPosts, type Post, formatNumber } from '@/lib/home-data'
@@ -52,7 +56,10 @@ const TITLES: Record<string, { title: string; subtitle?: string }> = {
   favorites: { title: '我的收藏' },
   likes: { title: '我的点赞' },
   history: { title: '浏览历史' },
-  verify: { title: '实名认证' },
+  points: { title: '我的积分' },
+  invite: { title: '邀请好友' },
+  notify: { title: '消息通知' },
+  orders: { title: '订单中心' },
   wallet: { title: '我的钱包' },
   service: { title: '客服中心' },
   feedback: { title: '意见反馈' },
@@ -74,7 +81,10 @@ export function ProfileSubPage({ sub, onBack, onOpenPost, showToast, onLogout, o
         {sub === 'favorites' && <MyFavoritesView onOpenPost={onOpenPost} showToast={showToast} />}
         {sub === 'likes' && <MyLikesView onOpenPost={onOpenPost} showToast={showToast} />}
         {sub === 'history' && <MyHistoryView onOpenPost={onOpenPost} showToast={showToast} />}
-        {sub === 'verify' && <VerifyView showToast={showToast} />}
+        {sub === 'points' && <PointsView showToast={showToast} />}
+        {sub === 'invite' && <InviteView showToast={showToast} />}
+        {sub === 'notify' && <NotifyView showToast={showToast} />}
+        {sub === 'orders' && <OrdersView showToast={showToast} />}
         {sub === 'wallet' && <WalletView showToast={showToast} />}
         {sub === 'service' && <ServiceView showToast={showToast} />}
         {sub === 'feedback' && <FeedbackView showToast={showToast} onBack={onBack} />}
@@ -419,33 +429,375 @@ function MyHistoryView({ onOpenPost, showToast }: { onOpenPost: (id: number) => 
   )
 }
 
-/* ------------------------- 实名认证 ------------------------- */
+/* ------------------------- 我的积分 ------------------------- */
 
-function VerifyView({ showToast }: { showToast: (msg: string) => void }) {
+const POINT_TASKS: { key: string; label: string; desc: string; reward: number; done?: boolean }[] = [
+  { key: 'sign', label: '每日签到', desc: '连续签到额外奖励', reward: 5 },
+  { key: 'publish', label: '发布信息', desc: '每日首次发布', reward: 20 },
+  { key: 'share', label: '分享给好友', desc: '每日可完成 3 次', reward: 10 },
+  { key: 'profile', label: '完善资料', desc: '一次性任务', reward: 30, done: true },
+]
+
+const POINT_LOGS: { id: number; title: string; date: string; amount: number }[] = [
+  { id: 1, title: '每日签到', date: '2026-07-20', amount: 5 },
+  { id: 2, title: '发布档口招商信息', date: '2026-07-19', amount: 20 },
+  { id: 3, title: '积分兑换 · 置顶券', date: '2026-07-18', amount: -100 },
+  { id: 4, title: '邀请好友注册', date: '2026-07-16', amount: 50 },
+]
+
+function PointsView({ showToast }: { showToast: (msg: string) => void }) {
+  const [points, setPoints] = useState(1280)
+  const [signed, setSigned] = useState(false)
+
+  const doTask = (key: string, reward: number, done?: boolean) => {
+    if (done) return
+    if (key === 'sign') {
+      if (signed) return
+      setSigned(true)
+    }
+    setPoints((p) => p + reward)
+    showToast(`任务完成，积分 +${reward}`)
+  }
+
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
-      <div className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-4 py-6 shadow-sm">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-soft text-primary">
-          <ShieldCheck className="h-7 w-7" />
-        </span>
-        <p className="text-base font-bold text-foreground">你已完成实名认证</p>
-        <p className="text-[12px] text-muted-foreground">认证商户 · {profile.name}</p>
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-[#16304f] p-5 shadow-sm">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.2]"
+          style={{ backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(230,126,34,0.7), transparent 45%)' }}
+        />
+        <p className="relative text-[12px] text-white/70">当前积分</p>
+        <p className="relative mt-1 font-mono text-3xl font-bold text-white">{points}</p>
+        <button
+          type="button"
+          onClick={() => showToast('进入积分商城')}
+          className="relative mt-4 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-accent-foreground transition-transform active:scale-95"
+        >
+          积分兑换
+        </button>
       </div>
 
       <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <Row label="真实姓名" value="陈**" />
-        <Row label="证件类型" value="身份证" />
-        <Row label="证件号码" value="4301**********1234" />
-        <Row label="认证时间" value="2026-06-15" last />
+        <h2 className="px-4 pb-1 pt-3 text-[12px] font-semibold text-muted-foreground">积分任务</h2>
+        <div className="flex flex-col">
+          {POINT_TASKS.map((t, i) => {
+            const finished = t.done || (t.key === 'sign' && signed)
+            return (
+              <div key={t.key} className={`flex items-center gap-3 px-4 py-3.5 ${i !== POINT_TASKS.length - 1 ? 'border-b border-border' : ''}`}>
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-soft text-accent">
+                  <Coins className="h-4 w-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-foreground">{t.label}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {t.desc} · +{t.reward}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={finished}
+                  onClick={() => doTask(t.key, t.reward, t.done)}
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-[12px] font-bold transition-colors ${
+                    finished ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground hover:brightness-110'
+                  }`}
+                >
+                  {finished ? '已完成' : t.key === 'sign' ? '签到' : '去完成'}
+                </button>
+              </div>
+            )
+          })}
+        </div>
       </section>
 
-      <button
-        type="button"
-        onClick={() => showToast('已提交商户资质审核')}
-        className="mt-1 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-sm transition-colors hover:brightness-110 active:scale-[0.99]"
-      >
-        升级企业商户认证
-      </button>
+      <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <h2 className="px-4 pb-1 pt-3 text-[12px] font-semibold text-muted-foreground">积分明细</h2>
+        <div className="flex flex-col">
+          {POINT_LOGS.map((r, i) => (
+            <div key={r.id} className={`flex items-center gap-3 px-4 py-3 ${i !== POINT_LOGS.length - 1 ? 'border-b border-border' : ''}`}>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-foreground">{r.title}</p>
+                <p className="text-[11px] text-muted-foreground">{r.date}</p>
+              </div>
+              <span className={`font-mono text-sm font-bold ${r.amount > 0 ? 'text-primary' : 'text-foreground'}`}>
+                {r.amount > 0 ? `+${r.amount}` : r.amount}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+/* ------------------------- 邀请好友 ------------------------- */
+
+const INVITE_RECORDS: { id: number; name: string; date: string; reward: number; status: '已注册' | '已下单' }[] = [
+  { id: 1, name: '王**', date: '2026-07-18', reward: 50, status: '已下单' },
+  { id: 2, name: '李**', date: '2026-07-15', reward: 50, status: '已注册' },
+  { id: 3, name: '张**', date: '2026-07-10', reward: 50, status: '已注册' },
+]
+
+function InviteView({ showToast }: { showToast: (msg: string) => void }) {
+  const code = 'WHYP8888'
+  const invited = INVITE_RECORDS.length
+  const earned = INVITE_RECORDS.reduce((s, r) => s + r.reward, 0)
+
+  return (
+    <div className="flex flex-col gap-3 px-3 py-3">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-accent to-[#c85a12] p-5 text-center shadow-sm">
+        <p className="relative text-sm font-bold text-white">邀请好友，双方各得 50 积分</p>
+        <p className="relative mt-1 text-[12px] text-white/80">好友首次下单，你再得 10 元现金奖励</p>
+        <div className="relative mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur">
+          <span className="text-[12px] text-white/80">邀请码</span>
+          <span className="font-mono text-base font-bold tracking-widest text-white">{code}</span>
+          <button
+            type="button"
+            onClick={() => showToast('邀请码已复制')}
+            className="ml-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-accent"
+          >
+            复制
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col items-center rounded-xl border border-border bg-card py-4 shadow-sm">
+          <span className="font-mono text-xl font-bold text-primary">{invited}</span>
+          <span className="text-[12px] text-muted-foreground">已邀请好友</span>
+        </div>
+        <div className="flex flex-col items-center rounded-xl border border-border bg-card py-4 shadow-sm">
+          <span className="font-mono text-xl font-bold text-accent">{earned}</span>
+          <span className="text-[12px] text-muted-foreground">累计获得积分</span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => showToast('已生成邀请海报')}
+          className="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-card py-3 text-sm font-bold text-foreground shadow-sm transition-colors hover:bg-muted"
+        >
+          <Share2 className="h-4 w-4 text-primary" />
+          生成海报
+        </button>
+        <button
+          type="button"
+          onClick={() => showToast('已唤起微信分享')}
+          className="flex items-center justify-center gap-1.5 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:brightness-110 active:scale-[0.99]"
+        >
+          <UserPlus className="h-4 w-4" />
+          邀请好友
+        </button>
+      </div>
+
+      <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <h2 className="px-4 pb-1 pt-3 text-[12px] font-semibold text-muted-foreground">邀请记录</h2>
+        <div className="flex flex-col">
+          {INVITE_RECORDS.map((r, i) => (
+            <div key={r.id} className={`flex items-center gap-3 px-4 py-3 ${i !== INVITE_RECORDS.length - 1 ? 'border-b border-border' : ''}`}>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-primary">
+                <UserPlus className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground">{r.name}</p>
+                <p className="text-[11px] text-muted-foreground">{r.date} · {r.status}</p>
+              </div>
+              <span className="font-mono text-sm font-bold text-primary">+{r.reward}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+/* ------------------------- 消息通知 ------------------------- */
+
+type Notice = { id: number; type: 'system' | 'interact' | 'order'; title: string; body: string; time: string; unread?: boolean }
+
+const NOTICES: Notice[] = [
+  { id: 1, type: 'system', title: '发布审核通过', body: '你发布的「大学城旺铺档口转让」已通过审核，现已对外展示。', time: '10分钟前', unread: true },
+  { id: 2, type: 'interact', title: '收到新的咨询', body: '有用户对你发布的档口招商信息发起了电话咨询。', time: '2小时前', unread: true },
+  { id: 3, type: 'order', title: '订单支付成功', body: '信息置顶服务（7天）已开通，将优先展示在分类首屏。', time: '昨天', unread: true },
+  { id: 4, type: 'system', title: '平台公告', body: '暑期档口招商季开启，认证商户置顶服务限时 8 折。', time: '2天前' },
+  { id: 5, type: 'interact', title: '你的信息被收藏', body: '「二手四门冰柜转让」被 3 位用户收藏。', time: '3天前' },
+]
+
+const NOTICE_STYLE: Record<Notice['type'], { icon: LucideIcon; label: string }> = {
+  system: { icon: Bell, label: '系统通知' },
+  interact: { icon: Heart, label: '互动消息' },
+  order: { icon: Receipt, label: '订单消息' },
+}
+
+function NotifyView({ showToast }: { showToast: (msg: string) => void }) {
+  const [notices, setNotices] = useState<Notice[]>(NOTICES)
+  const hasUnread = notices.some((n) => n.unread)
+
+  const readAll = () => {
+    if (!hasUnread) return
+    setNotices((prev) => prev.map((n) => ({ ...n, unread: false })))
+    showToast('已全部标为已读')
+  }
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between px-4 py-2.5">
+        <span className="text-[12px] text-muted-foreground">共 {notices.length} 条消息</span>
+        <button type="button" onClick={readAll} disabled={!hasUnread} className="text-[12px] font-medium text-primary disabled:text-muted-foreground">
+          全部已读
+        </button>
+      </div>
+      <div className="flex flex-col gap-2.5 px-3 pb-3">
+        {notices.map((n) => {
+          const meta = NOTICE_STYLE[n.type]
+          const Icon = meta.icon
+          return (
+            <button
+              key={n.id}
+              type="button"
+              onClick={() => setNotices((prev) => prev.map((x) => (x.id === n.id ? { ...x, unread: false } : x)))}
+              className="flex gap-3 rounded-xl border border-border bg-card p-3.5 text-left shadow-sm transition-colors hover:bg-muted/50"
+            >
+              <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
+                <Icon className="h-4 w-4" />
+                {n.unread && <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-destructive ring-2 ring-card" />}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="truncate text-sm font-semibold text-foreground">{n.title}</p>
+                  <span className="shrink-0 text-[11px] text-muted-foreground">{n.time}</span>
+                </div>
+                <p className="mt-0.5 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">{n.body}</p>
+                <span className="mt-1 inline-block text-[11px] text-muted-foreground/70">{meta.label}</span>
+              </div>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------- 订单中心 ------------------------- */
+
+type Order = {
+  id: string
+  title: string
+  desc: string
+  amount: number
+  date: string
+  status: 'unpaid' | 'paid' | 'closed'
+}
+
+const ORDERS: Order[] = [
+  { id: 'WH20260720001', title: '信息置顶服务（7天）', desc: '大学城旺铺档口转让', amount: 63, date: '2026-07-20 10:24', status: 'unpaid' },
+  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户专属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid' },
+  { id: 'WH20260705003', title: '信息置顶服务（3天）', desc: '二手四门冰柜转让', amount: 30, date: '2026-07-05 09:12', status: 'paid' },
+  { id: 'WH20260620004', title: '刷新推广服务', desc: '奶茶店转让信息', amount: 10, date: '2026-06-20 20:41', status: 'closed' },
+]
+
+const ORDER_TABS: { key: 'all' | Order['status']; label: string }[] = [
+  { key: 'all', label: '全部' },
+  { key: 'unpaid', label: '待付款' },
+  { key: 'paid', label: '已完成' },
+  { key: 'closed', label: '已关闭' },
+]
+
+const ORDER_STATUS: Record<Order['status'], { label: string; className: string }> = {
+  unpaid: { label: '待付款', className: 'text-accent' },
+  paid: { label: '已完成', className: 'text-primary' },
+  closed: { label: '已关闭', className: 'text-muted-foreground' },
+}
+
+function OrdersView({ showToast }: { showToast: (msg: string) => void }) {
+  const [tab, setTab] = useState<'all' | Order['status']>('all')
+  const [orders, setOrders] = useState<Order[]>(ORDERS)
+
+  const filtered = tab === 'all' ? orders : orders.filter((o) => o.status === tab)
+
+  const pay = (id: string) => {
+    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: 'paid' } : o)))
+    showToast('支付成功')
+  }
+
+  return (
+    <div className="flex flex-col">
+      <div className="no-scrollbar sticky top-0 z-10 flex gap-2 overflow-x-auto bg-background px-3 py-2.5">
+        {ORDER_TABS.map((t) => {
+          const active = tab === t.key
+          return (
+            <button
+              type="button"
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors ${
+                active ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-muted'
+              }`}
+            >
+              {t.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {filtered.length === 0 ? (
+        <EmptyState title="暂无订单" desc="该状态下还没有订单记录" />
+      ) : (
+        <div className="flex flex-col gap-2.5 px-3 pb-3">
+          {filtered.map((o) => {
+            const st = ORDER_STATUS[o.status]
+            return (
+              <div key={o.id} className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
+                <div className="flex items-center justify-between border-b border-border pb-2.5">
+                  <span className="text-[11px] text-muted-foreground">订单号 {o.id}</span>
+                  <span className={`text-[12px] font-semibold ${st.className}`}>{st.label}</span>
+                </div>
+                <div className="flex items-start gap-3 py-2.5">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
+                    <Receipt className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-foreground">{o.title}</p>
+                    <p className="mt-0.5 truncate text-[12px] text-muted-foreground">{o.desc}</p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground">{o.date}</p>
+                  </div>
+                  <span className="shrink-0 font-mono text-base font-bold text-foreground">￥{o.amount}</span>
+                </div>
+                <div className="flex items-center justify-end gap-2 pt-1">
+                  {o.status === 'unpaid' && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setOrders((prev) => prev.map((x) => (x.id === o.id ? { ...x, status: 'closed' } : x)))}
+                        className="rounded-full border border-border px-3.5 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-muted"
+                      >
+                        取消订单
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => pay(o.id)}
+                        className="rounded-full bg-primary px-3.5 py-1.5 text-[12px] font-bold text-primary-foreground transition-all hover:brightness-110 active:scale-95"
+                      >
+                        立即支付
+                      </button>
+                    </>
+                  )}
+                  {o.status === 'paid' && (
+                    <button
+                      type="button"
+                      onClick={() => showToast('发票申请已提交')}
+                      className="rounded-full border border-border px-3.5 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-muted"
+                    >
+                      申请发票
+                    </button>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

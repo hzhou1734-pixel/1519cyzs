@@ -4,9 +4,10 @@ import {
   BadgeCheck,
   ChevronRight,
   FileText,
-  Star,
-  Heart,
-  History,
+  Coins,
+  UserPlus,
+  Bell,
+  Receipt,
   Wallet,
   Headphones,
   MessageSquare,
@@ -20,14 +21,14 @@ import { WechatCapsule } from '@/components/shared/wechat-capsule'
 
 const iconMap: Record<string, LucideIcon> = {
   FileText,
-  Star,
-  Heart,
-  History,
+  Coins,
+  UserPlus,
+  Bell,
+  Receipt,
   Wallet,
   Headphones,
   MessageSquare,
   Settings,
-  BadgeCheck,
 }
 
 type Props = {
@@ -133,6 +134,11 @@ function MenuGroup({ title, items, onItem }: { title: string; items: MenuItem[];
                 <Icon className="h-4 w-4" strokeWidth={2} />
               </span>
               <span className="flex-1 text-sm font-medium text-foreground">{m.label}</span>
+              {m.badge ? (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[11px] font-bold text-destructive-foreground">
+                  {m.badge}
+                </span>
+              ) : null}
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </button>
           )
