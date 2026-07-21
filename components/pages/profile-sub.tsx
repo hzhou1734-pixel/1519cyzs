@@ -42,7 +42,7 @@ import { EmptyState } from '@/components/shared/empty-state'
 type Props = {
   sub: string
   onBack: () => void
-  onOpenPost: (id: number) => void
+  onOpenPost: (id: number, own?: boolean) => void
   showToast: (msg: string) => void
   onLogout: () => void
   onOpenSub: (key: string) => void
@@ -139,7 +139,7 @@ function Thumb({ post }: { post: Post }) {
 
 type MyPost = Post & { status: 'on' | 'off' }
 
-function MyPostsView({ onOpenPost, showToast }: { onOpenPost: (id: number) => void; showToast: (msg: string) => void }) {
+function MyPostsView({ onOpenPost, showToast }: { onOpenPost: (id: number, own?: boolean) => void; showToast: (msg: string) => void }) {
   const [query, setQuery] = useState('')
   const [list, setList] = useState<MyPost[]>(() =>
     seedPosts.slice(0, 5).map((p, i) => ({ ...p, status: i === 1 ? 'off' : 'on' })),
@@ -173,7 +173,7 @@ function MyPostsView({ onOpenPost, showToast }: { onOpenPost: (id: number) => vo
         <div className="flex flex-col gap-3 px-3 pb-3 pt-1">
           {filtered.map((post) => (
             <div key={post.id} className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
-              <div onClick={() => onOpenPost(post.id)} className="flex cursor-pointer gap-3">
+              <div onClick={() => onOpenPost(post.id, true)} className="flex cursor-pointer gap-3">
                 <Thumb post={post} />
                 <div className="flex min-w-0 flex-1 flex-col">
                   <div className="mb-1 flex items-start gap-2">

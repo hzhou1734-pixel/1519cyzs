@@ -16,7 +16,8 @@ import { SearchPage } from '@/components/pages/search-page'
 import { LoginPage } from '@/components/pages/login-page'
 
 type Overlay =
-  | { kind: 'post' | 'idle' | 'news'; id: number }
+  | { kind: 'post'; id: number; own?: boolean }
+  | { kind: 'idle' | 'news'; id: number }
   | { kind: 'notice' }
   | { kind: 'search' }
   | { kind: 'publish' }
@@ -85,7 +86,7 @@ export function HomeApp() {
       {/* 覆盖层栈（滑入，返回后保留底层 Tab 滚动位置） */}
       {top && (
         <div className="absolute inset-0 z-40 bg-background duration-300 animate-in slide-in-from-right">
-          {top.kind === 'post' && <PostDetail postId={top.id} onBack={pop} showToast={showToast} />}
+          {top.kind === 'post' && <PostDetail postId={top.id} isOwn={top.own} onBack={pop} showToast={showToast} />}
           {top.kind === 'idle' && <IdleDetail itemId={top.id} onBack={pop} showToast={showToast} />}
           {top.kind === 'news' && (
             <NewsDetail articleId={top.id} onBack={pop} onOpenArticle={(id) => push({ kind: 'news', id })} showToast={showToast} />
@@ -99,7 +100,7 @@ export function HomeApp() {
             <ProfileSubPage
               sub={top.key}
               onBack={pop}
-              onOpenPost={(id) => push({ kind: 'post', id })}
+              onOpenPost={(id, own) => push({ kind: 'post', id, own })}
               showToast={showToast}
               onOpenSub={(key) => push({ kind: 'sub', key })}
               onLogout={() => {

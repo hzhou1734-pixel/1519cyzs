@@ -29,9 +29,11 @@ type Props = {
   postId: number
   onBack: () => void
   showToast: (msg: string) => void
+  /** 是否为当前用户自己发布的信息（自己的信息不显示关注按钮） */
+  isOwn?: boolean
 }
 
-export function PostDetail({ postId, onBack, showToast }: Props) {
+export function PostDetail({ postId, onBack, showToast, isOwn = false }: Props) {
   const source = posts.find((p) => p.id === postId)
   const [post, setPost] = useState<Post | undefined>(source)
 
@@ -78,13 +80,15 @@ export function PostDetail({ postId, onBack, showToast }: Props) {
               {post.publishDate} 发布 · {post.time}
             </span>
           </div>
-          <button
-            type="button"
-            onClick={() => showToast(`已关注 ${post.username}`)}
-            className="shrink-0 rounded-full border border-primary px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-          >
-            关注
-          </button>
+          {!isOwn && (
+            <button
+              type="button"
+              onClick={() => showToast(`已关注 ${post.username}`)}
+              className="shrink-0 rounded-full border border-primary px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              关注
+            </button>
+          )}
         </div>
 
         {/* 正文 */}
