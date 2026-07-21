@@ -33,6 +33,7 @@ import {
   UserPlus,
   Receipt,
   QrCode,
+  Coins,
   type LucideIcon,
 } from 'lucide-react'
 import { posts as seedPosts, type Post, formatNumber } from '@/lib/home-data'
@@ -631,7 +632,7 @@ function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () 
 type Notice = { id: number; type: 'system' | 'interact' | 'order'; title: string; body: string; time: string; unread?: boolean }
 
 const NOTICES: Notice[] = [
-  { id: 1, type: 'system', title: '发布审核通过', body: '你发布的「大学城旺铺档口转让」已通过审核，现已对外展示。', time: '10分钟前', unread: true },
+  { id: 1, type: 'system', title: '发布审核通过', body: '你发布的「大学���旺铺档口转让」已通过审核，现已对外展示。', time: '10分钟前', unread: true },
   { id: 2, type: 'interact', title: '收到新的咨询', body: '有用户对你发布的档口招商信息发起了电话咨询。', time: '2小时前', unread: true },
   { id: 3, type: 'order', title: '订单支付成功', body: '信息置顶服务（7天）已开通，将优先展示在分类首屏。', time: '昨天', unread: true },
   { id: 4, type: 'system', title: '平台公告', body: '暑期档口招商季开启，认证商户置顶服务限时 8 折。', time: '2天前' },
@@ -702,13 +703,21 @@ type Order = {
   amount: number
   date: string
   status: 'unpaid' | 'paid' | 'closed'
+  /** 积分抵扣数量 */
+  pointsUsed: number
+  /** 积分抵扣金额（元） */
+  pointsAmount: number
+  /** 余额支付金额（元） */
+  balancePaid: number
+  /** 微信支付金额（元） */
+  wechatPaid: number
 }
 
 const ORDERS: Order[] = [
-  { id: 'WH20260720001', title: '信息置顶服务（7天）', desc: '大学城旺铺档口转让', amount: 63, date: '2026-07-20 10:24', status: 'unpaid' },
-  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户专属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid' },
-  { id: 'WH20260705003', title: '信息置顶服务（3天）', desc: '二手四门冰柜转让', amount: 30, date: '2026-07-05 09:12', status: 'paid' },
-  { id: 'WH20260620004', title: '刷新推广服务', desc: '奶茶店转让信息', amount: 10, date: '2026-06-20 20:41', status: 'closed' },
+  { id: 'WH20260720001', title: '信息置顶服务（7天）', desc: '大学城旺铺档口转让', amount: 63, date: '2026-07-20 10:24', status: 'unpaid', pointsUsed: 200, pointsAmount: 20, balancePaid: 10, wechatPaid: 33 },
+  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户专属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid', pointsUsed: 100, pointsAmount: 10, balancePaid: 39, wechatPaid: 50 },
+  { id: 'WH20260705003', title: '信息置顶服务（3天）', desc: '二手四门冰柜转让', amount: 30, date: '2026-07-05 09:12', status: 'paid', pointsUsed: 300, pointsAmount: 30, balancePaid: 0, wechatPaid: 0 },
+  { id: 'WH20260620004', title: '刷新推广服务', desc: '奶茶店转让信息', amount: 10, date: '2026-06-20 20:41', status: 'closed', pointsUsed: 0, pointsAmount: 0, balancePaid: 10, wechatPaid: 0 },
 ]
 
 const ORDER_TABS: { key: 'all' | Order['status']; label: string }[] = [
@@ -764,7 +773,7 @@ function OrdersView({ showToast }: { showToast: (msg: string) => void }) {
             return (
               <div key={o.id} className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
                 <div className="flex items-center justify-between border-b border-border pb-2.5">
-                  <span className="text-[11px] text-muted-foreground">订单���� {o.id}</span>
+                  <span className="text-[11px] text-muted-foreground">订单号 {o.id}</span>
                   <span className={`text-[12px] font-semibold ${st.className}`}>{st.label}</span>
                 </div>
                 <div className="flex items-start gap-3 py-2.5">
@@ -778,6 +787,38 @@ function OrdersView({ showToast }: { showToast: (msg: string) => void }) {
                   </div>
                   <span className="shrink-0 font-mono text-base font-bold text-foreground">￥{o.amount}</span>
                 </div>
+
+                {/* 支付明细 */}
+                <dl className="flex flex-col gap-1.5 border-t border-dashed border-border py-2.5 text-[12px]">
+                  {o.pointsAmount > 0 && (
+                    <div className="flex items-center justify-between">
+                      <dt className="flex items-center gap-1 text-muted-foreground">
+                        <Coins className="h-3.5 w-3.5 text-accent" />
+                        积分抵扣
+                        <span className="text-[11px] text-muted-foreground/70">（{o.pointsUsed} 积分）</span>
+                      </dt>
+                      <dd className="font-mono font-semibold text-accent">-￥{o.pointsAmount.toFixed(2)}</dd>
+                    </div>
+                  )}
+                  {o.balancePaid > 0 && (
+                    <div className="flex items-center justify-between">
+                      <dt className="flex items-center gap-1 text-muted-foreground">
+                        <Wallet className="h-3.5 w-3.5 text-primary" />
+                        余额支付
+                      </dt>
+                      <dd className="font-mono font-semibold text-foreground">￥{o.balancePaid.toFixed(2)}</dd>
+                    </div>
+                  )}
+                  {o.wechatPaid > 0 && (
+                    <div className="flex items-center justify-between">
+                      <dt className="flex items-center gap-1 text-muted-foreground">
+                        <Smartphone className="h-3.5 w-3.5 text-[#07c160]" />
+                        微信支付
+                      </dt>
+                      <dd className="font-mono font-semibold text-foreground">￥{o.wechatPaid.toFixed(2)}</dd>
+                    </div>
+                  )}
+                </dl>
                 <div className="flex items-center justify-end gap-2 pt-1">
                   {o.status === 'unpaid' && (
                     <>
