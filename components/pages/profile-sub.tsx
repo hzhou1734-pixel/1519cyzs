@@ -28,7 +28,6 @@ import {
   Clock,
   Wallet,
   Smartphone,
-  CreditCard,
   Building2,
   Check,
   Coins,
@@ -894,7 +893,6 @@ function WalletView({ showToast }: { showToast: (msg: string) => void }) {
 
 const RECHARGE_METHODS = [
   { key: '微信支付', icon: Smartphone },
-  { key: '支付宝', icon: CreditCard },
 ]
 
 function RechargeSheet({ open, onClose, onConfirm }: { open: boolean; onClose: () => void; onConfirm: (amount: number, method: string) => void }) {
@@ -1106,7 +1104,7 @@ const FAQS: { q: string; a: string[] }[] = [
     q: '如何发布档口招商信息？',
     a: [
       '在首页底部点击「发布」按钮进入发布页，选择「档口招商」分类。',
-      '依次填写标题、详细描述、所在地区、联系电话，并可上传门店实景图片、添加标签。',
+      '依次填写标题、详细描述、所在地区、联系电话，并可上传门���实景图片、添加标签。',
       '信息核对无误后点击「确认发布」，平台将在 1 个工作日内完成审核，通过后即对外展示。',
     ],
   },
