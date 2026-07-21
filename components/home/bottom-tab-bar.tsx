@@ -31,10 +31,9 @@ export function BottomTabBar({ active, onSwitch }: Props) {
           className="flex flex-1 flex-col items-center"
           aria-label="发布"
         >
-          <span className="-mt-6 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#d06a12] text-white shadow-lg shadow-accent/40 transition-transform hover:scale-105 active:scale-95">
+          <span className="-mt-6 mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#d06a12] text-white shadow-lg shadow-accent/40 transition-transform hover:scale-105 active:scale-95">
             <Plus className="h-6 w-6" strokeWidth={2.6} />
           </span>
-          <span className="mb-1.5 mt-0.5 text-[10px] font-medium text-muted-foreground">发布</span>
         </button>
 
         {rightItems.map(({ page, label, Icon, badge }) => (
