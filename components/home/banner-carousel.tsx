@@ -3,11 +3,7 @@
 import { useEffect, useState } from 'react'
 import { banners } from '@/lib/home-data'
 
-type Props = {
-  onSelect: (toast: string) => void
-}
-
-export function BannerCarousel({ onSelect }: Props) {
+export function BannerCarousel() {
   const [idx, setIdx] = useState(0)
 
   useEffect(() => {

@@ -91,7 +91,7 @@ export function HomeFeed({ showToast, onOpenPost, onOpenNotice, onOpenSearch }: 
           />
         </div>
 
-        <BannerCarousel onSelect={showToast} />
+        <BannerCarousel />
         <StatsBar totalUsers={stats.totalUsers} totalPosts={stats.totalPosts} totalViews={stats.totalViews} />
         <CategoryNav onNav={handleNav} />
         <AnnouncementBar onOpen={onOpenNotice} />
