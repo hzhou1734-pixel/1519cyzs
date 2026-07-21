@@ -106,11 +106,11 @@ export function ProfilePage({ onOpenSub }: Props) {
         <div className="flex flex-col gap-3 px-3 py-3">
           {/* 数据统计卡 */}
           <div className="grid grid-cols-5 rounded-xl border border-border bg-card py-4 shadow-sm">
+            <StatCell label="余额" value={stats.balance} onClick={() => onOpenSub('wallet')} />
             <StatCell label="积分" value={stats.points} onClick={() => onOpenSub('points')} />
             <StatCell label="发布" value={stats.posts} onClick={() => onOpenSub('posts')} />
             <StatCell label="收藏" value={stats.favorites} onClick={() => onOpenSub('favorites')} />
             <StatCell label="点赞" value={stats.likes} onClick={() => onOpenSub('likes')} />
-            <StatCell label="浏览" value={stats.views} onClick={() => onOpenSub('history')} />
           </div>
 
           {/* 更多工具 */}
