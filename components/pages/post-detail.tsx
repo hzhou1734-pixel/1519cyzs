@@ -243,14 +243,6 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
                       </p>
                     </div>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => showToast('已点赞评论')}
-                    className="mt-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground transition-colors hover:text-destructive"
-                  >
-                    <Heart className="h-3 w-3" />
-                    {c.likes}
-                  </button>
                 </div>
               </li>
             ))}
