@@ -27,8 +27,6 @@ const METHODS: { key: string; label: string; desc: string; icon: React.Component
   { key: 'combo', label: '组合支付', desc: '余额 + 微信组合支付', icon: Layers, color: 'text-primary' },
 ]
 
-const PAY_GREEN = '#21a366'
-
 export function PaymentPage({ amount, label, onBack, onSuccess, showToast }: Props) {
   const [method, setMethod] = useState('balance')
   const amountText = `¥${amount.toFixed(2)}`
@@ -43,10 +41,10 @@ export function PaymentPage({ amount, label, onBack, onSuccess, showToast }: Pro
       <PageHeader title="支付" onBack={onBack} />
 
       {/* 金额横幅 */}
-      <div className="flex flex-col items-center px-4 py-7 text-white" style={{ backgroundColor: PAY_GREEN }}>
-        <span className="text-[13px] text-white/80">支付金额</span>
+      <div className="flex flex-col items-center bg-primary px-4 py-7 text-primary-foreground">
+        <span className="text-[13px] text-primary-foreground/80">支付金额</span>
         <span className="mt-1 text-4xl font-bold tracking-tight">{amountText}</span>
-        <span className="mt-1.5 text-[13px] text-white/80">{label}</span>
+        <span className="mt-1.5 text-[13px] text-primary-foreground/80">{label}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 py-4">
@@ -89,8 +87,7 @@ export function PaymentPage({ amount, label, onBack, onSuccess, showToast }: Pro
         <button
           type="button"
           onClick={pay}
-          className="w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:brightness-105 active:scale-[0.99]"
-          style={{ backgroundColor: PAY_GREEN }}
+          className="w-full rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:brightness-105 active:scale-[0.99]"
         >
           确认支付 {amountText}
         </button>
