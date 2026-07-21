@@ -109,6 +109,14 @@ export function NewsDetail({ articleId, onBack, onOpenArticle, showToast }: Prop
               <Star className="h-4 w-4" fill={faved ? 'currentColor' : 'none'} />
               收藏
             </button>
+            <button
+              type="button"
+              onClick={() => showToast('分享文章')}
+              className="flex items-center gap-1.5 rounded-full border border-border px-5 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Share2 className="h-4 w-4" />
+              分享
+            </button>
           </div>
         </article>
 
@@ -137,21 +145,6 @@ export function NewsDetail({ articleId, onBack, onOpenArticle, showToast }: Prop
             </div>
           </div>
         )}
-      </div>
-
-      {/* 底部栏 */}
-      <div className="flex items-center gap-2 border-t border-border bg-card px-3 py-2.5">
-        <div className="flex flex-1 items-center rounded-full bg-muted px-4 py-2.5 text-[13px] text-muted-foreground">
-          说点什么...
-        </div>
-        <button
-          type="button"
-          onClick={() => showToast('分享文章')}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          aria-label="分享"
-        >
-          <Share2 className="h-5 w-5" />
-        </button>
       </div>
     </div>
   )
