@@ -8,7 +8,6 @@ import {
   ShieldCheck,
   Crown,
   Bell,
-  Lock,
   Eye,
   Trash2,
   LogOut,
@@ -71,8 +70,10 @@ const TITLES: Record<string, { title: string; subtitle?: string }> = {
   settings: { title: '设置' },
   edit: { title: '编辑资料' },
   vip: { title: '商户会员' },
-  password: { title: '修改密码' },
   about: { title: '关于万户优铺' },
+  terms: { title: '用户服务协议' },
+  privacy: { title: '隐私政策' },
+  contact: { title: '联系我们' },
 }
 
 export function ProfileSubPage({ sub, onBack, onOpenPost, showToast, onLogout, onOpenSub }: Props) {
@@ -96,8 +97,10 @@ export function ProfileSubPage({ sub, onBack, onOpenPost, showToast, onLogout, o
         {sub === 'settings' && <SettingsView showToast={showToast} onLogout={onLogout} onOpenSub={onOpenSub} />}
         {sub === 'edit' && <EditProfileView showToast={showToast} onBack={onBack} />}
         {sub === 'vip' && <VipView showToast={showToast} />}
-        {sub === 'password' && <ChangePasswordView showToast={showToast} onBack={onBack} />}
-        {sub === 'about' && <AboutView />}
+        {sub === 'about' && <AboutView onOpenSub={onOpenSub} />}
+        {sub === 'terms' && <LegalDocView doc="terms" />}
+        {sub === 'privacy' && <LegalDocView doc="privacy" />}
+        {sub === 'contact' && <ContactUsView showToast={showToast} />}
       </div>
     </div>
   )
@@ -1236,7 +1239,6 @@ function SettingsView({ showToast, onLogout, onOpenSub }: { showToast: (msg: str
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
       <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <LinkRow icon={Lock} label="修改密码" onClick={() => onOpenSub('password')} />
         <LinkRow icon={Trash2} label="清除缓存" value="12.4 MB" onClick={() => showToast('缓存已清除')} />
         <LinkRow icon={BadgeCheck} label="关于万户优铺" value="v2.0.6" onClick={() => onOpenSub('about')} last />
       </section>
@@ -1253,90 +1255,14 @@ function SettingsView({ showToast, onLogout, onOpenSub }: { showToast: (msg: str
   )
 }
 
-/* ------------------------- 修改密码 ------------------------- */
-
-function ChangePasswordView({ showToast, onBack }: { showToast: (msg: string) => void; onBack: () => void }) {
-  const [oldPwd, setOldPwd] = useState('')
-  const [newPwd, setNewPwd] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const [show, setShow] = useState(false)
-
-  const pwdValid = newPwd.length >= 6 && newPwd.length <= 20
-  const match = confirm.length > 0 && confirm === newPwd
-  const canSubmit = oldPwd.length > 0 && pwdValid && match
-
-  const submit = () => {
-    if (!canSubmit) return
-    showToast('密码修改成功，请重新登录')
-    onBack()
-  }
-
-  return (
-    <div className="flex flex-col">
-      <div className="flex flex-col gap-4 px-4 py-4">
-        <PwdField label="当前密码" value={oldPwd} onChange={setOldPwd} show={show} placeholder="请输入当前密码" />
-        <div>
-          <PwdField label="新密码" value={newPwd} onChange={setNewPwd} show={show} placeholder="6-20 位字符" />
-          {newPwd.length > 0 && !pwdValid && <p className="mt-1.5 text-[12px] text-destructive">新密码需为 6-20 位</p>}
-        </div>
-        <div>
-          <PwdField label="确认新密码" value={confirm} onChange={setConfirm} show={show} placeholder="请再次输入新密码" />
-          {confirm.length > 0 && !match && <p className="mt-1.5 text-[12px] text-destructive">两次输入的密码不一致</p>}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setShow((v) => !v)}
-          className="self-start text-[12px] font-medium text-primary"
-        >
-          {show ? '隐藏密码' : '显示密码'}
-        </button>
-
-        <button
-          type="button"
-          disabled={!canSubmit}
-          onClick={submit}
-          className="mt-1 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          确认修改
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function PwdField({
-  label,
-  value,
-  onChange,
-  show,
-  placeholder,
-}: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  show: boolean
-  placeholder: string
-}) {
-  return (
-    <div>
-      <p className="mb-2 text-sm font-semibold text-foreground">{label}</p>
-      <input
-        type={show ? 'text' : 'password'}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        maxLength={20}
-        className="w-full rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
-      />
-    </div>
-  )
-}
-
 /* ------------------------- 关于万户优铺 ------------------------- */
 
-function AboutView() {
-  const links = ['用户服务协议', '隐私政策', '平台经营资质', '联系我们']
+function AboutView({ onOpenSub }: { onOpenSub: (key: string) => void }) {
+  const links: { label: string; key: string }[] = [
+    { label: '用户服务协议', key: 'terms' },
+    { label: '隐私政策', key: 'privacy' },
+    { label: '联系我们', key: 'contact' },
+  ]
   return (
     <div className="flex flex-col">
       <div className="flex flex-col items-center px-4 py-6">
@@ -1352,7 +1278,7 @@ function AboutView() {
 
       <section className="mx-3 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         {links.map((l, i) => (
-          <LinkRow key={l} icon={ShieldCheck} label={l} onClick={() => {}} last={i === links.length - 1} />
+          <LinkRow key={l.key} icon={ShieldCheck} label={l.label} onClick={() => onOpenSub(l.key)} last={i === links.length - 1} />
         ))}
       </section>
 
@@ -1361,6 +1287,89 @@ function AboutView() {
         <br />
         湘ICP备2026000000号
       </p>
+    </div>
+  )
+}
+
+/* ------------------------- 用户协议 / 隐私政策 ------------------------- */
+
+const LEGAL_DOCS: Record<'terms' | 'privacy', { updated: string; sections: { h: string; p: string }[] }> = {
+  terms: {
+    updated: '2026-07-01',
+    sections: [
+      { h: '一、服务范围', p: '万户优铺（以下简称"本平台"）为用户提供高校食堂、企业园区、医院餐厅等场景下的餐饮商业信息发布与查询服务，包括档口招商、店铺转租、人才招聘、品牌加盟等信息的对接撮合。' },
+      { h: '二、账号注册', p: '用户在使用本平台服务前，应确保所提供的注册信息真实、准确、完整。用户应妥善保管账号及密码，因账号泄露造成的损失由用户自行承担。' },
+      { h: '三、信息发布规范', p: '用户应对其发布信息的真实性、合法性负责，不得发布虚假、欺诈、侵权或违反法律法规的内容。本平台有权对违规信息进行下架处理，并对违规账号采取限制或封禁措施。' },
+      { h: '四、交易风险提示', p: '本平台仅提供信息展示与对接服务，不介入用户之间的实际交易。用户在交易前应自行核实对方资质，谨防诈骗，因交易产生的纠纷由交易双方自行协商解决。' },
+      { h: '五、协议变更', p: '本平台有权根据业务发展需要修订本协议，修订后的协议将在平台内公示。用户继续使用服务即视为接受修订后的协议。' },
+    ],
+  },
+  privacy: {
+    updated: '2026-07-01',
+    sections: [
+      { h: '一、信息收集', p: '我们会在您注册、发布信息、使用服务的过程中收集必要的个人信息，包括手机号码、昵称、发布内容及设备信息，用于提供和优化服务。' },
+      { h: '二、信息使用', p: '我们收集的信息将用于账号管理、信息发布、消息通知、安全风控及服务改进，不会用于与上述目的无关的用途。' },
+      { h: '三、信息共享', p: '除法律法规要求或经您明确授权外，我们不会向第三方出售或披露您的个人信息。为实现特定功能，我们可能与合作伙伴共享必要的最小化信息。' },
+      { h: '四、信息安全', p: '我们采用加密传输、访问控制等技术与管理措施保护您的个人信息安全，防止信息遭到未经授权的访问、泄露或篡改。' },
+      { h: '五、您的权利', p: '您有权访问、更正、删除您的个人信息，或注销账号。如需行使上述权利，可通过"联系我们"页面与我们取得联系。' },
+    ],
+  },
+}
+
+function LegalDocView({ doc }: { doc: 'terms' | 'privacy' }) {
+  const data = LEGAL_DOCS[doc]
+  return (
+    <div className="flex flex-col gap-4 px-4 py-5">
+      <p className="text-[12px] text-muted-foreground">更新日期：{data.updated}</p>
+      {data.sections.map((s) => (
+        <div key={s.h}>
+          <h3 className="mb-1.5 text-sm font-bold text-foreground">{s.h}</h3>
+          <p className="text-[13px] leading-relaxed text-muted-foreground">{s.p}</p>
+        </div>
+      ))}
+      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+        本文档为示例文本，最终解释权归万户优铺所有。
+      </p>
+    </div>
+  )
+}
+
+/* ------------------------- 联系我们 ------------------------- */
+
+function ContactUsView({ showToast }: { showToast: (msg: string) => void }) {
+  const items: { icon: LucideIcon | typeof WechatIcon; label: string; value: string; action?: () => void }[] = [
+    { icon: Phone, label: '客服热线', value: '400-888-6666', action: () => showToast('拨打 400-888-6666') },
+    { icon: WechatIcon, label: '客服微信', value: 'wanhu-service', action: () => showToast('已复制微信号') },
+    { icon: MapPin, label: '公司地址', value: '湖南省长沙市岳麓区大学城创业大厦 8 楼' },
+    { icon: Clock, label: '工作时间', value: '周一至周日 9:00 - 21:00' },
+  ]
+  return (
+    <div className="flex flex-col gap-3 px-3 py-3">
+      <p className="px-1 text-[13px] leading-relaxed text-muted-foreground">
+        如有任何疑问、建议或商务合作需求，欢迎通过以下方式与我们联系，我们将竭诚为你服务。
+      </p>
+      <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        {items.map((it, i) => {
+          const Icon = it.icon
+          return (
+            <button
+              key={it.label}
+              type="button"
+              onClick={it.action ?? (() => {})}
+              disabled={!it.action}
+              className={`flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors ${it.action ? 'hover:bg-muted/60' : 'cursor-default'} ${i !== items.length - 1 ? 'border-b border-border' : ''}`}
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
+                <Icon className="h-4 w-4" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[12px] text-muted-foreground">{it.label}</span>
+                <span className="block text-sm font-semibold text-foreground">{it.value}</span>
+              </span>
+            </button>
+          )
+        })}
+      </section>
     </div>
   )
 }
