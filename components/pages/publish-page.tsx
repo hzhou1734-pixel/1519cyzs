@@ -17,14 +17,21 @@ const MAX_IMAGES = 9
 const PHONE_RE = /^1[3-9]\d{9}$/
 
 // 置顶推广方案（按周期付费）
-const TOP_PLANS: { key: string; title: string; price: string; note: string }[] = [
-  { key: 'none', title: '不置顶', price: '¥0', note: '免费发布' },
-  { key: '7', title: '7天置顶', price: '¥9.9', note: '¥1.4/天' },
-  { key: '15', title: '15天置顶', price: '¥18.8', note: '¥1.25/天' },
-  { key: '30', title: '30天置顶', price: '¥29.9', note: '¥1.0/天' },
+const TOP_PLANS: { key: string; title: string; price: string; note: string; amount: number }[] = [
+  { key: 'none', title: '不置顶', price: '¥0', note: '免费发布', amount: 0 },
+  { key: '7', title: '7天置顶', price: '¥9.9', note: '¥1.4/天', amount: 9.9 },
+  { key: '15', title: '15天置顶', price: '¥18.8', note: '¥1.25/天', amount: 18.8 },
+  { key: '30', title: '30天置顶', price: '¥29.9', note: '¥1.0/天', amount: 29.9 },
 ]
 
-export function PublishPage({ showToast, onDone }: Props) {
+type Props = {
+  showToast: (msg: string) => void
+  onDone: () => void
+  onPay: (amount: number, label: string) => void
+}
+
+export function PublishPage({ showToast, onDone, onPay }: Props) {
+  const fileRef = useRef<HTMLInputElement>(null)
   const [cat, setCat] = useState('')
   const [subCat, setSubCat] = useState('')
   const [title, setTitle] = useState('')
@@ -44,9 +51,8 @@ export function PublishPage({ showToast, onDone }: Props) {
   const [tags, setTags] = useState<string[]>([])
   const [topPlan, setTopPlan] = useState('none')
   const [regionOpen, setRegionOpen] = useState(false)
-  const [tagOpen, setTagOpen] = useState(false)
   const [mapOpen, setMapOpen] = useState(false)
-  const fileRef = useRef<HTMLInputElement>(null)
+  const [tagOpen, setTagOpen] = useState(false)
 
   const subCats = cat ? publishSubCats[cat] ?? [] : []
   const phoneValid = PHONE_RE.test(phone)
@@ -105,6 +111,12 @@ export function PublishPage({ showToast, onDone }: Props) {
     if (!canSubmit) {
       setPhoneTouched(true)
       showToast('请完善必填信息')
+      return
+    }
+    const plan = TOP_PLANS.find((p) => p.key === topPlan)
+    if (plan && plan.amount > 0) {
+      // 选择了付费置顶方案，进入支付页
+      onPay(plan.amount, `置顶推广 ${plan.title.replace('置顶', '')}`)
       return
     }
     showToast('发布成功，等待审核')

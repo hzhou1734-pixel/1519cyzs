@@ -5,6 +5,7 @@ import { HomeFeed } from './home-feed'
 import { BottomTabBar } from './bottom-tab-bar'
 import { IdlePage } from '@/components/pages/idle-page'
 import { PublishPage } from '@/components/pages/publish-page'
+import { PaymentPage } from '@/components/pages/payment-page'
 import { NewsPage } from '@/components/pages/news-page'
 import { ProfilePage } from '@/components/pages/profile-page'
 import { PostDetail } from '@/components/pages/post-detail'
@@ -21,6 +22,7 @@ type Overlay =
   | { kind: 'notice' }
   | { kind: 'search' }
   | { kind: 'publish' }
+  | { kind: 'payment'; amount: number; label: string }
   | { kind: 'sub'; key: string }
 
 /**
@@ -95,7 +97,22 @@ export function HomeApp() {
           {top.kind === 'search' && (
             <SearchPage onBack={pop} onOpenPost={(id) => push({ kind: 'post', id })} showToast={showToast} />
           )}
-          {top.kind === 'publish' && <PublishPage showToast={showToast} onDone={pop} />}
+          {top.kind === 'publish' && (
+            <PublishPage
+              showToast={showToast}
+              onDone={pop}
+              onPay={(amount, label) => push({ kind: 'payment', amount, label })}
+            />
+          )}
+          {top.kind === 'payment' && (
+            <PaymentPage
+              amount={top.amount}
+              label={top.label}
+              onBack={pop}
+              onSuccess={() => setStack((s) => s.slice(0, -2))}
+              showToast={showToast}
+            />
+          )}
           {top.kind === 'sub' && (
             <ProfileSubPage
               sub={top.key}
