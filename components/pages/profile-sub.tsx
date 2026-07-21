@@ -869,14 +869,14 @@ function WalletView({ showToast }: { showToast: (msg: string) => void }) {
         <div className="flex flex-col">
           {records.map((r, i) => (
             <div key={r.id} className={`flex items-center gap-3 px-4 py-3 ${i !== records.length - 1 ? 'border-b border-border' : ''}`}>
-              <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${r.type === 'in' ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'}`}>
+              <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${r.type === 'in' ? 'bg-destructive/10 text-destructive' : 'bg-primary-soft text-primary'}`}>
                 {r.type === 'in' ? <ArrowDownLeft className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-foreground">{r.title}</p>
                 <p className="text-[11px] text-muted-foreground">{r.date}</p>
               </div>
-              <span className={`font-mono text-sm font-bold ${r.type === 'in' ? 'text-destructive' : 'text-success'}`}>
+              <span className={`font-mono text-sm font-bold ${r.type === 'in' ? 'text-destructive' : 'text-primary'}`}>
                 {r.amount > 0 ? `+${r.amount}` : r.amount}
               </span>
             </div>
