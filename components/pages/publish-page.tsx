@@ -1,11 +1,12 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { ImagePlus, MapPin, Phone, Tag as TagIcon, Check, X, ChevronRight } from 'lucide-react'
-import { publishCats } from '@/lib/app-data'
+import { ImagePlus, MapPin, Phone, Tag as TagIcon, Check, X, ChevronRight, Navigation } from 'lucide-react'
+import { publishCats, publishSubCats } from '@/lib/app-data'
 import { PageHeader } from '@/components/shared/page-header'
 import { RegionPicker } from '@/components/shared/region-picker'
 import { TagPicker } from '@/components/shared/tag-picker'
+import { MapPicker } from '@/components/shared/map-picker'
 
 type Props = {
   showToast: (msg: string) => void
@@ -17,20 +18,34 @@ const PHONE_RE = /^1[3-9]\d{9}$/
 
 export function PublishPage({ showToast, onDone }: Props) {
   const [cat, setCat] = useState('')
+  const [subCat, setSubCat] = useState('')
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
-  const [location, setLocation] = useState('')
+  const [school, setSchool] = useState('')
+  const [students, setStudents] = useState('')
+  const [floor, setFloor] = useState('')
+  const [area, setArea] = useState('')
+  const [region, setRegion] = useState('')
+  const [address, setAddress] = useState('')
   const [phone, setPhone] = useState('')
   const [phoneTouched, setPhoneTouched] = useState(false)
   const [images, setImages] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [regionOpen, setRegionOpen] = useState(false)
   const [tagOpen, setTagOpen] = useState(false)
+  const [mapOpen, setMapOpen] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
+  const subCats = cat ? publishSubCats[cat] ?? [] : []
   const phoneValid = PHONE_RE.test(phone)
   const phoneError = phoneTouched && phone.length > 0 && !phoneValid
-  const canSubmit = cat && title.trim() && desc.trim() && location.trim() && phoneValid
+  const canSubmit =
+    cat && subCat && title.trim() && desc.trim() && region.trim() && address.trim() && phoneValid
+
+  const selectCat = (c: string) => {
+    setCat(c)
+    setSubCat('') // 切换一级分类时清空二级分类
+  }
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return
@@ -70,7 +85,7 @@ export function PublishPage({ showToast, onDone }: Props) {
 
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-24">
         <div className="flex flex-col gap-3 px-3 py-3">
-          {/* 选择分类 */}
+          {/* 选择分类 - 一级 + 二级 */}
           <section className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <FieldLabel required>选择分类</FieldLabel>
             <div className="grid grid-cols-3 gap-2">
@@ -80,7 +95,7 @@ export function PublishPage({ showToast, onDone }: Props) {
                   <button
                     type="button"
                     key={c.cat}
-                    onClick={() => setCat(c.cat)}
+                    onClick={() => selectCat(c.cat)}
                     className={`rounded-lg px-2 py-2.5 text-[12px] font-medium transition-all ${
                       isActive
                         ? 'bg-primary text-primary-foreground shadow-sm'
@@ -92,6 +107,32 @@ export function PublishPage({ showToast, onDone }: Props) {
                 )
               })}
             </div>
+
+            {/* 二级分类：选择一级分类后出现 */}
+            {cat && subCats.length > 0 && (
+              <div className="mt-4 duration-200 animate-in fade-in slide-in-from-top-1">
+                <FieldLabel required>选择二级分类</FieldLabel>
+                <div className="flex flex-wrap gap-2">
+                  {subCats.map((s) => {
+                    const on = subCat === s
+                    return (
+                      <button
+                        type="button"
+                        key={s}
+                        onClick={() => setSubCat(s)}
+                        className={`rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-all ${
+                          on
+                            ? 'border-primary bg-primary text-primary-foreground'
+                            : 'border-border bg-muted text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </section>
 
           {/* 标题与详情 */}
@@ -118,6 +159,31 @@ export function PublishPage({ showToast, onDone }: Props) {
             />
           </section>
 
+          {/* 商铺详情 */}
+          <section className="rounded-xl border border-border bg-card p-4 shadow-sm">
+            <FieldLabel>商铺详情</FieldLabel>
+            <div className="flex flex-col gap-3">
+              <TextField label="学校名称" value={school} onChange={setSchool} placeholder="如：湖南大学" maxLength={20} />
+              <TextField
+                label="在校人数"
+                value={students}
+                onChange={(v) => setStudents(v.replace(/\D/g, '').slice(0, 7))}
+                placeholder="请输入在校人数"
+                inputMode="numeric"
+                suffix="人"
+              />
+              <TextField label="商铺楼层" value={floor} onChange={setFloor} placeholder="如：1 楼 / 负一层" maxLength={10} />
+              <TextField
+                label="商铺面积"
+                value={area}
+                onChange={(v) => setArea(v.replace(/[^\d.]/g, '').slice(0, 8))}
+                placeholder="请输入面积"
+                inputMode="decimal"
+                suffix="㎡"
+              />
+            </div>
+          </section>
+
           {/* 图片上传 */}
           <section className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="mb-2 flex items-center justify-between">
@@ -139,7 +205,7 @@ export function PublishPage({ showToast, onDone }: Props) {
               {images.map((src, idx) => (
                 <div key={idx} className="relative aspect-square overflow-hidden rounded-lg border border-border">
                   {/* 用户本地选择的图片预览 */}
-                  <img src={src || "/placeholder.svg"} alt={`已选图片 ${idx + 1}`} className="h-full w-full object-cover" />
+                  <img src={src || '/placeholder.svg'} alt={`已选图片 ${idx + 1}`} className="h-full w-full object-cover" />
                   <button
                     type="button"
                     onClick={() => removeImage(idx)}
@@ -163,9 +229,9 @@ export function PublishPage({ showToast, onDone }: Props) {
             </div>
           </section>
 
-          {/* 地区 / 电话 / 标签 */}
+          {/* 区域 / 详细地址 / 电话 / 标签 */}
           <section className="rounded-xl border border-border bg-card p-1 shadow-sm">
-            {/* 所在地区 - 打开三级联动选择器 */}
+            {/* 选择区域 - 省市区三级联动 */}
             <button
               type="button"
               onClick={() => setRegionOpen(true)}
@@ -173,12 +239,30 @@ export function PublishPage({ showToast, onDone }: Props) {
             >
               <MapPin className="h-4 w-4 shrink-0 text-accent" />
               <span className="flex shrink-0 items-center gap-0.5 text-sm text-foreground">
-                <span className="text-destructive">*</span>所在地区
+                <span className="text-destructive">*</span>选择区域
               </span>
-              <span className={`ml-auto truncate text-[13px] ${location ? 'text-foreground' : 'text-muted-foreground'}`}>
-                {location || '请选择省 / 市 / 区'}
+              <span className={`ml-auto truncate text-[13px] ${region ? 'text-foreground' : 'text-muted-foreground'}`}>
+                {region || '请选择省 / 市 / 区'}
               </span>
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </button>
+
+            <div className="mx-4 border-t border-border" />
+
+            {/* 详细地址 - 打开地图选点 */}
+            <button
+              type="button"
+              onClick={() => setMapOpen(true)}
+              className="flex w-full items-start gap-2 px-3 py-3.5 text-left"
+            >
+              <Navigation className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+              <span className="mt-0.5 flex shrink-0 items-center gap-0.5 text-sm text-foreground">
+                <span className="text-destructive">*</span>详细地址
+              </span>
+              <span className={`ml-auto text-right text-[13px] leading-relaxed ${address ? 'text-foreground' : 'text-muted-foreground'}`}>
+                {address || '打开地图选择位置'}
+              </span>
+              <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
             </button>
 
             <div className="mx-4 border-t border-border" />
@@ -199,14 +283,12 @@ export function PublishPage({ showToast, onDone }: Props) {
                   className="flex-1 bg-transparent py-1.5 text-right text-sm text-foreground outline-none placeholder:text-muted-foreground"
                 />
               </div>
-              {phoneError && (
-                <p className="pb-1 text-right text-[11px] text-destructive">请输入正确的手机号码</p>
-              )}
+              {phoneError && <p className="pb-1 text-right text-[11px] text-destructive">请输入正确的手机号码</p>}
             </div>
 
             <div className="mx-4 border-t border-border" />
 
-            {/* 添加标签 - 打开标签选择器 */}
+            {/* 添加标签 - 打开标签多选器 */}
             <button
               type="button"
               onClick={() => setTagOpen(true)}
@@ -253,18 +335,63 @@ export function PublishPage({ showToast, onDone }: Props) {
       </div>
 
       {/* 省市区三级联动选择器 */}
-      <RegionPicker open={regionOpen} onClose={() => setRegionOpen(false)} onConfirm={setLocation} />
+      <RegionPicker open={regionOpen} onClose={() => setRegionOpen(false)} onConfirm={setRegion} />
 
-      {/* 标签选择器 */}
+      {/* 详细地址 - 地图选点 */}
+      <MapPicker
+        open={mapOpen}
+        initial={address}
+        onClose={() => setMapOpen(false)}
+        onConfirm={(addr) => {
+          setAddress(addr)
+          setMapOpen(false)
+        }}
+      />
+
+      {/* 标签多选器 */}
       <TagPicker
         open={tagOpen}
         selected={tags}
+        max={8}
         onClose={() => setTagOpen(false)}
         onConfirm={(t) => {
           setTags(t)
           setTagOpen(false)
         }}
       />
+    </div>
+  )
+}
+
+function TextField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  maxLength,
+  inputMode,
+  suffix,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  maxLength?: number
+  inputMode?: 'text' | 'numeric' | 'decimal' | 'tel'
+  suffix?: string
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="w-16 shrink-0 text-sm text-foreground">{label}</span>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        inputMode={inputMode}
+        className="min-w-0 flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20"
+      />
+      {suffix && <span className="shrink-0 text-sm text-muted-foreground">{suffix}</span>}
     </div>
   )
 }
