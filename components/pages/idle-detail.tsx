@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MapPin, Flame, ShieldCheck, Phone, Lock, Store } from 'lucide-react'
+import { MapPin, ShieldCheck, Phone, Lock, Store } from 'lucide-react'
 import { idleItems, type IdleItem } from '@/lib/app-data'
 import { PageHeader } from '@/components/shared/page-header'
 import { EmptyState } from '@/components/shared/empty-state'
@@ -35,7 +35,6 @@ export function IdleDetail({ itemId, onBack, showToast }: Props) {
     )
   }
 
-  const off = item.original ? Math.round((1 - item.price / item.original) * 100) : 0
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
@@ -57,21 +56,12 @@ export function IdleDetail({ itemId, onBack, showToast }: Props) {
             {item.original && (
               <span className="mb-0.5 font-mono text-[13px] text-muted-foreground line-through">¥{item.original}</span>
             )}
-            {off > 0 && (
-              <span className="mb-1 rounded bg-accent-soft px-1.5 py-0.5 text-[11px] font-bold text-accent">
-                {off}% off
-              </span>
-            )}
           </div>
           <h1 className="mt-2 text-base font-semibold leading-snug text-foreground text-pretty">{item.title}</h1>
           <div className="mt-2.5 flex items-center gap-4 text-[12px] text-muted-foreground">
             <span className="flex items-center gap-1">
               <MapPin className="h-3.5 w-3.5" />
               {item.location}
-            </span>
-            <span className="flex items-center gap-1 text-accent">
-              <Flame className="h-3.5 w-3.5" />
-              {item.wants} 人想要
             </span>
           </div>
         </div>
