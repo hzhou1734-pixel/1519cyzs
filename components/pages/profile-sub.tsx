@@ -556,22 +556,24 @@ function InviteView({ showToast }: { showToast: (msg: string) => void }) {
 function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () => void; showToast: (msg: string) => void }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6 backdrop-blur-sm"
+      className="absolute inset-0 z-50 flex flex-col overflow-y-auto bg-black/60 px-6 py-5 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-label="邀请海报"
       onClick={onClose}
     >
-      <div className="relative w-full max-w-[320px]" onClick={(e) => e.stopPropagation()}>
+      <div className="flex shrink-0 justify-end">
         <button
           type="button"
           onClick={onClose}
           aria-label="关闭"
-          className="absolute -top-10 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
         >
           <X className="h-4 w-4" />
         </button>
+      </div>
 
+      <div className="mt-3 w-full" onClick={(e) => e.stopPropagation()}>
         {/* 海报卡片 */}
         <div className="overflow-hidden rounded-2xl bg-card shadow-xl">
           <div className="relative bg-gradient-to-br from-primary to-[#16304f] px-5 pb-6 pt-7 text-center">
@@ -602,23 +604,23 @@ function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () 
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => showToast('海报已保存到相册')}
-            className="rounded-full bg-white py-2.5 text-sm font-bold text-foreground shadow-sm transition-transform active:scale-95"
-          >
-            保存到相册
-          </button>
-          <button
-            type="button"
-            onClick={() => showToast('已唤起微信分享')}
-            className="rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform active:scale-95"
-          >
-            分享给好友
-          </button>
-        </div>
+      <div className="mt-auto grid w-full shrink-0 grid-cols-2 gap-3 pt-5" onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          onClick={() => showToast('海报已保存到相册')}
+          className="rounded-full bg-white py-2.5 text-sm font-bold text-foreground shadow-sm transition-transform active:scale-95"
+        >
+          保存到相册
+        </button>
+        <button
+          type="button"
+          onClick={() => showToast('已唤起微信分享')}
+          className="rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform active:scale-95"
+        >
+          分享给好友
+        </button>
       </div>
     </div>
   )
