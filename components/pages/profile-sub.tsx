@@ -283,7 +283,7 @@ function MyLikesView({ onOpenPost, showToast }: { onOpenPost: (id: number) => vo
     return liked.length > 0 ? liked : seedPosts.slice(0, 4)
   })
 
-  // 取消点赞后即从「我的点赞」列表移除
+  // 取消点赞后���从「我的点赞」列表移除
   const unlike = (id: number) => {
     setList((prev) => prev.filter((p) => p.id !== id))
     showToast('已取消点赞')
@@ -470,11 +470,11 @@ function PointsView() {
 
 /* ------------------------- 邀请好友 ------------------------- */
 
-const INVITE_RECORDS: { id: number; name: string; date: string; reward: number; status: '已注册' | '已下单' }[] = [
-  { id: 1, name: '王**', date: '2026-07-18', reward: 50, status: '已下单' },
-  { id: 2, name: '李**', date: '2026-07-15', reward: 50, status: '已注册' },
-  { id: 3, name: '张**', date: '2026-07-10', reward: 50, status: '已注册' },
-]
+  const INVITE_RECORDS: { id: number; name: string; date: string; reward: number }[] = [
+    { id: 1, name: '王**', date: '2026-07-18', reward: 50 },
+    { id: 2, name: '李**', date: '2026-07-15', reward: 50 },
+    { id: 3, name: '张**', date: '2026-07-10', reward: 50 },
+  ]
 
 function InviteView({ showToast }: { showToast: (msg: string) => void }) {
   const code = 'WHYP8888'
@@ -538,7 +538,7 @@ function InviteView({ showToast }: { showToast: (msg: string) => void }) {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-foreground">{r.name}</p>
-                <p className="text-[11px] text-muted-foreground">{r.date} · {r.status}</p>
+                <p className="text-[11px] text-muted-foreground">{r.date}</p>
               </div>
               <span className="font-mono text-sm font-bold text-primary">+{r.reward}</span>
             </div>
