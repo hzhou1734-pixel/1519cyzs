@@ -126,6 +126,17 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
             ))}
           </div>
 
+          {post.details && post.details.length > 0 && (
+            <dl className="mb-3 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border">
+              {post.details.map((d, i) => (
+                <div key={i} className="flex flex-col gap-0.5 bg-card px-3 py-2.5">
+                  <dt className="text-[11px] text-muted-foreground">{d.label}</dt>
+                  <dd className="text-[13px] font-semibold text-foreground">{d.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
           <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">{post.desc}</p>
 
           {/* 图集 */}
