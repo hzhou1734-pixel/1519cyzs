@@ -10,7 +10,6 @@ import {
   Eye,
   Share2,
   Phone,
-  MessageCircle,
   Clock,
   Lock,
 } from 'lucide-react'
@@ -26,10 +25,34 @@ const TAG_COLORS = [
   'bg-amber-50 text-amber-700',
 ]
 
-const POST_COMMENTS: { id: number; name: string; avatar: string; text: string; date: string; likes: number }[] = [
-  { id: 1, name: '小吃摊主老王', avatar: '/images/avatar2.png', text: '位置不错，请问租金可以谈吗？转让费包含哪些设备？', date: '2天前', likes: 12 },
+const POST_COMMENTS: {
+  id: number
+  name: string
+  avatar: string
+  text: string
+  date: string
+  likes: number
+  reply?: string
+}[] = [
+  {
+    id: 1,
+    name: '小吃摊主老王',
+    avatar: '/images/avatar2.png',
+    text: '位置不错，请问租金可以谈吗？转让费包含哪些设备？',
+    date: '2天前',
+    likes: 12,
+    reply: '租金可小刀，转让费含全套厨房设备和桌椅，方便的话来实地看更清楚。',
+  },
   { id: 2, name: '创业小张', avatar: '/images/avatar3.png', text: '已私信，方便的话想约个时间去实地看看。', date: '1天前', likes: 5 },
-  { id: 3, name: '餐饮老李', avatar: '/images/avatar4.png', text: '这个档口人流量怎么样？周边有没有同类竞争？', date: '5小时前', likes: 3 },
+  {
+    id: 3,
+    name: '餐饮老李',
+    avatar: '/images/avatar4.png',
+    text: '这个档口人流量怎么样？周边有没有同类竞争？',
+    date: '5小时前',
+    likes: 3,
+    reply: '午晚高峰人流很旺，周边同类档口不多，竞争压力小。',
+  },
 ]
 
 type Props = {
@@ -163,6 +186,28 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
             <MapPin className="h-4 w-4 shrink-0 text-primary" />
             {post.location}
           </div>
+
+          {/* 解锁手机号（长条） */}
+          {!isOwn &&
+            (phoneUnlocked ? (
+              <button
+                type="button"
+                onClick={() => showToast(`拨打电话 ${post.phone}`)}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-accent py-3 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.01] active:scale-[0.99]"
+              >
+                <Phone className="h-4 w-4" />
+                {post.phone}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onUnlockPhone?.()}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-accent py-3 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.01] active:scale-[0.99]"
+              >
+                <Lock className="h-4 w-4" />
+                解锁手机号
+              </button>
+            ))}
         </div>
 
         {/* 数据统计 */}
@@ -191,6 +236,14 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
                     <span className="shrink-0 text-[11px] text-muted-foreground">{c.date}</span>
                   </div>
                   <p className="mt-0.5 text-[13px] leading-relaxed text-foreground/90">{c.text}</p>
+                  {c.reply && (
+                    <div className="mt-2 rounded-lg bg-muted px-3 py-2">
+                      <p className="text-[13px] leading-relaxed text-foreground/90">
+                        <span className="font-semibold text-primary">作者回复：</span>
+                        {c.reply}
+                      </p>
+                    </div>
+                  )}
                   <button
                     type="button"
                     onClick={() => showToast('已点赞评论')}
@@ -213,36 +266,27 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
 
       {/* 底部操作栏（自己发布的信息不显示联系入口） */}
       {!isOwn && (
-        <div className="flex items-center gap-2 border-t border-border bg-card px-3 py-2.5">
-          <ActionIcon icon={Heart} label={String(formatNumber(post.likes))} active={post.userLiked} activeColor="text-destructive" onClick={toggleLike} />
-          <ActionIcon icon={Star} label={String(formatNumber(post.favorites))} active={post.userFaved} activeColor="text-accent" onClick={toggleFav} />
+        <div className="flex items-center gap-3 border-t border-border bg-card px-3 py-2.5">
           <button
             type="button"
-            onClick={() => showToast('发起在线咨询')}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-primary py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft"
+            onClick={toggleLike}
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-full border py-2.5 text-sm font-semibold transition-colors ${
+              post.userLiked ? 'border-destructive text-destructive' : 'border-border text-muted-foreground hover:text-foreground'
+            }`}
           >
-            <MessageCircle className="h-4 w-4" />
-            在线咨询
+            <Heart className="h-4 w-4" fill={post.userLiked ? 'currentColor' : 'none'} />
+            点赞 {formatNumber(post.likes)}
           </button>
-          {phoneUnlocked ? (
-            <button
-              type="button"
-              onClick={() => showToast(`拨打电话 ${post.phone}`)}
-              className="flex flex-[1.2] items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-95"
-            >
-              <Phone className="h-4 w-4" />
-              {post.phone}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => onUnlockPhone?.()}
-              className="flex flex-[1.2] items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-95"
-            >
-              <Lock className="h-4 w-4" />
-              解锁手机号
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={toggleFav}
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-full border py-2.5 text-sm font-semibold transition-colors ${
+              post.userFaved ? 'border-accent text-accent' : 'border-border text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Star className="h-4 w-4" fill={post.userFaved ? 'currentColor' : 'none'} />
+            收藏 {formatNumber(post.favorites)}
+          </button>
         </div>
       )}
     </div>
@@ -271,29 +315,4 @@ function Stat({
   )
 }
 
-function ActionIcon({
-  icon: Icon,
-  label,
-  active,
-  activeColor,
-  onClick,
-}: {
-  icon: typeof Heart
-  label: string
-  active?: boolean
-  activeColor?: string
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`flex w-12 shrink-0 flex-col items-center gap-0.5 text-[10px] transition-colors ${
-        active ? activeColor : 'text-muted-foreground hover:text-foreground'
-      }`}
-    >
-      <Icon className="h-5 w-5" fill={active ? 'currentColor' : 'none'} />
-      {label}
-    </button>
-  )
-}
+
