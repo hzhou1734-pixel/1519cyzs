@@ -4,14 +4,14 @@ import {
   BadgeCheck,
   ChevronRight,
   FileText,
-  Star,
-  Heart,
-  History,
+  Coins,
+  UserPlus,
+  Megaphone,
+  Receipt,
   Wallet,
   Headphones,
   MessageSquare,
   Settings,
-  Crown,
   type LucideIcon,
 } from 'lucide-react'
 import { profile, myToolMenu, type MenuItem } from '@/lib/app-data'
@@ -21,14 +21,14 @@ import { WechatCapsule } from '@/components/shared/wechat-capsule'
 
 const iconMap: Record<string, LucideIcon> = {
   FileText,
-  Star,
-  Heart,
-  History,
+  Coins,
+  UserPlus,
+  Megaphone,
+  Receipt,
   Wallet,
   Headphones,
   MessageSquare,
   Settings,
-  BadgeCheck,
 }
 
 type Props = {
@@ -37,6 +37,7 @@ type Props = {
 
 export function ProfilePage({ onOpenSub }: Props) {
   const { stats } = profile
+  const notifyBadge = 3
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
@@ -64,24 +65,39 @@ export function ProfilePage({ onOpenSub }: Props) {
               <img src={profile.avatar || '/placeholder.svg'} alt={`${profile.name}的头像`} className="h-full w-full object-cover" />
             </span>
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span className="truncate text-base font-bold text-white">{profile.name}</span>
-                {profile.verified && (
-                  <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-accent px-1.5 py-0.5 text-[10px] font-medium text-accent-foreground">
-                    <BadgeCheck className="h-3 w-3" />
-                    {profile.vipLevel}
+              <span className="block truncate text-base font-bold text-white">{profile.name}</span>
+              {profile.verified && (
+                <span className="mt-1 inline-flex shrink-0 items-center gap-0.5 rounded-md bg-accent px-1.5 py-0.5 text-[10px] font-medium text-accent-foreground">
+                  <BadgeCheck className="h-3 w-3" />
+                  {profile.vipLevel}
+                </span>
+              )}
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              {/* 消息通知（喇叭 + 角标） */}
+              <button
+                type="button"
+                onClick={() => onOpenSub('notify')}
+                aria-label="消息通知"
+                className="relative flex h-9 w-9 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/15"
+              >
+                <Megaphone className="h-5 w-5" />
+                {notifyBadge > 0 && (
+                  <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-none text-destructive-foreground ring-2 ring-primary">
+                    {notifyBadge}
                   </span>
                 )}
-              </div>
-              <p className="mt-1 truncate text-[12px] text-white/70">{profile.desc}</p>
+              </button>
+              {/* 设置 */}
+              <button
+                type="button"
+                onClick={() => onOpenSub('settings')}
+                aria-label="设置"
+                className="flex h-9 w-9 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/15"
+              >
+                <Settings className="h-5 w-5" />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => onOpenSub('edit')}
-              className="shrink-0 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur transition-colors hover:bg-white/25"
-            >
-              编辑资料
-            </button>
           </div>
         </div>
       </div>
@@ -89,26 +105,13 @@ export function ProfilePage({ onOpenSub }: Props) {
       <div className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden pb-20">
         <div className="flex flex-col gap-3 px-3 py-3">
           {/* 数据统计卡 */}
-          <div className="grid grid-cols-4 rounded-xl border border-border bg-card py-4 shadow-sm">
+          <div className="grid grid-cols-5 rounded-xl border border-border bg-card py-4 shadow-sm">
+            <StatCell label="余额" value={stats.balance} onClick={() => onOpenSub('wallet')} />
+            <StatCell label="积分" value={stats.points} onClick={() => onOpenSub('points')} />
             <StatCell label="发布" value={stats.posts} onClick={() => onOpenSub('posts')} />
             <StatCell label="收藏" value={stats.favorites} onClick={() => onOpenSub('favorites')} />
             <StatCell label="点赞" value={stats.likes} onClick={() => onOpenSub('likes')} />
-            <StatCell label="浏览" value={stats.views} onClick={() => onOpenSub('history')} />
           </div>
-
-          {/* 会员权益横幅 */}
-          <button
-            type="button"
-            onClick={() => onOpenSub('vip')}
-            className="flex items-center gap-3 overflow-hidden rounded-xl border border-accent/25 bg-accent-soft px-4 py-3 text-left transition-colors hover:bg-accent/10"
-          >
-            <Crown className="h-6 w-6 shrink-0 text-accent" />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold text-foreground">开通商户会员</p>
-              <p className="text-[11px] text-muted-foreground">置顶展示 · 认证标识 · 专属客服</p>
-            </div>
-            <span className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-xs font-bold text-accent-foreground">立即开通</span>
-          </button>
 
           {/* 更多工具 */}
           <MenuGroup title="更多工具" items={myToolMenu} onItem={(m) => onOpenSub(m.key)} />
@@ -149,6 +152,11 @@ function MenuGroup({ title, items, onItem }: { title: string; items: MenuItem[];
                 <Icon className="h-4 w-4" strokeWidth={2} />
               </span>
               <span className="flex-1 text-sm font-medium text-foreground">{m.label}</span>
+              {m.badge ? (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[11px] font-bold text-destructive-foreground">
+                  {m.badge}
+                </span>
+              ) : null}
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </button>
           )

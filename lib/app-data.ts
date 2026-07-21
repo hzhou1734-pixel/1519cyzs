@@ -88,10 +88,12 @@ export const profile = {
   verified: true,
   vipLevel: '认证商户',
   stats: {
+    points: 1280,
     posts: 12,
     favorites: 34,
     likes: 89,
     views: 5680,
+    balance: 71,
   },
 }
 
@@ -106,8 +108,9 @@ export const myServiceMenu: MenuItem[] = [
 ]
 
 export const myToolMenu: MenuItem[] = [
-  { key: 'verify', label: '实名认证', icon: 'BadgeCheck' },
-  { key: 'wallet', label: '我的钱包', icon: 'Wallet' },
+  { key: 'invite', label: '邀请好友', icon: 'UserPlus' },
+  { key: 'orders', label: '订单中心', icon: 'Receipt' },
+  { key: 'history', label: '浏览记录', icon: 'History' },
   { key: 'service', label: '客服中心', icon: 'Headphones' },
   { key: 'feedback', label: '意见反馈', icon: 'MessageSquare' },
   { key: 'settings', label: '设置', icon: 'Settings' },
@@ -145,7 +148,7 @@ export const regions: Region[] = [
     name: '湖南省',
     children: [
       { name: '长沙市', children: [{ name: '岳麓区' }, { name: '天心区' }, { name: '芙蓉区' }, { name: '雨花区' }, { name: '开福区' }, { name: '望城区' }, { name: '高新区' }] },
-      { name: '湘潭市', children: [{ name: '雨湖区' }, { name: '岳塘区' }, { name: '湘潭县' }] },
+      { name: '湘潭市', children: [{ name: '雨湖区' }, { name: '岳��区' }, { name: '湘潭县' }] },
       { name: '株洲市', children: [{ name: '天元区' }, { name: '芦淞区' }, { name: '荷塘区' }] },
       { name: '衡阳市', children: [{ name: '雁峰区' }, { name: '石鼓区' }, { name: '蒸湘区' }] },
     ],
