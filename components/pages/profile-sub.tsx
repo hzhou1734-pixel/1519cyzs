@@ -3,9 +3,7 @@
 import { useMemo, useState } from 'react'
 import {
   BadgeCheck,
-  Headphones,
   Phone,
-  MessageSquare,
   ChevronRight,
   ShieldCheck,
   Crown,
@@ -723,7 +721,7 @@ type Order = {
 
 const ORDERS: Order[] = [
   { id: 'WH20260720001', title: '信息置顶服务（7天）', desc: '大学城旺铺档口转让', amount: 63, date: '2026-07-20 10:24', status: 'unpaid', pointsUsed: 200, pointsAmount: 20, balancePaid: 10, wechatPaid: 33 },
-  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户���属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid', pointsUsed: 100, pointsAmount: 10, balancePaid: 39, wechatPaid: 50 },
+  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户�����属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid', pointsUsed: 100, pointsAmount: 10, balancePaid: 39, wechatPaid: 50 },
   { id: 'WH20260705003', title: '信息置顶服务（3天）', desc: '二手四门冰柜转让', amount: 30, date: '2026-07-05 09:12', status: 'paid', pointsUsed: 300, pointsAmount: 30, balancePaid: 0, wechatPaid: 0 },
   { id: 'WH20260620004', title: '刷新推广服务', desc: '奶茶店转让信息', amount: 10, date: '2026-06-20 20:41', status: 'closed', pointsUsed: 0, pointsAmount: 0, balancePaid: 10, wechatPaid: 0 },
 ]
@@ -1108,6 +1106,28 @@ function FeedbackView({ showToast, onBack }: { showToast: (msg: string) => void;
   const [contact, setContact] = useState('')
   const cats = ['功能建议', '信息纠错', '账号问题', '其他']
   const [cat, setCat] = useState(cats[0])
+  const [images, setImages] = useState<{ id: string; url: string }[]>([])
+  const MAX_IMAGES = 6
+
+  const addImages = (files: FileList | null) => {
+    if (!files) return
+    const room = MAX_IMAGES - images.length
+    if (room <= 0) {
+      showToast(`最多上传 ${MAX_IMAGES} 张图片`)
+      return
+    }
+    const picked = Array.from(files).slice(0, room)
+    const next = picked.map((f) => ({ id: `${Date.now()}-${f.name}-${Math.random()}`, url: URL.createObjectURL(f) }))
+    setImages((prev) => [...prev, ...next])
+  }
+
+  const removeImage = (id: string) => {
+    setImages((prev) => {
+      const target = prev.find((p) => p.id === id)
+      if (target) URL.revokeObjectURL(target.url)
+      return prev.filter((p) => p.id !== id)
+    })
+  }
 
   const submit = () => {
     if (text.trim().length < 5) {
@@ -1149,6 +1169,45 @@ function FeedbackView({ showToast, onBack }: { showToast: (msg: string) => void;
           className="w-full resize-none rounded-xl border border-border bg-card p-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
         />
         <p className="mt-1 text-right text-[11px] text-muted-foreground">{text.length}/200</p>
+      </div>
+
+      <div>
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-sm font-semibold text-foreground">上传图片（选填）</p>
+          <span className="text-[11px] text-muted-foreground">{images.length}/{MAX_IMAGES}</span>
+        </div>
+        <div className="grid grid-cols-3 gap-2.5">
+          {images.map((img) => (
+            <div key={img.id} className="relative aspect-square overflow-hidden rounded-xl border border-border bg-muted">
+              <img src={img.url || '/placeholder.svg'} alt="反馈附件" className="h-full w-full object-cover" />
+              <button
+                type="button"
+                onClick={() => removeImage(img.id)}
+                aria-label="删除图片"
+                className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/60 text-background transition-colors hover:bg-foreground/80"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+          {images.length < MAX_IMAGES && (
+            <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary">
+              <Plus className="h-6 w-6" />
+              <span className="text-[11px]">添加图片</span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  addImages(e.target.files)
+                  e.target.value = ''
+                }}
+              />
+            </label>
+          )}
+        </div>
+        <p className="mt-1.5 text-[11px] text-muted-foreground">最多上传 {MAX_IMAGES} 张，支持 JPG、PNG 格式</p>
       </div>
 
       <div>
