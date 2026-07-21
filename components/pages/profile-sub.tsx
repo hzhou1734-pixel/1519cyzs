@@ -32,6 +32,7 @@ import {
   Share2,
   UserPlus,
   Receipt,
+  QrCode,
   type LucideIcon,
 } from 'lucide-react'
 import { posts as seedPosts, type Post, formatNumber } from '@/lib/home-data'
@@ -480,6 +481,7 @@ function InviteView({ showToast }: { showToast: (msg: string) => void }) {
   const code = 'WHYP8888'
   const invited = INVITE_RECORDS.length
   const earned = INVITE_RECORDS.reduce((s, r) => s + r.reward, 0)
+  const [posterOpen, setPosterOpen] = useState(false)
 
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
@@ -512,7 +514,7 @@ function InviteView({ showToast }: { showToast: (msg: string) => void }) {
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => showToast('已生成邀请海报')}
+          onClick={() => setPosterOpen(true)}
           className="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-card py-3 text-sm font-bold text-foreground shadow-sm transition-colors hover:bg-muted"
         >
           <Share2 className="h-4 w-4 text-primary" />
@@ -545,6 +547,79 @@ function InviteView({ showToast }: { showToast: (msg: string) => void }) {
           ))}
         </div>
       </section>
+
+      {posterOpen && <InvitePoster code={code} onClose={() => setPosterOpen(false)} showToast={showToast} />}
+    </div>
+  )
+}
+
+function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () => void; showToast: (msg: string) => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label="邀请海报"
+      onClick={onClose}
+    >
+      <div className="relative w-full max-w-[320px]" onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="关闭"
+          className="absolute -top-10 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        {/* 海报卡片 */}
+        <div className="overflow-hidden rounded-2xl bg-card shadow-xl">
+          <div className="relative bg-gradient-to-br from-primary to-[#16304f] px-5 pb-6 pt-7 text-center">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-20"
+              style={{ backgroundImage: 'radial-gradient(circle at 85% 12%, rgba(230,126,34,0.8), transparent 45%)' }}
+            />
+            <span className="relative mx-auto flex h-14 w-14 items-center justify-center overflow-hidden rounded-full ring-2 ring-white/40">
+              <img src={profile.avatar || '/placeholder.svg'} alt={`${profile.name}的头像`} className="h-full w-full object-cover" />
+            </span>
+            <p className="relative mt-2 text-sm font-bold text-white">{profile.name}</p>
+            <p className="relative mt-0.5 text-[12px] text-white/70">邀请你加入万户优铺</p>
+            <p className="relative mt-4 text-lg font-bold leading-snug text-white text-balance">
+              高校餐饮商业信息平台
+            </p>
+            <p className="relative mt-1 text-[12px] text-white/80">注册即得 50 积分，档口转让 · 招商一站搞定</p>
+          </div>
+
+          <div className="flex items-center gap-3 px-5 py-4">
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-border bg-muted text-primary">
+              <QrCode className="h-12 w-12" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[12px] text-muted-foreground">扫码或输入邀请码注册</p>
+              <p className="mt-0.5 font-mono text-lg font-bold tracking-widest text-foreground">{code}</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">长按识别二维码 · 立即领取奖励</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => showToast('海报已保存到相册')}
+            className="rounded-full bg-white py-2.5 text-sm font-bold text-foreground shadow-sm transition-transform active:scale-95"
+          >
+            保存到相册
+          </button>
+          <button
+            type="button"
+            onClick={() => showToast('已唤起微信分享')}
+            className="rounded-full bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition-transform active:scale-95"
+          >
+            分享给好友
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
