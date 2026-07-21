@@ -27,7 +27,6 @@ import {
   MapPin,
   Clock,
   Wallet,
-  Smartphone,
   Check,
   Share2,
   UserPlus,
@@ -40,6 +39,15 @@ import { posts as seedPosts, type Post, formatNumber } from '@/lib/home-data'
 import { profile } from '@/lib/app-data'
 import { PageHeader } from '@/components/shared/page-header'
 import { EmptyState } from '@/components/shared/empty-state'
+
+/** 微信品牌图标（来自 theSVG.org，微信商标归腾讯所有） */
+function WechatIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden className={className}>
+      <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z" />
+    </svg>
+  )
+}
 
 type Props = {
   sub: string
@@ -359,7 +367,7 @@ function MyHistoryView({ onOpenPost, showToast }: { onOpenPost: (id: number) => 
   // 为演示分配浏览时间分组
   const initial = useMemo(() => {
     const src = seedPosts.slice(0, 7)
-    const buckets = ['今天', '今天', '今天', '昨天', '昨天', '更早', '更早']
+    const buckets = ['今天', '今天', '今天', '昨天', '昨天', '���早', '更早']
     const times = ['14:32', '11:05', '09:18', '20:47', '15:22', '07-16 18:30', '07-14 10:12']
     return src.map((p, i) => ({ ...p, group: buckets[i], viewedAt: times[i] }))
   }, [])
@@ -812,7 +820,7 @@ function OrdersView({ showToast }: { showToast: (msg: string) => void }) {
                   {o.wechatPaid > 0 && (
                     <div className="flex items-center justify-between">
                       <dt className="flex items-center gap-1 text-muted-foreground">
-                        <Smartphone className="h-3.5 w-3.5 text-[#07c160]" />
+                        <WechatIcon className="h-3.5 w-3.5 text-[#07c160]" />
                         微信支付
                       </dt>
                       <dd className="font-mono font-semibold text-foreground">￥{o.wechatPaid.toFixed(2)}</dd>
@@ -924,7 +932,7 @@ function WalletView({ showToast }: { showToast: (msg: string) => void }) {
 /* ------------------------- 充值面板 ------------------------- */
 
 const RECHARGE_METHODS = [
-  { key: '微信支付', icon: Smartphone },
+  { key: '微信支付', icon: WechatIcon },
 ]
 
 function RechargeSheet({ open, onClose, onConfirm }: { open: boolean; onClose: () => void; onConfirm: (amount: number, method: string) => void }) {
@@ -989,7 +997,7 @@ function RechargeSheet({ open, onClose, onConfirm }: { open: boolean; onClose: (
                   active ? 'border-primary bg-primary/5' : 'border-border bg-card'
                 }`}
               >
-                <Icon className="h-5 w-5 text-primary" />
+                <Icon className="h-5 w-5 text-[#07c160]" />
                 <span className="flex-1 text-left text-sm font-medium text-foreground">{m.key}</span>
                 <span className={`flex h-5 w-5 items-center justify-center rounded-full border ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border'}`}>
                   {active && <Check className="h-3 w-3" />}
@@ -1090,7 +1098,7 @@ function ServiceView({ showToast }: { showToast: (msg: string) => void }) {
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
       <div className="grid grid-cols-2 gap-3">
-        <ContactCard icon={Headphones} label="在线客服" desc="9:00 - 21:00" onClick={() => showToast('接入在线客服')} />
+        <ContactCard icon={Headphones} label="在线��服" desc="9:00 - 21:00" onClick={() => showToast('接入在线客服')} />
         <ContactCard icon={Phone} label="客服热线" desc="400-888-6666" onClick={() => showToast('拨打 400-888-6666')} />
       </div>
 
