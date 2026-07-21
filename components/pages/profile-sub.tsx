@@ -723,7 +723,7 @@ type Order = {
 
 const ORDERS: Order[] = [
   { id: 'WH20260720001', title: '信息置顶服务（7天）', desc: '大学城旺铺档口转让', amount: 63, date: '2026-07-20 10:24', status: 'unpaid', pointsUsed: 200, pointsAmount: 20, balancePaid: 10, wechatPaid: 33 },
-  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户专属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid', pointsUsed: 100, pointsAmount: 10, balancePaid: 39, wechatPaid: 50 },
+  { id: 'WH20260708002', title: '商户会员（年度）', desc: '认证商户���属权益', amount: 99, date: '2026-07-08 15:30', status: 'paid', pointsUsed: 100, pointsAmount: 10, balancePaid: 39, wechatPaid: 50 },
   { id: 'WH20260705003', title: '信息置顶服务（3天）', desc: '二手四门冰柜转让', amount: 30, date: '2026-07-05 09:12', status: 'paid', pointsUsed: 300, pointsAmount: 30, balancePaid: 0, wechatPaid: 0 },
   { id: 'WH20260620004', title: '刷新推广服务', desc: '奶茶店转让信息', amount: 10, date: '2026-06-20 20:41', status: 'closed', pointsUsed: 0, pointsAmount: 0, balancePaid: 10, wechatPaid: 0 },
 ]
@@ -1057,117 +1057,47 @@ function SheetFooter({ disabled, label, onClick }: { disabled: boolean; label: s
 
 /* ------------------------- 客服中心 ------------------------- */
 
-const FAQS: { q: string; a: string[] }[] = [
-  {
-    q: '如何发布档口招商信息？',
-    a: [
-      '在首页底部点击「发布」按钮进入发布页，选择「档口招商」分类。',
-      '依次填写标题、详细���述、所在地区、联系电话，并可上传门���实景图片、添加标签。',
-      '信息核对无误后点击「确认发布」，平台将在 1 个工作日内完成审核，通过后即对外展示。',
-    ],
-  },
-  {
-    q: '认证商户有哪些权益？',
-    a: [
-      '认证商户在信息列表中拥有专属「认证」标识，可显著提升用户信任度。',
-      '认证账号发布的信息将获得更高的曝光权重，优先展示在分类列表前列。',
-      '此外还可享受专属客服一对一对接、批量发布、数据统计等增值服务。',
-    ],
-  },
-  {
-    q: '信息置顶收费标准是多少？',
-    a: [
-      '信息置顶按天计费：普通置顶 10 元/天，分类首屏置顶 30 元/天。',
-      '认证商户享 8 折优惠，连续购买 7 天及以上另享 9 折。',
-      '费用从账户余额中扣除，可在「我的钱包」中充值后购买。',
-    ],
-  },
-  {
-    q: '如何举报虚假信息？',
-    a: [
-      '进入任意信息详情页，点击右上角菜单中的「举报」按钮。',
-      '选择举报类型（虚假信息 / 联系方式失效 / 涉嫌欺诈等）并补充说明。',
-      '平台将在 24 小时内核实处理，一经查实将对违规账号采取下架、封禁等措施。',
-    ],
-  },
-]
-
 function ServiceView({ showToast }: { showToast: (msg: string) => void }) {
-  const [expanded, setExpanded] = useState<number | null>(null)
+  const phone = '400-888-6666'
 
   return (
     <div className="flex flex-col gap-3 px-3 py-3">
-      <div className="grid grid-cols-2 gap-3">
-        <ContactCard icon={Headphones} label="在线��服" desc="9:00 - 21:00" onClick={() => showToast('接入在线客服')} />
-        <ContactCard icon={Phone} label="客服热线" desc="400-888-6666" onClick={() => showToast('拨打 400-888-6666')} />
-      </div>
-
-      <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <h2 className="px-4 pb-1 pt-3 text-[12px] font-semibold text-muted-foreground">常见问题</h2>
-        <div className="flex flex-col">
-          {FAQS.map((item, i) => {
-            const open = expanded === i
-            return (
-              <div key={i} className={i !== FAQS.length - 1 ? 'border-b border-border' : ''}>
-                <button
-                  type="button"
-                  onClick={() => setExpanded(open ? null : i)}
-                  aria-expanded={open}
-                  className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/60"
-                >
-                  <MessageSquare className="h-4 w-4 shrink-0 text-primary" />
-                  <span className="flex-1 text-sm font-medium text-foreground">{item.q}</span>
-                  <ChevronRight className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-90' : ''}`} />
-                </button>
-                {open && (
-                  <div className="px-4 pb-4 pl-11 duration-200 animate-in fade-in slide-in-from-top-1">
-                    <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-3">
-                      {item.a.map((p, j) => (
-                        <p key={j} className="text-[13px] leading-relaxed text-muted-foreground">
-                          {p}
-                        </p>
-                      ))}
-                    </div>
-                    <div className="mt-3 flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => showToast('感谢你的反馈')}
-                        className="rounded-full border border-border px-3 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-muted"
-                      >
-                        问题已解决
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => showToast('接入在线客服')}
-                        className="rounded-full bg-primary-soft px-3 py-1.5 text-[12px] font-medium text-primary transition-colors hover:bg-primary/10"
-                      >
-                        联系客服
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
+      {/* 微信客服二维码 */}
+      <section className="flex flex-col items-center rounded-xl border border-border bg-card px-4 py-6 shadow-sm">
+        <div className="flex items-center gap-1.5">
+          <WechatIcon className="h-5 w-5 text-[#07c160]" />
+          <h2 className="text-base font-bold text-foreground">微信客服</h2>
+        </div>
+        <p className="mt-1 text-[12px] text-muted-foreground">扫码添加客服微信，1 对 1 为你解答</p>
+        <div className="mt-4 rounded-2xl border border-border bg-white p-3 shadow-sm">
+          <img
+            src="/images/service-wechat-qr.png"
+            alt="客服微信二维码"
+            className="h-44 w-44 object-contain"
+          />
+        </div>
+        <div className="mt-4 flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5">
+          <Clock className="h-3.5 w-3.5 text-primary" />
+          <span className="text-[12px] font-medium text-foreground">在线时间 9:00 - 21:00</span>
         </div>
       </section>
-    </div>
-  )
-}
 
-function ContactCard({ icon: Icon, label, desc, onClick }: { icon: LucideIcon; label: string; desc: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card py-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-    >
-      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-soft text-primary">
-        <Icon className="h-5 w-5" />
-      </span>
-      <span className="text-sm font-semibold text-foreground">{label}</span>
-      <span className="text-[11px] text-muted-foreground">{desc}</span>
-    </button>
+      {/* 电话客服 */}
+      <button
+        type="button"
+        onClick={() => showToast(`拨打 ${phone}`)}
+        className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-4 text-left shadow-sm transition-colors hover:bg-muted/60"
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
+          <Phone className="h-5 w-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-foreground">电话客服</p>
+          <p className="mt-0.5 font-mono text-base font-bold text-primary">{phone}</p>
+        </div>
+        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+      </button>
+    </div>
   )
 }
 
