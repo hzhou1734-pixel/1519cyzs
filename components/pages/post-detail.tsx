@@ -114,15 +114,14 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
               {post.publishDate} 发布 · {post.time}
             </span>
           </div>
-          {!isOwn && (
-            <button
-              type="button"
-              onClick={() => showToast(`已关注 ${post.username}`)}
-              className="shrink-0 rounded-full border border-primary px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              关注
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => showToast('已复制链接，快去分享吧')}
+            className="flex shrink-0 items-center gap-1 rounded-full border border-primary px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+            分享
+          </button>
         </div>
 
         {/* 正文 */}
@@ -165,11 +164,11 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
 
           <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">{post.desc}</p>
 
-          {/* 图集 */}
+          {/* 图集：一行3个小图 */}
           {post.images.length > 0 && (
-            <div className="mt-4 flex flex-col gap-2.5">
+            <div className="mt-4 grid grid-cols-3 gap-2">
               {post.images.map((img, i) => (
-                <div key={i} className="overflow-hidden rounded-xl bg-muted">
+                <div key={i} className="aspect-square overflow-hidden rounded-lg bg-muted">
                   <img
                     src={img || '/placeholder.svg'}
                     alt={`${post.title}配图${i + 1}`}
@@ -267,25 +266,37 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
       {/* 底部操作栏（自己发布的信息不显示联系入口） */}
       {!isOwn && (
         <div className="flex items-center gap-3 border-t border-border bg-card px-3 py-2.5">
+          {/* 评论入口长条 */}
+          <button
+            type="button"
+            onClick={() => showToast('发表评论')}
+            className="flex flex-1 items-center rounded-full bg-muted px-4 py-2.5 text-[13px] text-muted-foreground transition-colors hover:bg-muted/70"
+          >
+            说点什么...
+          </button>
+          {/* 点赞 */}
           <button
             type="button"
             onClick={toggleLike}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-full border py-2.5 text-sm font-semibold transition-colors ${
-              post.userLiked ? 'border-destructive text-destructive' : 'border-border text-muted-foreground hover:text-foreground'
+            aria-label="点赞"
+            className={`flex shrink-0 flex-col items-center gap-0.5 text-[10px] transition-colors ${
+              post.userLiked ? 'text-destructive' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <Heart className="h-4 w-4" fill={post.userLiked ? 'currentColor' : 'none'} />
-            点赞 {formatNumber(post.likes)}
+            <Heart className="h-5 w-5" fill={post.userLiked ? 'currentColor' : 'none'} />
+            {formatNumber(post.likes)}
           </button>
+          {/* 收藏 */}
           <button
             type="button"
             onClick={toggleFav}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-full border py-2.5 text-sm font-semibold transition-colors ${
-              post.userFaved ? 'border-accent text-accent' : 'border-border text-muted-foreground hover:text-foreground'
+            aria-label="收藏"
+            className={`flex shrink-0 flex-col items-center gap-0.5 text-[10px] transition-colors ${
+              post.userFaved ? 'text-accent' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <Star className="h-4 w-4" fill={post.userFaved ? 'currentColor' : 'none'} />
-            收藏 {formatNumber(post.favorites)}
+            <Star className="h-5 w-5" fill={post.userFaved ? 'currentColor' : 'none'} />
+            {formatNumber(post.favorites)}
           </button>
         </div>
       )}
