@@ -89,7 +89,7 @@ export function PostDetail({ postId, onBack, showToast, isOwn = false, phoneUnlo
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
       <PageHeader title="信息详情" onBack={onBack} />
 
-      <div className={`no-scrollbar flex-1 overflow-y-auto overflow-x-hidden ${isOwn ? 'pb-6' : 'pb-24'}`}>
+      <div className={`no-scrollbar flex-1 overflow-y-auto overflow-x-hidden ${isOwn ? 'pb-6' : 'pb-4'}`}>
         {/* 发布者 */}
         <div className="flex items-center gap-2.5 border-b border-border bg-card px-4 py-3.5">
           <span className="h-11 w-11 shrink-0 overflow-hidden rounded-full ring-1 ring-border">
