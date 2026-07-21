@@ -37,7 +37,7 @@ type Props = {
 
 export function ProfilePage({ onOpenSub }: Props) {
   const { stats } = profile
-  const notifyBadge = myToolMenu.find((m) => m.key === 'notify')?.badge ?? 0
+  const notifyBadge = 3
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background">
