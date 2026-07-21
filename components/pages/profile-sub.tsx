@@ -573,29 +573,29 @@ function InvitePoster({ code, onClose, showToast }: { code: string; onClose: () 
         </button>
       </div>
 
-      <div className="mt-3 w-full" onClick={(e) => e.stopPropagation()}>
+      <div className="mt-16 w-full" onClick={(e) => e.stopPropagation()}>
         {/* 海报卡片 */}
         <div className="overflow-hidden rounded-2xl bg-card shadow-xl">
-          <div className="relative bg-gradient-to-br from-primary to-[#16304f] px-5 pb-6 pt-7 text-center">
+          <div className="relative bg-gradient-to-br from-primary to-[#16304f] px-5 pb-10 pt-12 text-center">
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 opacity-20"
               style={{ backgroundImage: 'radial-gradient(circle at 85% 12%, rgba(230,126,34,0.8), transparent 45%)' }}
             />
-            <span className="relative mx-auto flex h-14 w-14 items-center justify-center overflow-hidden rounded-full ring-2 ring-white/40">
+            <span className="relative mx-auto flex h-20 w-20 items-center justify-center overflow-hidden rounded-full ring-2 ring-white/40">
               <img src={profile.avatar || '/placeholder.svg'} alt={`${profile.name}的头像`} className="h-full w-full object-cover" />
             </span>
-            <p className="relative mt-2 text-sm font-bold text-white">{profile.name}</p>
-            <p className="relative mt-0.5 text-[12px] text-white/70">邀请你加入万户优铺</p>
-            <p className="relative mt-4 text-lg font-bold leading-snug text-white text-balance">
+            <p className="relative mt-3 text-base font-bold text-white">{profile.name}</p>
+            <p className="relative mt-1 text-[12px] text-white/70">邀请你加入万户优铺</p>
+            <p className="relative mt-6 text-xl font-bold leading-snug text-white text-balance">
               高校餐饮商业信息平台
             </p>
-            <p className="relative mt-1 text-[12px] text-white/80">注册即得 50 积分，档口转让 · 招商一站搞定</p>
+            <p className="relative mt-2 text-[12px] text-white/80">注册即得 50 积分，档口转让 · 招商一站搞定</p>
           </div>
 
-          <div className="flex items-center gap-3 px-5 py-4">
-            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-border bg-muted text-primary">
-              <QrCode className="h-12 w-12" />
+          <div className="flex items-center gap-3 px-5 py-6">
+            <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg border border-border bg-muted text-primary">
+              <QrCode className="h-14 w-14" />
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[12px] text-muted-foreground">扫码或输入邀请码注册</p>
