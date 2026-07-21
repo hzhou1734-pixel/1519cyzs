@@ -130,7 +130,7 @@ export const publishSubCats: Record<string, string[]> = {
   shop: ['沿街旺铺', '商业街铺', '综合体铺', '社区商铺'],
   brand: ['餐饮加盟', '饮品加盟', '小吃加盟', '中餐加盟'],
   training: ['面食培训', '饮品培训', '小吃培训', '烧烤培训'],
-  sauce: ['底料供应', '酱料代工', '原料批发', '设备供应'],
+  sauce: ['底料供应', '酱���代工', '原料批发', '设备供应'],
 }
 
 // 发布页预设标签（可多选，也支持自定义添加）
@@ -215,7 +215,7 @@ export type Notice = {
 export const notices: Notice[] = [
   {
     id: 1,
-    title: '���迎使用万户优铺，真实信息共建诚信平台',
+    title: '欢迎使用万户优铺，真实信息共建诚信平台',
     tag: '平台公告',
     date: '2026-07-09',
     pinned: true,
