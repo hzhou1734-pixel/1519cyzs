@@ -797,15 +797,6 @@ function OrdersView({ showToast }: { showToast: (msg: string) => void }) {
                       </button>
                     </>
                   )}
-                  {o.status === 'paid' && (
-                    <button
-                      type="button"
-                      onClick={() => showToast('发票申请已提交')}
-                      className="rounded-full border border-border px-3.5 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-muted"
-                    >
-                      申请发票
-                    </button>
-                  )}
                 </div>
               </div>
             )
