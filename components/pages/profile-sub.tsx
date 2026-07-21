@@ -1160,22 +1160,21 @@ function FeedbackView({ showToast, onBack }: { showToast: (msg: string) => void;
 
       <div>
         <p className="mb-2 text-sm font-semibold text-foreground">问题描述</p>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={5}
-          maxLength={200}
-          placeholder="请详细描述你遇到的问题或建议…"
-          className="w-full resize-none rounded-xl border border-border bg-card p-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
-        />
-        <p className="mt-1 text-right text-[11px] text-muted-foreground">{text.length}/200</p>
+        <div className="relative rounded-xl border border-border bg-card transition-colors focus-within:border-primary">
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={5}
+            maxLength={200}
+            placeholder="请详细描述你遇到的问题或建议…"
+            className="w-full resize-none rounded-xl bg-transparent p-3 pb-6 text-sm text-foreground outline-none placeholder:text-muted-foreground"
+          />
+          <span className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-muted-foreground">{text.length}/200</span>
+        </div>
       </div>
 
       <div>
-        <div className="mb-2 flex items-center justify-between">
-          <p className="text-sm font-semibold text-foreground">上传图片（选填）</p>
-          <span className="text-[11px] text-muted-foreground">{images.length}/{MAX_IMAGES}</span>
-        </div>
+        <p className="mb-2 text-sm font-semibold text-foreground">上传图片（选填）</p>
         <div className="grid grid-cols-3 gap-2.5">
           {images.map((img) => (
             <div key={img.id} className="relative aspect-square overflow-hidden rounded-xl border border-border bg-muted">
