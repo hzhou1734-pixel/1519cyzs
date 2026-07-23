@@ -149,7 +149,7 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   'sauce/酱料代工': {
     title: '酱料详情',
     fields: [
-      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名称', maxLength: 30 },
+      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名���', maxLength: 30 },
       { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
     ],
   },
@@ -165,6 +165,15 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
     fields: [
       { key: 'name', label: '设备名称', placeholder: '请输入设备名称', maxLength: 30 },
       { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+    ],
+  },
+  培训供应: {
+    title: '培训详情',
+    fields: [
+      { key: 'projectName', label: '项目名称', placeholder: '请输入项目名称', maxLength: 30 },
+      { key: 'trainTime', label: '培训时间', placeholder: '请输入培训时间', maxLength: 20 },
+      { key: 'trainFee', label: '培训费用', placeholder: '请输入培训费用', maxLength: 20 },
+      { key: 'address', label: '详细地址', placeholder: '请输入详细地址', maxLength: 40 },
     ],
   },
   default: {
@@ -202,6 +211,11 @@ Object.assign(DETAIL_FIELDS, {
   'brand/饮品加盟': reuse('加盟详情', '商铺出租'),
   'brand/小吃加盟': reuse('加盟详情', '商铺出租'),
   'brand/中餐加盟': reuse('加盟详情', '商铺出租'),
+  // 技术培训
+  'training/面食培训': reuse('培训详情', '培训供应'),
+  'training/饮品培训': reuse('培训详情', '培训供应'),
+  'training/小吃培训': reuse('培训详情', '培训供应'),
+  'training/烧烤培训': reuse('培训详情', '培训供应'),
 })
 
 type Props = {
