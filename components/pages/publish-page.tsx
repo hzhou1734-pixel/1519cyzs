@@ -139,6 +139,13 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'dailyRevenue', label: '日均营业额', placeholder: '例：单个档口3000元', maxLength: 20 },
     ],
   },
+  酱料供应: {
+    title: '酱料详情',
+    fields: [
+      { key: 'sauceName', label: '酱料名称', placeholder: '请输入酱料名称', maxLength: 30 },
+      { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+    ],
+  },
   default: {
     title: '商铺详情',
     fields: [
@@ -174,6 +181,11 @@ Object.assign(DETAIL_FIELDS, {
   'brand/饮品加盟': reuse('加盟详情', '商铺出租'),
   'brand/小吃加盟': reuse('加盟详情', '商铺出租'),
   'brand/中餐加盟': reuse('加盟详情', '商铺出租'),
+  // 酱料供应
+  'sauce/底料供应': reuse('酱料详情', '酱料供应'),
+  'sauce/酱料代工': reuse('酱料详情', '酱料供应'),
+  'sauce/原料批发': reuse('酱料详情', '酱料供应'),
+  'sauce/设备供应': reuse('酱料详情', '酱料供应'),
 })
 
 type Props = {
