@@ -19,6 +19,8 @@ type Props = {
 const UNLOCK_FEE = 2
 // 卖家手机号（解锁后展示）
 const SELLER_PHONE = '138 8888 6666'
+// 脱敏后的手机号：中间 4 位以 **** 替代（如 138 **** 6666）
+const SELLER_PHONE_MASKED = SELLER_PHONE.replace(/\D/g, '').replace(/(\d{3})\d{4}(\d{4})/, '$1 **** $2')
 
 // 依据成色给出一段合理的补充描述（原型数据无长描述，按语义生成）
 function buildDesc(item: IdleItem) {
@@ -101,11 +103,11 @@ export function IdleDetail({ itemId, onBack, showToast, phoneUnlocked = false, o
         {phoneUnlocked ? (
           <button
             type="button"
-            onClick={() => showToast(`拨打电话 ${SELLER_PHONE}`)}
+            onClick={() => showToast(`拨打电话 ${SELLER_PHONE_MASKED}`)}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-bold text-accent-foreground shadow-sm transition-transform hover:scale-[1.01] active:scale-[0.99]"
           >
             <Phone className="h-4 w-4" />
-            {SELLER_PHONE}
+            {SELLER_PHONE_MASKED}
           </button>
         ) : (
           <button
