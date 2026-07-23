@@ -149,7 +149,7 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   'sauce/酱料代工': {
     title: '酱料详情',
     fields: [
-      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名称', maxLength: 30 },
+      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名���', maxLength: 30 },
       { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
     ],
   },
@@ -195,6 +195,28 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入日均营业额', maxLength: 20 },
     ],
   },
+  转租供应: {
+    title: '转租详情',
+    fields: [
+      { key: 'shopName', label: '店铺名称', placeholder: '例：万达广场1号铺', maxLength: 30 },
+      { key: 'location', label: '所在位置', placeholder: '例：市中心商业街', maxLength: 30 },
+      { key: 'floor', label: '所在楼层', placeholder: '例：一楼临街', maxLength: 10 },
+      { key: 'feeMode', label: '收费模式', placeholder: '例：租金+扣点', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '例：单店3000元', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '例：3年', maxLength: 20 },
+    ],
+  },
+  旺铺供应: {
+    title: '旺铺详情',
+    fields: [
+      { key: 'shopName', label: '旺铺名称', placeholder: '例：万达广场1号铺', maxLength: 30 },
+      { key: 'location', label: '所在位置', placeholder: '例：市中心商业街', maxLength: 30 },
+      { key: 'floor', label: '所在楼层', placeholder: '例：一楼临街', maxLength: 10 },
+      { key: 'feeMode', label: '收费模式', placeholder: '例：租金+扣点', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '例：单店3000元', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '例：3年', maxLength: 20 },
+    ],
+  },
 }
 
 // 批量映射：为尚未单独配置的一级分类，复用已完善的二级分类表单字段（仅调整标题）
@@ -206,16 +228,16 @@ Object.assign(DETAIL_FIELDS, {
   'park/食堂承包': reuse('承包详情', '整体承包'),
   'park/商铺出租': reuse('出租详情', '商铺出租'),
   'park/自助餐招商': reuse('招商详情', '柜台招商'),
-  // 生意转让
-  'biz/餐饮转让': reuse('转让详情', '商铺转让'),
-  'biz/旺铺转让': reuse('转让详情', '商铺转让'),
-  'biz/设备转让': reuse('转让详情', '商铺转让'),
-  'biz/仓库转让': reuse('转让详情', '商铺转让'),
-  // 旺铺出租
-  'shop/沿街旺铺': reuse('出租详情', '商铺出租'),
-  'shop/商业街铺': reuse('出租详情', '商铺出租'),
-  'shop/综合体铺': reuse('出租详情', '商铺出租'),
-  'shop/社区商铺': reuse('出租详情', '商铺出租'),
+  // 生意转让（店铺转租）
+  'biz/餐饮转让': reuse('转租详情', '转租供应'),
+  'biz/旺铺转让': reuse('转租详情', '转租供应'),
+  'biz/设备转让': reuse('转租详情', '转租供应'),
+  'biz/仓库转让': reuse('转租详情', '转租供应'),
+  // 旺铺出租（校外旺铺）
+  'shop/沿街旺铺': reuse('旺铺详情', '旺铺供应'),
+  'shop/商业街铺': reuse('旺铺详情', '旺铺供应'),
+  'shop/综合体铺': reuse('旺铺详情', '旺铺供应'),
+  'shop/社区商铺': reuse('旺铺详情', '旺铺供应'),
   // 品牌加盟
   'brand/餐饮加盟': reuse('加盟详情', '加盟供应'),
   'brand/饮品加盟': reuse('加盟详情', '加盟供应'),
