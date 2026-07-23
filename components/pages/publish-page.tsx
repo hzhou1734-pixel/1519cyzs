@@ -149,7 +149,7 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   'sauce/酱料代工': {
     title: '酱料详情',
     fields: [
-      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名�������', maxLength: 30 },
+      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名���������', maxLength: 30 },
       { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
     ],
   },
@@ -188,11 +188,11 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   加盟供应: {
     title: '加盟详情',
     fields: [
-      { key: 'brandName', label: '品牌名称', placeholder: '请输入品牌名称', maxLength: 30 },
-      { key: 'projectType', label: '项目类型', placeholder: '请输入项目类型', maxLength: 20 },
-      { key: 'joinFee', label: '加盟费用', placeholder: '请输入加盟费用', maxLength: 20 },
-      { key: 'storeCount', label: '门店数量', placeholder: '请输入门店数量', maxLength: 20 },
-      { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入日均营业额', maxLength: 20 },
+      { key: 'brandName', label: '品牌名称', placeholder: '例：蜜雪冰城', maxLength: 30 },
+      { key: 'projectType', label: '项目类型', placeholder: '例：奶茶饮品', maxLength: 20 },
+      { key: 'joinFee', label: '加盟费用', placeholder: '例：8万元起', maxLength: 20 },
+      { key: 'storeCount', label: '门店数量', placeholder: '例：全国3000+家', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '例：单店3000元', maxLength: 20 },
     ],
   },
   转租供应: {
