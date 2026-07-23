@@ -149,7 +149,7 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   'sauce/酱料代工': {
     title: '酱料详情',
     fields: [
-      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名���', maxLength: 30 },
+      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名称', maxLength: 30 },
       { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
     ],
   },
@@ -324,7 +324,7 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
       onPay(plan.amount, `置顶推广 ${plan.title.replace('置顶', '')}`)
       return
     }
-    showToast('发布成功，等���审核')
+    showToast('发布成功，等待审核')
     setTimeout(onPublished ?? onDone, 900)
   }
 
@@ -368,7 +368,7 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
               onChange={(e) => setDesc(e.target.value)}
               maxLength={500}
               rows={5}
-              placeholder="面积、经营品类、收费模式���进场要求等，信息越详细越容易成交"
+              placeholder="面积、经营品类、收费模式、进场要求等，信息越详细越容易成交"
               className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2.5 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20"
             />
           </section>
