@@ -22,6 +22,34 @@ const SELLER_PHONE = '138 8888 6666'
 // 脱敏后的手机号：中间 4 位以 **** 替代（如 138 **** 6666）
 const SELLER_PHONE_MASKED = SELLER_PHONE.replace(/\D/g, '').replace(/(\d{3})\d{4}(\d{4})/, '$1 **** $2')
 
+// 闲置物品评论（原型示例数据）
+const IDLE_COMMENTS: {
+  id: number
+  name: string
+  avatar: string
+  text: string
+  date: string
+  reply?: string
+}[] = [
+  {
+    id: 1,
+    name: '开店的老陈',
+    avatar: '/images/avatar2.png',
+    text: '成色看着还不错，用了多久了？可以小刀不？',
+    date: '3天前',
+    reply: '用了半年多，功能都正常，价格可以聊，诚心要可小刀。',
+  },
+  { id: 2, name: '奶茶店阿玲', avatar: '/images/avatar3.png', text: '同城可以送货上门吗？大概多重？', date: '1天前' },
+  {
+    id: 3,
+    name: '夜市小吃摊',
+    avatar: '/images/avatar5.png',
+    text: '有没有发票和保修卡？想买来备用。',
+    date: '6小时前',
+    reply: '发票在的，保修还剩几个月，可以一起给你。',
+  },
+]
+
 // 依据成色给出一段合理的补充描述（原型数据无长描述，按语义生成）
 function buildDesc(item: IdleItem) {
   return `${item.title}，成色${item.cond}，功能完好可正常使用。因店铺调整/升级设备闲置转让，诚心出售，价格可小刀。支持当面验货，${item.location}自提为主，大件可协助联系物流。有意者请电话或在线联系，非诚勿扰。`
@@ -92,6 +120,49 @@ export function IdleDetail({ itemId, onBack, showToast, phoneUnlocked = false, o
           <h2 className="mb-2 text-sm font-bold text-foreground">物品描述</h2>
           <p className="text-sm leading-relaxed text-foreground/90">{buildDesc(item)}</p>
         </div>
+
+        {/* 用户评论 */}
+        <section className="mt-2 bg-card px-4 py-4">
+          <h2 className="mb-3 flex items-center gap-1.5 text-sm font-bold text-foreground">
+            用户评论
+            <span className="text-[12px] font-normal text-muted-foreground">({IDLE_COMMENTS.length})</span>
+          </h2>
+          <ul className="flex flex-col">
+            {IDLE_COMMENTS.map((c, i) => (
+              <li
+                key={c.id}
+                className={`flex gap-2.5 py-3 ${i !== IDLE_COMMENTS.length - 1 ? 'border-b border-border' : ''}`}
+              >
+                <span className="h-8 w-8 shrink-0 overflow-hidden rounded-full ring-1 ring-border">
+                  <img src={c.avatar || '/placeholder.svg'} alt={`${c.name}的头像`} className="h-full w-full object-cover" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="truncate text-[13px] font-semibold text-foreground">{c.name}</span>
+                    <span className="shrink-0 text-[11px] text-muted-foreground">{c.date}</span>
+                  </div>
+                  <p className="mt-0.5 text-[13px] leading-relaxed text-foreground/90">{c.text}</p>
+                  {c.reply && (
+                    <div className="mt-2 rounded-lg bg-muted px-3 py-2">
+                      <p className="text-[13px] leading-relaxed text-foreground/90">
+                        <span className="font-semibold text-primary">卖家回复：</span>
+                        {c.reply}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+          {/* 发表评论入口 */}
+          <button
+            type="button"
+            onClick={() => showToast('发表评论')}
+            className="mt-2 flex w-full items-center rounded-full bg-muted px-4 py-2.5 text-[13px] text-muted-foreground transition-colors hover:bg-muted/70"
+          >
+            说点什么，向卖家提问...
+          </button>
+        </section>
 
         <div className="mx-4 mt-3 rounded-lg border border-border bg-muted/50 px-3 py-2.5 text-[11px] leading-relaxed text-muted-foreground">
           温馨提示：二手交易建议当面验货、一手交钱一手交货，谨防先付款后失联的骗局。
