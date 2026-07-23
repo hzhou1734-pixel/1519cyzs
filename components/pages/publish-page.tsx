@@ -150,6 +150,32 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   },
 }
 
+// 批量映射：为尚未单独配置的一级分类，复用已完善的二级分类表单字段（仅调整标题）
+// 复用现有配置的 fields，避免重复定义；如需差异化可在此覆盖
+const reuse = (title: string, from: string) => ({ title, fields: DETAIL_FIELDS[from].fields })
+Object.assign(DETAIL_FIELDS, {
+  // 企业园区
+  'park/档口招商': reuse('档口详情', '档口招商'),
+  'park/食堂承包': reuse('承包详情', '整体承包'),
+  'park/商铺出租': reuse('出租详情', '商铺出租'),
+  'park/自助餐招商': reuse('招商详情', '柜台招商'),
+  // 生意转让
+  'biz/餐饮转让': reuse('转让详情', '商铺转让'),
+  'biz/旺铺转让': reuse('转让详情', '商铺转让'),
+  'biz/设备转让': reuse('转让详情', '商铺转让'),
+  'biz/仓库转让': reuse('转让详情', '商铺转让'),
+  // 旺铺出租
+  'shop/沿街旺铺': reuse('出租详情', '商铺出租'),
+  'shop/商业街铺': reuse('出租详情', '商铺出租'),
+  'shop/综合体铺': reuse('出租详情', '商铺出租'),
+  'shop/社区商铺': reuse('出租详情', '商铺出租'),
+  // 品牌加盟
+  'brand/餐饮加盟': reuse('加盟详情', '商铺出租'),
+  'brand/饮品加盟': reuse('加盟详情', '商铺出租'),
+  'brand/小吃加盟': reuse('加盟详情', '商铺出租'),
+  'brand/中餐加盟': reuse('加盟详情', '商铺出租'),
+})
+
 type Props = {
   showToast: (msg: string) => void
   onDone: () => void
