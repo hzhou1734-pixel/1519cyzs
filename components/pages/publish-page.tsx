@@ -149,7 +149,7 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   'sauce/酱料代工': {
     title: '酱料详情',
     fields: [
-      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名���', maxLength: 30 },
+      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名�����', maxLength: 30 },
       { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
     ],
   },
@@ -217,6 +217,16 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'contractTime', label: '合同时间', placeholder: '例：3年', maxLength: 20 },
     ],
   },
+  闲置供应: {
+    title: '物品详情',
+    fields: [
+      { key: 'itemName', label: '物品名称', placeholder: '例：六成新商用制冰机', maxLength: 30 },
+      { key: 'buyPrice', label: '购置价格', placeholder: '例：3000', inputMode: 'numeric', filter: 'int', suffix: '元', maxLength: 8 },
+      { key: 'sellPrice', label: '出售价格', placeholder: '例：1500', inputMode: 'numeric', filter: 'int', suffix: '元', maxLength: 8 },
+      { key: 'brandName', label: '品牌名称', placeholder: '例：海尔', maxLength: 20 },
+      { key: 'size', label: '尺寸', placeholder: '例：120×60×80cm', maxLength: 20 },
+    ],
+  },
 }
 
 // 批量映射：为尚未单独配置的一级分类，复用已完善的二级分类表单字段（仅调整标题）
@@ -248,6 +258,12 @@ Object.assign(DETAIL_FIELDS, {
   'training/饮品培训': reuse('培训详情', '培训供应'),
   'training/小吃培训': reuse('培训详情', '培训供应'),
   'training/烧烤培训': reuse('培训详情', '培训供应'),
+  // 二手闲置
+  'idle/厨房设备': reuse('物品详情', '闲置供应'),
+  'idle/桌椅家具': reuse('物品详情', '闲置供应'),
+  'idle/冷藏冷冻': reuse('物品详情', '闲置供应'),
+  'idle/餐具器皿': reuse('物品详情', '闲置供应'),
+  'idle/其他闲置': reuse('物品详情', '闲置供应'),
 })
 
 type Props = {
