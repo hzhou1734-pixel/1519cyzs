@@ -149,7 +149,7 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   'sauce/酱料代工': {
     title: '酱料详情',
     fields: [
-      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名�����', maxLength: 30 },
+      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名�������', maxLength: 30 },
       { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
     ],
   },
@@ -227,6 +227,16 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'size', label: '尺寸', placeholder: '例：120×60×80cm', maxLength: 20 },
     ],
   },
+  招聘供应: {
+    title: '招聘详情',
+    fields: [
+      { key: 'jobTitle', label: '职位名称', placeholder: '例：后厨帮工', maxLength: 20 },
+      { key: 'salary', label: '薪资待遇', placeholder: '例：5000-8000元/月', maxLength: 20 },
+      { key: 'workPlace', label: '工作地点', placeholder: '例：青岛大学食堂', maxLength: 30 },
+      { key: 'experience', label: '工作经验', placeholder: '例：1年以上经验', maxLength: 20 },
+      { key: 'headcount', label: '招聘人数', placeholder: '例：3', inputMode: 'numeric', filter: 'int', suffix: '人', maxLength: 4 },
+    ],
+  },
 }
 
 // 批量映射：为尚未单独配置的一级分类，复用已完善的二级分类表单字段（仅调整标题）
@@ -264,6 +274,11 @@ Object.assign(DETAIL_FIELDS, {
   'idle/冷藏冷冻': reuse('物品详情', '闲置供应'),
   'idle/餐具器皿': reuse('物品详情', '闲置供应'),
   'idle/其他闲置': reuse('物品详情', '闲置供应'),
+  // 人才招聘
+  'recruit/管理岗': reuse('招聘详情', '招聘供应'),
+  'recruit/技术岗': reuse('招聘详情', '招聘供应'),
+  'recruit/服务岗': reuse('招聘详情', '招聘供应'),
+  'recruit/兼职': reuse('招聘详情', '招聘供应'),
 })
 
 type Props = {
@@ -301,7 +316,7 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
   const [tagOpen, setTagOpen] = useState(false)
 
   const catLabel = publishCats.find((c) => c.cat === cat)?.label ?? (cat === 'idle' ? '二手闲置' : cat)
-  // 根据二级分类选择详情字段配置
+  // 根据���级分类选择详情字段配置
   const detailConfig = DETAIL_FIELDS[`${cat}/${subCat}`] ?? DETAIL_FIELDS[subCat] ?? DETAIL_FIELDS.default
   const phoneValid = PHONE_RE.test(phone)
   const phoneError = phoneTouched && phone.length > 0 && !phoneValid
