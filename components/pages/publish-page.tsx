@@ -185,6 +185,16 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'area', label: '商铺面积', placeholder: '例：80', inputMode: 'decimal', filter: 'decimal', suffix: '㎡', maxLength: 8 },
     ],
   },
+  加盟供应: {
+    title: '加盟详情',
+    fields: [
+      { key: 'brandName', label: '品牌名称', placeholder: '请输入品牌名称', maxLength: 30 },
+      { key: 'projectType', label: '项目类型', placeholder: '请输入项目类型', maxLength: 20 },
+      { key: 'joinFee', label: '加盟费用', placeholder: '请输入加盟费用', maxLength: 20 },
+      { key: 'storeCount', label: '门店数量', placeholder: '请输入门店数量', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入日均营业额', maxLength: 20 },
+    ],
+  },
 }
 
 // 批量映射：为尚未单独配置的一级分类，复用已完善的二级分类表单字段（仅调整标题）
@@ -207,10 +217,10 @@ Object.assign(DETAIL_FIELDS, {
   'shop/综合体铺': reuse('出租详情', '商铺出租'),
   'shop/社区商铺': reuse('出租详情', '商铺出租'),
   // 品牌加盟
-  'brand/餐饮加盟': reuse('加盟详情', '商铺出租'),
-  'brand/饮品加盟': reuse('加盟详情', '商铺出租'),
-  'brand/小吃加盟': reuse('加盟详情', '商铺出租'),
-  'brand/中餐加盟': reuse('加盟详情', '商铺出租'),
+  'brand/餐饮加盟': reuse('加盟详情', '加盟供应'),
+  'brand/饮品加盟': reuse('加盟详情', '加盟供应'),
+  'brand/小吃加盟': reuse('加盟详情', '加盟供应'),
+  'brand/中餐加盟': reuse('加盟详情', '加盟供应'),
   // 技术培训
   'training/面食培训': reuse('培训详情', '培训供应'),
   'training/饮品培训': reuse('培训详情', '培训供应'),
@@ -314,7 +324,7 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
       onPay(plan.amount, `置顶推广 ${plan.title.replace('置顶', '')}`)
       return
     }
-    showToast('发布成功，等待审核')
+    showToast('发布成功，等���审核')
     setTimeout(onPublished ?? onDone, 900)
   }
 
