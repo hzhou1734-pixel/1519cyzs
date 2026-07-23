@@ -142,38 +142,38 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   'sauce/底料供应': {
     title: '底料详情',
     fields: [
-      { key: 'name', label: '底料名称', placeholder: '请输入底料名称', maxLength: 30 },
-      { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+      { key: 'name', label: '底料名称', placeholder: '例：麻辣火锅底料', maxLength: 30 },
+      { key: 'price', label: '产品价格', placeholder: '例：25元/包', maxLength: 20 },
     ],
   },
   'sauce/酱料代工': {
     title: '酱料详情',
     fields: [
-      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名���������', maxLength: 30 },
-      { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+      { key: 'name', label: '酱料名称', placeholder: '例：秘制烧烤酱', maxLength: 30 },
+      { key: 'price', label: '产品价格', placeholder: '例：25元/瓶', maxLength: 20 },
     ],
   },
   'sauce/原料批发': {
     title: '原料详情',
     fields: [
-      { key: 'name', label: '原料名称', placeholder: '请输入原料名称', maxLength: 30 },
-      { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+      { key: 'name', label: '原料名称', placeholder: '例：干辣椒', maxLength: 30 },
+      { key: 'price', label: '产品价格', placeholder: '例：15元/斤', maxLength: 20 },
     ],
   },
   'sauce/设备供应': {
     title: '设备详情',
     fields: [
-      { key: 'name', label: '设备名称', placeholder: '请输入设备名称', maxLength: 30 },
-      { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+      { key: 'name', label: '设备名称', placeholder: '例：商用炒料机', maxLength: 30 },
+      { key: 'price', label: '产品价格', placeholder: '例：面议', maxLength: 20 },
     ],
   },
   培训供应: {
     title: '培训详情',
     fields: [
-      { key: 'projectName', label: '项目名称', placeholder: '请输入项目名称', maxLength: 30 },
-      { key: 'trainTime', label: '培训时间', placeholder: '请输入培训时间', maxLength: 20 },
-      { key: 'trainFee', label: '培训费用', placeholder: '请输入培训费用', maxLength: 20 },
-      { key: 'address', label: '详细地址', placeholder: '请输入详细地址', maxLength: 40 },
+      { key: 'projectName', label: '项目名称', placeholder: '例：兰州拉面培训', maxLength: 30 },
+      { key: 'trainTime', label: '培训时间', placeholder: '例：7天速成', maxLength: 20 },
+      { key: 'trainFee', label: '培训费用', placeholder: '例：2800元全包', maxLength: 20 },
+      { key: 'address', label: '详细地址', placeholder: '例：青岛市市南区XX路', maxLength: 40 },
     ],
   },
   default: {
