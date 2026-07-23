@@ -35,12 +35,12 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
   档口招商: {
     title: '档口详情',
     fields: [
-      { key: 'school', label: '学校名称', placeholder: '请输入学校名称，例：青岛大学', maxLength: 20 },
-      { key: 'students', label: '在校人数', placeholder: '请输入在校人数，例：在校生20000人', maxLength: 20 },
-      { key: 'floor', label: '餐厅楼层', placeholder: '请输入餐厅楼层', maxLength: 10 },
-      { key: 'feeMode', label: '收费模式', placeholder: '请输入收费模式', maxLength: 20 },
-      { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入单个档口的日均营业额', maxLength: 20 },
-      { key: 'contractTime', label: '合同时间', placeholder: '请输入合同时间', maxLength: 20 },
+      { key: 'school', label: '学校名称', placeholder: '例：青岛大学', maxLength: 20 },
+      { key: 'students', label: '在校人数', placeholder: '例：在校生20000人', maxLength: 20 },
+      { key: 'floor', label: '餐厅楼层', placeholder: '例：一楼餐厅二层', maxLength: 10 },
+      { key: 'feeMode', label: '收费模式', placeholder: '例：租金+扣点', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '例：单个档口3000元', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '例：3年', maxLength: 20 },
     ],
   },
   default: {
