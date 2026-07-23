@@ -69,6 +69,41 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'intentArea', label: '意向地区', placeholder: '请输入求租意向地区或学校名称', maxLength: 30 },
     ],
   },
+  商铺出租: {
+    title: '出租详情',
+    fields: [
+      { key: 'bizItem', label: '经营项目', placeholder: '请输入经营项目', maxLength: 30 },
+      { key: 'intentArea', label: '意向地区', placeholder: '请输入意向地区', maxLength: 30 },
+      { key: 'shopArea', label: '商铺面积', placeholder: '请输入商铺面积', maxLength: 20 },
+    ],
+  },
+  商铺转让: {
+    title: '转让详情',
+    fields: [
+      { key: 'school', label: '学校名称', placeholder: '请输入学校名称', maxLength: 20 },
+      { key: 'students', label: '在校人数', placeholder: '请输入在校人数', maxLength: 20 },
+      { key: 'area', label: '面积大小', placeholder: '请输入面积大小', maxLength: 20 },
+      { key: 'floor', label: '所在楼层', placeholder: '请输入所在楼层', maxLength: 10 },
+    ],
+  },
+  柜台招商: {
+    title: '招商详情',
+    fields: [
+      { key: 'school', label: '学校名称', placeholder: '请输入学校名称', maxLength: 20 },
+      { key: 'students', label: '在校人数', placeholder: '请输入在校人数', maxLength: 20 },
+      { key: 'floor', label: '商铺楼层', placeholder: '请输入商铺楼层', maxLength: 10 },
+      { key: 'shopArea', label: '商铺面积', placeholder: '请输入商铺面积', maxLength: 20 },
+    ],
+  },
+  广告位招租: {
+    title: '招租详情',
+    fields: [
+      { key: 'school', label: '学校名称', placeholder: '请输入学校名称', maxLength: 20 },
+      { key: 'students', label: '在校人数', placeholder: '请输入在校人数', maxLength: 20 },
+      { key: 'floor', label: '商铺楼层', placeholder: '请输入商铺楼层', maxLength: 10 },
+      { key: 'shopArea', label: '商铺面积', placeholder: '请输入商铺面积', maxLength: 20 },
+    ],
+  },
   default: {
     title: '商铺详情',
     fields: [
