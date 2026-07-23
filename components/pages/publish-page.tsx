@@ -139,10 +139,31 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'dailyRevenue', label: '日均营业额', placeholder: '例：单个档口3000元', maxLength: 20 },
     ],
   },
-  酱料供应: {
+  'sauce/底料供应': {
+    title: '底料详情',
+    fields: [
+      { key: 'name', label: '底料名称', placeholder: '请输入底料名称', maxLength: 30 },
+      { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+    ],
+  },
+  'sauce/酱料代工': {
     title: '酱料详情',
     fields: [
-      { key: 'sauceName', label: '酱料名称', placeholder: '请输入酱料名称', maxLength: 30 },
+      { key: 'name', label: '酱料名称', placeholder: '请输入酱料名称', maxLength: 30 },
+      { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+    ],
+  },
+  'sauce/原料批发': {
+    title: '原料详情',
+    fields: [
+      { key: 'name', label: '原料名称', placeholder: '请输入原料名称', maxLength: 30 },
+      { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
+    ],
+  },
+  'sauce/设备供应': {
+    title: '设备详情',
+    fields: [
+      { key: 'name', label: '设备名称', placeholder: '请输入设备名称', maxLength: 30 },
       { key: 'price', label: '产品价格', placeholder: '请输入产品价格', maxLength: 20 },
     ],
   },
@@ -181,11 +202,6 @@ Object.assign(DETAIL_FIELDS, {
   'brand/饮品加盟': reuse('加盟详情', '商铺出租'),
   'brand/小吃加盟': reuse('加盟详情', '商铺出租'),
   'brand/中餐加盟': reuse('加盟详情', '商铺出租'),
-  // 酱料供应
-  'sauce/底料供应': reuse('酱料详情', '酱料供应'),
-  'sauce/酱料代工': reuse('酱料详情', '酱料供应'),
-  'sauce/原料批发': reuse('酱料详情', '酱料供应'),
-  'sauce/设备供应': reuse('酱料详情', '酱料供应'),
 })
 
 type Props = {
@@ -328,7 +344,7 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
               onChange={(e) => setDesc(e.target.value)}
               maxLength={500}
               rows={5}
-              placeholder="面积、经营品类、收费模式、进场要求等，信息越详细越容易成交"
+              placeholder="面积、经营品类、收费模式���进场要求等，信息越详细越容易成交"
               className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2.5 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20"
             />
           </section>
