@@ -104,6 +104,41 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'shopArea', label: '商铺面积', placeholder: '请输入商铺面积', maxLength: 20 },
     ],
   },
+  'hospital/档口招商': {
+    title: '档口详情',
+    fields: [
+      { key: 'hospital', label: '医院名称', placeholder: '医院名称', maxLength: 20 },
+      { key: 'diners', label: '用餐人数', placeholder: '请输入用餐人数', maxLength: 20 },
+      { key: 'floor', label: '所在楼层', placeholder: '请输入所在楼层', maxLength: 10 },
+      { key: 'feeMode', label: '收费模式', placeholder: '请输入收费模式', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '请输入合同时间', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入日均营业额', maxLength: 20 },
+    ],
+  },
+  'hospital/整体承包': {
+    title: '承包详情',
+    fields: [
+      { key: 'hospital', label: '医院名称', placeholder: '请输入医院名称', maxLength: 20 },
+      { key: 'diners', label: '用餐人数', placeholder: '请输入用餐人数', maxLength: 20 },
+      { key: 'floor', label: '所在楼层', placeholder: '请输入所在楼层', maxLength: 10 },
+      { key: 'area', label: '面积大小', placeholder: '请输入面积大小', maxLength: 20 },
+      { key: 'transferFee', label: '转让费用', placeholder: '请输入转让费用', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '请输入合同时间', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入日均营业额', maxLength: 20 },
+    ],
+  },
+  'hospital/窗口出租': {
+    title: '出租详情',
+    fields: [
+      { key: 'hospital', label: '医院名称', placeholder: '请输入医院名称', maxLength: 20 },
+      { key: 'diners', label: '用餐人数', placeholder: '请输入用餐人数', maxLength: 20 },
+      { key: 'floor', label: '所在楼层', placeholder: '请输入所在楼层', maxLength: 10 },
+      { key: 'area', label: '面积大小', placeholder: '请输入面积大小', maxLength: 20 },
+      { key: 'transferFee', label: '转让费用', placeholder: '请输入转让费用', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '请输入合同时间', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入日均营业额', maxLength: 20 },
+    ],
+  },
   default: {
     title: '商铺详情',
     fields: [
@@ -151,7 +186,7 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
 
   const catLabel = publishCats.find((c) => c.cat === cat)?.label ?? (cat === 'idle' ? '二手闲置' : cat)
   // 根据二级分类选择详情字段配置
-  const detailConfig = DETAIL_FIELDS[subCat] ?? DETAIL_FIELDS.default
+  const detailConfig = DETAIL_FIELDS[`${cat}/${subCat}`] ?? DETAIL_FIELDS[subCat] ?? DETAIL_FIELDS.default
   const phoneValid = PHONE_RE.test(phone)
   const phoneError = phoneTouched && phone.length > 0 && !phoneValid
   const codeValid = /^\d{6}$/.test(code)
