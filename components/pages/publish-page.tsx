@@ -43,6 +43,32 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'contractTime', label: '合同时间', placeholder: '例：3年', maxLength: 20 },
     ],
   },
+  整体承包: {
+    title: '承包详情',
+    fields: [
+      { key: 'school', label: '学校名称', placeholder: '请输入学校名称', maxLength: 20 },
+      { key: 'students', label: '在校人数', placeholder: '请输入在校人数', maxLength: 20 },
+      { key: 'floor', label: '所在楼层', placeholder: '请输入所在楼层', maxLength: 10 },
+      { key: 'area', label: '面积大小', placeholder: '请输入面积大小', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '请输入合同时间', maxLength: 20 },
+      { key: 'transferFee', label: '转让费用', placeholder: '请输入转让费用', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入日均营业额', maxLength: 20 },
+    ],
+  },
+  窗口出租: {
+    title: '出租详情',
+    fields: [
+      { key: 'mainBiz', label: '主营项目', placeholder: '请输入主营项目', maxLength: 30 },
+      { key: 'intentArea', label: '意向地区', placeholder: '请输入求租意向地区或学校名称', maxLength: 30 },
+    ],
+  },
+  摊位招租: {
+    title: '出租详情',
+    fields: [
+      { key: 'mainBiz', label: '主营项目', placeholder: '请输入主营项目', maxLength: 30 },
+      { key: 'intentArea', label: '意向地区', placeholder: '请输入求租意向地区或学校名称', maxLength: 30 },
+    ],
+  },
   default: {
     title: '商铺详情',
     fields: [
