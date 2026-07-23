@@ -482,7 +482,7 @@ function TextField({
         placeholder={placeholder}
         maxLength={maxLength}
         inputMode={inputMode}
-        className="min-w-0 flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20"
+        className="min-w-0 flex-1 rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20"
       />
       {suffix && <span className="shrink-0 text-sm text-muted-foreground">{suffix}</span>}
     </div>
