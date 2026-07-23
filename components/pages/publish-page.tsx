@@ -19,6 +19,41 @@ const TOP_PLANS: { key: string; title: string; price: string; note: string; amou
   { key: '30', title: '30天置顶', price: '¥29.9', note: '¥1.0/天', amount: 29.9 },
 ]
 
+// 详情字段配置：不同发布类型（二级分类）填写不同的商品详情表单
+type DetailField = {
+  key: string
+  label: string
+  placeholder: string
+  inputMode?: 'text' | 'numeric' | 'decimal' | 'tel'
+  suffix?: string
+  filter?: 'int' | 'decimal' // 输入过滤：仅整数 / 仅数字与小数点
+  maxLength?: number
+}
+
+// 按二级分类（subCat）匹配，未命中时使用 default
+const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = {
+  档口招商: {
+    title: '档口详情',
+    fields: [
+      { key: 'school', label: '学校名称', placeholder: '请输入学校名称，例：青岛大学', maxLength: 20 },
+      { key: 'students', label: '在校人数', placeholder: '请输入在校人数，例：在校生20000人', maxLength: 20 },
+      { key: 'floor', label: '餐厅楼层', placeholder: '请输入餐厅楼层', maxLength: 10 },
+      { key: 'feeMode', label: '收费模式', placeholder: '请输入收费模式', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '请输入单个档口的日均营业额', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '请输入合同时间', maxLength: 20 },
+    ],
+  },
+  default: {
+    title: '商铺详情',
+    fields: [
+      { key: 'school', label: '学校名称', placeholder: '如：湖南大学', maxLength: 20 },
+      { key: 'students', label: '在校人数', placeholder: '请输入在校人数', inputMode: 'numeric', filter: 'int', suffix: '人', maxLength: 7 },
+      { key: 'floor', label: '商铺楼层', placeholder: '如：1 楼 / 负一层', maxLength: 10 },
+      { key: 'area', label: '商铺面积', placeholder: '请输入面积', inputMode: 'decimal', filter: 'decimal', suffix: '㎡', maxLength: 8 },
+    ],
+  },
+}
+
 type Props = {
   showToast: (msg: string) => void
   onDone: () => void
@@ -37,10 +72,8 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
   const subCat = initialSubCat
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
-  const [school, setSchool] = useState('')
-  const [students, setStudents] = useState('')
-  const [floor, setFloor] = useState('')
-  const [area, setArea] = useState('')
+  // 详情字段值（按发布类型动态渲染，统一用字典存储）
+  const [details, setDetails] = useState<Record<string, string>>({})
   const [region, setRegion] = useState('')
   const [address, setAddress] = useState('')
   const [phone, setPhone] = useState('')
@@ -56,6 +89,8 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
   const [tagOpen, setTagOpen] = useState(false)
 
   const catLabel = publishCats.find((c) => c.cat === cat)?.label ?? (cat === 'idle' ? '二手闲置' : cat)
+  // 根据二级分类选择详情字段配置
+  const detailConfig = DETAIL_FIELDS[subCat] ?? DETAIL_FIELDS.default
   const phoneValid = PHONE_RE.test(phone)
   const phoneError = phoneTouched && phone.length > 0 && !phoneValid
   const codeValid = /^\d{6}$/.test(code)
@@ -164,28 +199,27 @@ export function PublishPage({ showToast, onDone, onPay, initialCat = '', initial
             />
           </section>
 
-          {/* 商铺详情 */}
+          {/* 商品详情（按发布类型动态渲染字段） */}
           <section className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <FieldLabel>商铺详情</FieldLabel>
+            <FieldLabel>{detailConfig.title}</FieldLabel>
             <div className="flex flex-col gap-3">
-              <TextField label="学校名称" value={school} onChange={setSchool} placeholder="如：湖南大学" maxLength={20} />
-              <TextField
-                label="在校人数"
-                value={students}
-                onChange={(v) => setStudents(v.replace(/\D/g, '').slice(0, 7))}
-                placeholder="请输入在校人数"
-                inputMode="numeric"
-                suffix="人"
-              />
-              <TextField label="商铺楼层" value={floor} onChange={setFloor} placeholder="如：1 楼 / 负一层" maxLength={10} />
-              <TextField
-                label="商铺面积"
-                value={area}
-                onChange={(v) => setArea(v.replace(/[^\d.]/g, '').slice(0, 8))}
-                placeholder="请输入面积"
-                inputMode="decimal"
-                suffix="㎡"
-              />
+              {detailConfig.fields.map((f) => (
+                <TextField
+                  key={f.key}
+                  label={f.label}
+                  value={details[f.key] ?? ''}
+                  onChange={(v) => {
+                    let next = v
+                    if (f.filter === 'int') next = v.replace(/\D/g, '')
+                    else if (f.filter === 'decimal') next = v.replace(/[^\d.]/g, '')
+                    setDetails((prev) => ({ ...prev, [f.key]: next }))
+                  }}
+                  placeholder={f.placeholder}
+                  inputMode={f.inputMode}
+                  suffix={f.suffix}
+                  maxLength={f.maxLength}
+                />
+              ))}
             </div>
           </section>
 
@@ -441,7 +475,7 @@ function TextField({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="w-16 shrink-0 text-sm text-foreground">{label}</span>
+      <span className="w-20 shrink-0 text-sm text-foreground">{label}</span>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
