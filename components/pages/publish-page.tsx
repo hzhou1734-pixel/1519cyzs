@@ -237,17 +237,56 @@ const DETAIL_FIELDS: Record<string, { title: string; fields: DetailField[] }> = 
       { key: 'headcount', label: '招聘人数', placeholder: '例：3', inputMode: 'numeric', filter: 'int', suffix: '人', maxLength: 4 },
     ],
   },
+  // 企业园区（首字段按二级分类名定制，其余为园区语境）
+  'park/档口招商': {
+    title: '档口详情',
+    fields: [
+      { key: 'name', label: '档口名称', placeholder: '例：A区1号档口', maxLength: 20 },
+      { key: 'park', label: '园区名称', placeholder: '例：软件园A座', maxLength: 20 },
+      { key: 'staff', label: '员工人数', placeholder: '例：入驻员工5000人', maxLength: 20 },
+      { key: 'floor', label: '所在楼层', placeholder: '例：一楼餐厅二层', maxLength: 10 },
+      { key: 'feeMode', label: '收费模式', placeholder: '例：租金+扣点', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '例：单个档口3000元', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '例：3年', maxLength: 20 },
+    ],
+  },
+  'park/食堂承包': {
+    title: '承包详情',
+    fields: [
+      { key: 'name', label: '食堂名称', placeholder: '例：园区中央食堂', maxLength: 20 },
+      { key: 'park', label: '园区名称', placeholder: '例：软件园A座', maxLength: 20 },
+      { key: 'staff', label: '员工人数', placeholder: '例：入驻员工5000人', maxLength: 20 },
+      { key: 'area', label: '面积大小', placeholder: '例：500㎡', maxLength: 20 },
+      { key: 'contractTime', label: '合同时间', placeholder: '例：3年', maxLength: 20 },
+      { key: 'transferFee', label: '转让费用', placeholder: '例：面议', maxLength: 20 },
+      { key: 'dailyRevenue', label: '日均营业额', placeholder: '例：日均5000元', maxLength: 20 },
+    ],
+  },
+  'park/商铺出租': {
+    title: '出租详情',
+    fields: [
+      { key: 'name', label: '商铺名称', placeholder: '例：园区临街1号铺', maxLength: 20 },
+      { key: 'park', label: '园区名称', placeholder: '例：软件园A座', maxLength: 20 },
+      { key: 'bizItem', label: '经营项目', placeholder: '例：餐饮小吃', maxLength: 30 },
+      { key: 'shopArea', label: '商铺面积', placeholder: '例：80㎡', maxLength: 20 },
+    ],
+  },
+  'park/自助餐招商': {
+    title: '招商详情',
+    fields: [
+      { key: 'name', label: '餐厅名称', placeholder: '例：园区自助餐厅', maxLength: 20 },
+      { key: 'park', label: '园区名称', placeholder: '例：软件园A座', maxLength: 20 },
+      { key: 'staff', label: '员工人数', placeholder: '例：入驻员工5000人', maxLength: 20 },
+      { key: 'floor', label: '所在楼层', placeholder: '例：一楼餐厅二层', maxLength: 10 },
+      { key: 'shopArea', label: '商铺面积', placeholder: '例：300㎡', maxLength: 20 },
+    ],
+  },
 }
 
 // 批量映射：为尚未单独配置的一级分类，复用已完善的二级分类表单字段（仅调整标题）
 // 复用现有配置的 fields，避免重复定义；如需差异化可在此覆盖
 const reuse = (title: string, from: string) => ({ title, fields: DETAIL_FIELDS[from].fields })
 Object.assign(DETAIL_FIELDS, {
-  // 企业园区
-  'park/档口招商': reuse('档口详情', '档口招商'),
-  'park/食堂承包': reuse('承包详情', '整体承包'),
-  'park/商铺出租': reuse('出租详情', '商铺出租'),
-  'park/自助餐招商': reuse('招商详情', '柜台招商'),
   // 生意转让（店铺转租）
   'biz/餐饮转让': reuse('转租详情', '转租供应'),
   'biz/旺铺转让': reuse('转租详情', '转租供应'),
