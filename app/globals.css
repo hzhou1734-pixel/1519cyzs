@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
+  --font-sans: 'Microsoft YaHei', '微软雅黑', -apple-system, 'PingFang SC', sans-serif;
+  --font-mono: 'Microsoft YaHei', '微软雅黑', -apple-system, 'PingFang SC', sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
